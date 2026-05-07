@@ -1,0 +1,3805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Domain 1 — Agentic Architecture & Orchestration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0d0b;
+  --bg-elevated: #16140f;
+  --bg-card: #1a1812;
+  --ink: #f4ede0;
+  --ink-muted: #a89e8b;
+  --ink-faint: #6b6354;
+  --rule: #2a2620;
+  --rule-strong: #3a3429;
+  --accent: #e8b04e;
+  --accent-soft: #c98f3f;
+  --teal: #5fb7a5;
+  --coral: #e07b5a;
+  --rose: #c66a7a;
+  --sage: #8aa978;
+  --serif: 'Fraunces', Georgia, serif;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --sans: 'Inter', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+/* Subtle grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(232,176,78,0.015) 1px, transparent 0);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 32px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== HEADER ===== */
+header.masthead {
+  border-bottom: 1px solid var(--rule);
+  padding: 32px 0;
+  position: sticky;
+  top: 0;
+  background: rgba(14, 13, 11, 0.92);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+}
+
+.masthead-inner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.brand {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  font-style: italic;
+}
+
+.brand .ampersand {
+  color: var(--accent);
+  font-style: italic;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+nav.toc {
+  display: flex;
+  gap: 24px;
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+nav.toc a {
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+}
+
+nav.toc a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ===== HERO ===== */
+.hero {
+  padding: 120px 0 80px;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 80px;
+  align-items: end;
+}
+
+.hero-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.hero-meta::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule-strong);
+}
+
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(48px, 7vw, 96px);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  margin-bottom: 32px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.hero-lede {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 680px;
+  font-style: italic;
+}
+
+.hero-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  border-left: 1px solid var(--rule-strong);
+  padding-left: 32px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-value {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.stat-value .pct {
+  color: var(--accent);
+}
+
+.stat-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+/* ===== SECTIONS ===== */
+section.task-section {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.section-header {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 48px;
+  margin-bottom: 56px;
+  align-items: start;
+}
+
+.section-num {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 88px;
+  line-height: 1;
+  color: var(--accent);
+  letter-spacing: -0.04em;
+}
+
+.section-num .num-suffix {
+  font-size: 24px;
+  vertical-align: super;
+  color: var(--ink-faint);
+  margin-left: 4px;
+}
+
+.section-header-text {
+  padding-top: 16px;
+}
+
+.section-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 16px;
+}
+
+h2.section-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(36px, 4.5vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin-bottom: 20px;
+}
+
+.section-meaning {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 720px;
+  padding: 16px 24px;
+  border-left: 3px solid var(--accent);
+  background: linear-gradient(90deg, rgba(232,176,78,0.04) 0%, transparent 100%);
+}
+
+.section-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+}
+
+h3.subhead {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  color: var(--ink);
+}
+
+h4.minor {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+
+p {
+  margin-bottom: 16px;
+  color: var(--ink-muted);
+  font-size: 15.5px;
+  line-height: 1.7;
+  max-width: 780px;
+}
+
+p strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+p code, li code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--bg-elevated);
+  padding: 2px 7px;
+  border-radius: 3px;
+  color: var(--accent);
+  border: 1px solid var(--rule);
+}
+
+ul.bullets {
+  list-style: none;
+  margin-bottom: 24px;
+  max-width: 820px;
+}
+
+ul.bullets li {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 14px;
+  color: var(--ink-muted);
+  line-height: 1.65;
+}
+
+ul.bullets li::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent);
+  font-size: 10px;
+  line-height: 28px;
+}
+
+/* ===== INTERACTIVE DIAGRAMS ===== */
+.diagram-block {
+  margin: 40px 0;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.diagram-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg-elevated);
+}
+
+.diagram-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-muted);
+}
+
+.diagram-toggle {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  cursor: pointer;
+  background: none;
+  border: 1px solid var(--rule-strong);
+  padding: 6px 14px;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.diagram-toggle:hover {
+  border-color: var(--accent);
+  background: rgba(232,176,78,0.08);
+}
+
+.diagram-svg-wrap {
+  padding: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.diagram-svg-wrap svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* SVG node styling */
+.node-rect {
+  fill: var(--bg-elevated);
+  stroke: var(--rule-strong);
+  stroke-width: 1.5;
+  rx: 4;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.node-rect:hover {
+  stroke: var(--accent);
+  fill: rgba(232,176,78,0.06);
+}
+
+.node-rect.accent { stroke: var(--accent); }
+.node-rect.teal { stroke: var(--teal); }
+.node-rect.coral { stroke: var(--coral); }
+.node-rect.sage { stroke: var(--sage); }
+.node-rect.rose { stroke: var(--rose); }
+
+.node-title {
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 500;
+  fill: var(--ink);
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.node-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  fill: var(--ink-muted);
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.flow-line {
+  stroke: var(--rule-strong);
+  stroke-width: 1.5;
+  fill: none;
+  transition: stroke 0.3s;
+}
+
+.flow-line.active {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.flow-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  fill: var(--ink-faint);
+  text-anchor: middle;
+}
+
+.diagram-controls {
+  padding: 16px 24px;
+  border-top: 1px solid var(--rule);
+  background: var(--bg-elevated);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.diagram-step-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: var(--bg-card);
+  color: var(--ink-muted);
+  border: 1px solid var(--rule-strong);
+  padding: 8px 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.diagram-step-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.diagram-step-btn.active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.diagram-narration {
+  padding: 20px 24px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-muted);
+  line-height: 1.6;
+  min-height: 60px;
+}
+
+/* ===== EXAM TRAPS BLOCK ===== */
+.traps-block {
+  margin-top: 48px;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.traps-header {
+  background: linear-gradient(90deg, rgba(224,123,90,0.08) 0%, transparent 60%);
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.warn-icon {
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--coral);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--coral);
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.traps-header h4 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.traps-header .traps-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--coral);
+  margin-left: auto;
+}
+
+.traps-list {
+  list-style: none;
+  padding: 0;
+}
+
+.trap-item {
+  border-bottom: 1px solid var(--rule);
+  padding: 24px 28px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.trap-item:last-child {
+  border-bottom: none;
+}
+
+.trap-item:hover {
+  background: rgba(224,123,90,0.04);
+}
+
+.trap-item-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.trap-num {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 28px;
+  color: var(--coral);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  min-width: 36px;
+}
+
+.trap-content {
+  flex: 1;
+}
+
+.trap-wrong {
+  font-family: var(--serif);
+  font-size: 17px;
+  color: var(--ink);
+  font-weight: 500;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.trap-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, margin-top 0.3s;
+}
+
+.trap-item.open .trap-detail {
+  max-height: 400px;
+  margin-top: 12px;
+}
+
+.trap-why {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-muted);
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+
+.trap-fix {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--sage);
+  background: rgba(138,169,120,0.06);
+  padding: 10px 14px;
+  border-left: 2px solid var(--sage);
+  border-radius: 0 2px 2px 0;
+}
+
+.trap-fix::before {
+  content: '→ ';
+  color: var(--sage);
+  font-weight: 600;
+}
+
+.expand-indicator {
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--ink-faint);
+  transition: transform 0.3s;
+  margin-left: auto;
+}
+
+.trap-item.open .expand-indicator {
+  transform: rotate(45deg);
+  color: var(--coral);
+}
+
+/* ===== TWO COLUMN LAYOUT ===== */
+.dual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin: 32px 0;
+}
+
+.dual-card {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dual-card.wrong {
+  border-left: 3px solid var(--coral);
+}
+
+.dual-card.right {
+  border-left: 3px solid var(--sage);
+}
+
+.dual-card-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.dual-card.wrong .dual-card-tag { color: var(--coral); }
+.dual-card.right .dual-card-tag { color: var(--sage); }
+
+.dual-card h5 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+
+.dual-card p {
+  font-size: 14.5px;
+  margin-bottom: 0;
+}
+
+.code-block {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  padding: 16px;
+  border-radius: 3px;
+  margin-top: 12px;
+  color: var(--ink);
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+.code-block .keyword { color: var(--coral); }
+.code-block .string { color: var(--sage); }
+.code-block .comment { color: var(--ink-faint); font-style: italic; }
+.code-block .accent { color: var(--accent); }
+
+/* ===== TABLE ===== */
+.elegant-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 14.5px;
+}
+
+.elegant-table th {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rule-strong);
+  font-weight: 600;
+}
+
+.elegant-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-muted);
+  vertical-align: top;
+}
+
+.elegant-table td:first-child {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.elegant-table tbody tr:hover {
+  background: rgba(232,176,78,0.03);
+}
+
+/* ===== PULL QUOTE ===== */
+.pull-quote {
+  margin: 56px 0;
+  padding: 48px 0;
+  border-top: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule-strong);
+  text-align: center;
+}
+
+.pull-quote-text {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(28px, 3.5vw, 40px);
+  line-height: 1.3;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  max-width: 900px;
+  margin: 0 auto 16px;
+}
+
+.pull-quote-text em {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.pull-quote-attr {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--ink-faint);
+}
+
+/* ===== FOOTER ===== */
+footer {
+  padding: 80px 0 60px;
+  border-top: 1px solid var(--rule-strong);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 64px;
+}
+
+.footer-brand {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 32px;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.footer-brand em {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.footer-text {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--ink-muted);
+  font-style: italic;
+  max-width: 380px;
+  line-height: 1.6;
+}
+
+.footer-col h6 {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.footer-col ul {
+  list-style: none;
+}
+
+.footer-col li {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+
+.footer-meta {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 880px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+  .hero-stats { flex-direction: row; flex-wrap: wrap; border-left: none; border-top: 1px solid var(--rule-strong); padding-left: 0; padding-top: 32px; }
+  .section-header { grid-template-columns: 1fr; gap: 16px; }
+  .section-num { font-size: 64px; }
+  .dual { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  nav.toc { display: none; }
+}
+
+/* SVG node hover hint */
+.node-group { cursor: pointer; }
+.node-group:hover .node-rect { stroke-width: 2.5; }
+
+/* Animation for diagram nodes */
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+  50% { filter: drop-shadow(0 0 8px rgba(232,176,78,0.4)); }
+}
+
+.node-group.highlight .node-rect {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  fill: rgba(232,176,78,0.1);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.node-group.dim {
+  opacity: 0.35;
+}
+
+.flow-line.dim {
+  opacity: 0.2;
+}
+
+/* Fade-in on scroll */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== PRACTICE EXAM SECTION ===== */
+.exam-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 56px;
+  align-items: start;
+}
+
+.exam-intro-card {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 32px;
+  position: relative;
+}
+
+.exam-intro-card.checks {
+  border-left: 3px solid var(--teal);
+}
+
+.exam-intro-card.exam {
+  border-left: 3px solid var(--accent);
+}
+
+.exam-intro-card h4 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 24px;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+
+.exam-intro-card .count {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.exam-intro-card.checks .count { color: var(--teal); }
+
+.exam-intro-card p {
+  font-size: 14.5px;
+  margin-bottom: 16px;
+}
+
+.exam-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--ink-muted);
+  cursor: pointer;
+  padding: 10px 18px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 2px;
+  background: var(--bg);
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.exam-mode-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.exam-mode-toggle.active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+/* Question card */
+.qbank {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.qbank-group-header {
+  margin: 32px 0 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.qbank-group-header:first-child {
+  margin-top: 0;
+}
+
+.qbank-group-num {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 36px;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.qbank-group-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 22px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.qbank-group-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-left: auto;
+}
+
+.question-card {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.question-card:hover {
+  border-color: var(--rule-strong);
+}
+
+.question-card.answered.correct {
+  border-color: var(--sage);
+}
+
+.question-card.answered.incorrect {
+  border-color: var(--coral);
+}
+
+.question-header {
+  padding: 24px 28px 16px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.question-num {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  min-width: 56px;
+  padding-top: 4px;
+}
+
+.question-num.check {
+  color: var(--teal);
+  font-size: 24px;
+}
+
+.question-num .q-prefix {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  display: block;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+}
+
+.question-body {
+  flex: 1;
+}
+
+.question-scenario {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 10px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.scenario-tag {
+  background: rgba(232,176,78,0.08);
+  color: var(--accent);
+  padding: 3px 10px;
+  border-radius: 2px;
+  border: 1px solid rgba(232,176,78,0.2);
+}
+
+.question-text {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.question-text code {
+  font-family: var(--mono);
+  font-size: 14px;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--accent);
+  border: 1px solid var(--rule);
+}
+
+/* Options */
+.options-list {
+  list-style: none;
+  padding: 0 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px 18px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--bg);
+}
+
+.option-item:hover {
+  border-color: var(--rule-strong);
+  background: rgba(232,176,78,0.03);
+}
+
+.option-letter {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  min-width: 24px;
+  padding-top: 1px;
+}
+
+.option-text {
+  font-size: 14.5px;
+  color: var(--ink-muted);
+  line-height: 1.55;
+  flex: 1;
+}
+
+.option-text code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--bg-elevated);
+  padding: 1px 5px;
+  border-radius: 2px;
+  color: var(--accent);
+}
+
+/* Selected state */
+.option-item.selected {
+  border-color: var(--accent);
+  background: rgba(232,176,78,0.06);
+}
+
+.option-item.selected .option-letter {
+  color: var(--accent);
+}
+
+/* Reveal state — showing answer */
+.question-card.revealed .option-item {
+  cursor: default;
+}
+
+.question-card.revealed .option-item:hover {
+  background: var(--bg);
+  border-color: var(--rule);
+}
+
+.question-card.revealed .option-item.correct {
+  border-color: var(--sage);
+  background: rgba(138,169,120,0.08);
+}
+
+.question-card.revealed .option-item.correct .option-letter,
+.question-card.revealed .option-item.correct .option-text {
+  color: var(--ink);
+}
+
+.question-card.revealed .option-item.correct::after {
+  content: '✓';
+  font-family: var(--serif);
+  font-weight: 600;
+  color: var(--sage);
+  font-size: 18px;
+  margin-left: auto;
+}
+
+.question-card.revealed .option-item.selected.incorrect {
+  border-color: var(--coral);
+  background: rgba(224,123,90,0.08);
+}
+
+.question-card.revealed .option-item.selected.incorrect::after {
+  content: '✗';
+  font-family: var(--serif);
+  font-weight: 600;
+  color: var(--coral);
+  font-size: 18px;
+  margin-left: auto;
+}
+
+/* Reveal button */
+.question-actions {
+  padding: 0 28px 20px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.reveal-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background: transparent;
+  color: var(--ink-muted);
+  border: 1px solid var(--rule-strong);
+  padding: 8px 16px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reveal-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.reveal-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Rationale block */
+.rationale {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+  background: var(--bg-elevated);
+}
+
+.question-card.revealed .rationale {
+  max-height: 800px;
+}
+
+.rationale-inner {
+  padding: 24px 28px;
+  border-top: 1px solid var(--rule);
+}
+
+.rationale-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--sage);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.rationale-text {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  margin-bottom: 14px;
+  font-style: italic;
+}
+
+.rationale-text strong {
+  color: var(--ink);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.rationale-distractors {
+  margin-top: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-size: 13.5px;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+.rationale-distractors strong {
+  color: var(--coral);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  margin-right: 6px;
+}
+
+/* Score panel — sticky bottom */
+.score-panel {
+  position: sticky;
+  bottom: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  padding: 20px 28px;
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+.score-panel.hidden {
+  display: none;
+}
+
+.score-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.score-value {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.score-value.good { color: var(--sage); }
+.score-value.bad { color: var(--coral); }
+
+.score-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+.score-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.score-action-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background: transparent;
+  color: var(--ink-muted);
+  border: 1px solid var(--rule-strong);
+  padding: 8px 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.score-action-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.score-action-btn.primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.score-action-btn.primary:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-soft);
+  color: var(--bg);
+}
+
+@media (max-width: 880px) {
+  .exam-intro { grid-template-columns: 1fr; gap: 24px; }
+  .question-header { flex-direction: column; gap: 12px; }
+  .question-num { font-size: 24px; }
+  .options-list { padding: 0 20px 16px; }
+  .option-item { padding: 12px 14px; gap: 10px; }
+  .score-panel { gap: 16px; padding: 16px 20px; }
+  .score-actions { width: 100%; }
+}
+</style>
+<link rel="stylesheet" href="assets/css/domain-override.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="container masthead-inner">
+    <div>
+      <div class="eyebrow">Claude Certified Architect — Foundations</div>
+      <div class="brand">Domain <em class="ampersand">I</em> · The Architect's Companion</div>
+    </div>
+    <nav class="toc">
+      <a href="#task-1">Loops</a>
+      <a href="#task-2">Orchestration</a>
+      <a href="#task-3">Spawning</a>
+      <a href="#task-4">Handoff</a>
+      <a href="#task-5">Hooks</a>
+      <a href="#task-6">Decomposition</a>
+      <a href="#task-7">Sessions</a>
+      <a href="#practice" style="color: var(--accent);">Practice</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-meta">A field manual · Volume One</div>
+        <h1>Agentic <em>Architecture</em><br>& Orchestration.</h1>
+        <p class="hero-lede">Seven task statements, the production scenarios behind them, and the precise traps the exam will set against you. The heaviest-weighted domain — and the one where most candidates lose their points.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-value"><span class="pct">27</span>%</div>
+          <div class="stat-label">of total exam score</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">7</div>
+          <div class="stat-label">task statements</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">720</div>
+          <div class="stat-label">scaled passing mark</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TASK 1: AGENTIC LOOPS ============ -->
+<section class="task-section" id="task-1">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">01<span class="num-suffix">.1</span></div>
+      <div class="section-header-text">
+        <div class="section-tag">Task statement 1.1 · Agentic loops</div>
+        <h2 class="section-title">The lifecycle, governed by a single signal.</h2>
+        <div class="section-meaning">
+          On the exam: every question about loop control comes back to <code>stop_reason</code>. If you can recognize the three anti-patterns and explain why tool results must be appended, you'll get every Task 1.1 question right.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-body">
+      <div>
+        <h3 class="subhead">What an agentic loop actually is</h3>
+        <p>An LLM by itself only produces text. To make it useful in production, we give it tools — but the model doesn't actually execute them. It <strong>says</strong> "I want to call this tool with these inputs." Your code runs the tool, returns the result, and the model decides what to do next. This back-and-forth is the agentic loop.</p>
+
+        <h4 class="minor">The control signal is structured</h4>
+        <ul class="bullets">
+          <li><code>stop_reason = "tool_use"</code> — the model wants something done. Run the tool, append the result, loop again.</li>
+          <li><code>stop_reason = "end_turn"</code> — the model is finished. Exit the loop, return the response.</li>
+          <li>Tool results <strong>must</strong> be appended to the message history before the next API call. Without that, the model is reasoning blind on the next turn.</li>
+        </ul>
+      </div>
+
+      <!-- INTERACTIVE DIAGRAM 1 -->
+      <div class="diagram-block">
+        <div class="diagram-header">
+          <div class="diagram-title">Figure 1.1 · The Agentic Loop</div>
+          <button class="diagram-toggle" onclick="resetDiagram('loop')">Reset</button>
+        </div>
+        <div class="diagram-svg-wrap">
+          <svg id="loop-diagram" viewBox="0 0 720 360" width="720" height="360">
+            <defs>
+              <marker id="arrow-loop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+              </marker>
+            </defs>
+            <!-- Nodes -->
+            <g class="node-group" data-step="1" data-narration="Step 1 — User submits a request. App code packages it into a Messages API call to Claude.">
+              <rect class="node-rect" x="20" y="150" width="140" height="70"/>
+              <text class="node-title" x="90" y="180">User</text>
+              <text class="node-sub" x="90" y="200">submits request</text>
+            </g>
+            <g class="node-group" data-step="2" data-narration="Step 2 — App code sends the request to Claude with the available tools. The loop begins here.">
+              <rect class="node-rect accent" x="200" y="150" width="160" height="70"/>
+              <text class="node-title" x="280" y="180">App code</text>
+              <text class="node-sub" x="280" y="200">runs the loop</text>
+            </g>
+            <g class="node-group" data-step="3" data-narration="Step 3 — Claude returns a response with stop_reason. This is the structured signal that drives all control flow.">
+              <rect class="node-rect" x="400" y="150" width="160" height="70"/>
+              <text class="node-title" x="480" y="180">Claude</text>
+              <text class="node-sub" x="480" y="200">stop_reason set</text>
+            </g>
+            <g class="node-group" data-step="4" data-narration="Step 4a — On stop_reason='tool_use', execute the tool, append the result to messages, and loop back.">
+              <rect class="node-rect teal" x="220" y="40" width="140" height="60"/>
+              <text class="node-title" x="290" y="68">tool_use</text>
+              <text class="node-sub" x="290" y="86">append, loop</text>
+            </g>
+            <g class="node-group" data-step="5" data-narration="Step 4b — On stop_reason='end_turn', the agent is finished. Exit the loop and return the response.">
+              <rect class="node-rect sage" x="600" y="150" width="100" height="70"/>
+              <text class="node-title" x="650" y="180">end_turn</text>
+              <text class="node-sub" x="650" y="200">exit</text>
+            </g>
+            <g class="node-group" data-step="6" data-narration="Step 5 — The response reaches the user. The loop terminated naturally on stop_reason, not on iteration count or text content.">
+              <rect class="node-rect" x="240" y="270" width="240" height="60"/>
+              <text class="node-title" x="360" y="298">Response to user</text>
+              <text class="node-sub" x="360" y="316">loop complete</text>
+            </g>
+            <!-- Lines -->
+            <line class="flow-line" x1="160" y1="185" x2="195" y2="185" marker-end="url(#arrow-loop)" color="#3a3429"/>
+            <line class="flow-line" x1="360" y1="185" x2="395" y2="185" marker-end="url(#arrow-loop)" color="#3a3429"/>
+            <path class="flow-line" d="M 480 150 Q 480 100 360 75" marker-end="url(#arrow-loop)" color="#3a3429"/>
+            <path class="flow-line" d="M 220 75 Q 100 75 100 150" marker-end="url(#arrow-loop)" color="#3a3429" stroke-dasharray="4 4"/>
+            <line class="flow-line" x1="560" y1="185" x2="595" y2="185" marker-end="url(#arrow-loop)" color="#3a3429"/>
+            <path class="flow-line" d="M 650 220 Q 650 285 480 295" marker-end="url(#arrow-loop)" color="#3a3429"/>
+            <text class="flow-label" x="290" y="135">stop_reason</text>
+            <text class="flow-label" x="160" y="120">loop back</text>
+          </svg>
+        </div>
+        <div class="diagram-controls">
+          <button class="diagram-step-btn" data-loop-step="1">1 · Request</button>
+          <button class="diagram-step-btn" data-loop-step="2">2 · Send</button>
+          <button class="diagram-step-btn" data-loop-step="3">3 · Inspect</button>
+          <button class="diagram-step-btn" data-loop-step="4">4a · tool_use</button>
+          <button class="diagram-step-btn" data-loop-step="5">4b · end_turn</button>
+          <button class="diagram-step-btn" data-loop-step="6">5 · Reply</button>
+        </div>
+        <div class="diagram-narration" id="loop-narration">Hover over any node — or click the steps below — to walk the loop. The control signal is <code>stop_reason</code>, never text content.</div>
+      </div>
+
+      <!-- EXAM TRAPS -->
+      <div class="traps-block">
+        <div class="traps-header">
+          <span class="warn-icon">!</span>
+          <h4>Anti-patterns &amp; exam traps</h4>
+          <span class="traps-sub">Click each to expand</span>
+        </div>
+        <ul class="traps-list">
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">01</div>
+              <div class="trap-content">
+                <div class="trap-wrong">Parsing natural language for completion signals.</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Searching the response text for phrases like "anything else?" is fragile. The model can return text alongside a tool call in the same response — your code would terminate while it's mid-task.</div>
+                  <div class="trap-fix">Inspect <code>stop_reason</code> directly. <code>"end_turn"</code> means done; <code>"tool_use"</code> means continue.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">02</div>
+              <div class="trap-content">
+                <div class="trap-wrong">Iteration caps as the primary stopping mechanism.</div>
+                <div class="trap-detail">
+                  <div class="trap-why">An iteration cap is a safety net against runaway loops, not control flow. If your loop terminates because it hit <code>max_iterations</code>, that's a bug — not a feature.</div>
+                  <div class="trap-fix">Use the cap as a guardrail. Let <code>stop_reason == "end_turn"</code> drive normal termination.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">03</div>
+              <div class="trap-content">
+                <div class="trap-wrong">Treating text content as a completion indicator.</div>
+                <div class="trap-detail">
+                  <div class="trap-why">"Claude returned some text, so we must be done" is a common but wrong inference. Text can accompany a tool call. Only <code>stop_reason</code> is the structured, guaranteed signal.</div>
+                  <div class="trap-fix">Always inspect <code>stop_reason</code> explicitly before deciding to terminate.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">04</div>
+              <div class="trap-content">
+                <div class="trap-wrong">Pre-configured decision trees instead of model-driven decisions.</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Hand-coded routing (<code>if user_says_X then call_Y</code>) replaces the agent with a chatbot. The whole point of the loop is that Claude reasons about which tool to call.</div>
+                  <div class="trap-fix">Provide good tool descriptions and let the model select. Reserve hard routing for compliance gates (Task 1.5).</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PULL QUOTE ============ -->
+<div class="pull-quote">
+  <div class="container">
+    <div class="pull-quote-text">"Be explicit about <em>what crosses boundaries</em>. Whether the receiver is a subagent, a future session, or a human — they only know what you put in front of them."</div>
+    <div class="pull-quote-attr">— The unifying principle of Domain I</div>
+  </div>
+</div>
+
+<!-- ============ TASK 2: ORCHESTRATION ============ -->
+<section class="task-section" id="task-2">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">01<span class="num-suffix">.2</span></div>
+      <div class="section-header-text">
+        <div class="section-tag">Task statement 1.2 · Multi-agent orchestration</div>
+        <h2 class="section-title">Hub and spoke. Always hub and spoke.</h2>
+        <div class="section-meaning">
+          On the exam: when output has gaps, look at the coordinator's decomposition first. The most-tested concept is that subagents have <em>no shared memory</em> with the coordinator or each other.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-body">
+      <div>
+        <h3 class="subhead">The architecture</h3>
+        <p>One coordinator at the centre. Specialized subagents around it. <strong>All communication routes through the coordinator</strong> — subagents never speak directly to each other. This isn't a design preference; it's how you preserve observability, consistent error handling, and controlled information flow.</p>
+
+        <h4 class="minor">Coordinator responsibilities, in order</h4>
+        <ul class="bullets">
+          <li><strong>Task decomposition.</strong> Break the request into subtasks. This is where most multi-agent failures originate.</li>
+          <li><strong>Subagent selection.</strong> Decide which subagents to invoke based on the query. Not every request needs the full pipeline.</li>
+          <li><strong>Context passing.</strong> Build each subagent's prompt with everything it needs — they inherit nothing.</li>
+          <li><strong>Result aggregation.</strong> Merge findings, evaluate gaps, re-delegate if coverage is insufficient.</li>
+        </ul>
+      </div>
+
+      <!-- DIAGRAM 2: HUB AND SPOKE -->
+      <div class="diagram-block">
+        <div class="diagram-header">
+          <div class="diagram-title">Figure 1.2 · Hub-and-spoke coordinator</div>
+          <button class="diagram-toggle" onclick="cycleHub()">Animate flow</button>
+        </div>
+        <div class="diagram-svg-wrap">
+          <svg id="hub-diagram" viewBox="0 0 720 440" width="720" height="440">
+            <defs>
+              <marker id="arrow-hub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+              </marker>
+            </defs>
+            <g class="node-group highlight" data-step="hub" data-narration="The coordinator decomposes the task, decides which subagents to invoke, passes explicit context, and aggregates results.">
+              <rect class="node-rect accent" x="280" y="180" width="160" height="80"/>
+              <text class="node-title" x="360" y="210">Coordinator</text>
+              <text class="node-sub" x="360" y="232">decompose · route</text>
+              <text class="node-sub" x="360" y="246">aggregate · evaluate</text>
+            </g>
+            <g class="node-group" data-step="search" data-narration="Web search subagent — receives a focused query and returns sources with URLs and dates. Has no memory of the parent conversation.">
+              <rect class="node-rect teal" x="40" y="40" width="180" height="60"/>
+              <text class="node-title" x="130" y="68">Web search</text>
+              <text class="node-sub" x="130" y="86">find sources</text>
+            </g>
+            <g class="node-group" data-step="docs" data-narration="Document analysis subagent — receives the documents to analyze (in its prompt) and returns structured claims with attribution.">
+              <rect class="node-rect teal" x="500" y="40" width="180" height="60"/>
+              <text class="node-title" x="590" y="68">Doc analysis</text>
+              <text class="node-sub" x="590" y="86">extract claims</text>
+            </g>
+            <g class="node-group" data-step="synth" data-narration="Synthesis subagent — receives ALL prior findings (passed explicitly) and merges them. Cannot see what other subagents did unless coordinator includes it.">
+              <rect class="node-rect teal" x="40" y="340" width="180" height="60"/>
+              <text class="node-title" x="130" y="368">Synthesis</text>
+              <text class="node-sub" x="130" y="386">combine findings</text>
+            </g>
+            <g class="node-group" data-step="report" data-narration="Report generation subagent — formats the final output. Receives the synthesized content explicitly in its prompt.">
+              <rect class="node-rect teal" x="500" y="340" width="180" height="60"/>
+              <text class="node-title" x="590" y="368">Report gen</text>
+              <text class="node-sub" x="590" y="386">format output</text>
+            </g>
+            <!-- bidirectional lines -->
+            <line class="flow-line" id="line-search-out" x1="290" y1="195" x2="220" y2="100" marker-end="url(#arrow-hub)" color="#3a3429"/>
+            <line class="flow-line" id="line-search-in" x1="220" y1="100" x2="290" y2="195" marker-end="url(#arrow-hub)" color="#3a3429" stroke-dasharray="4 4"/>
+            <line class="flow-line" id="line-docs-out" x1="430" y1="195" x2="500" y2="100" marker-end="url(#arrow-hub)" color="#3a3429"/>
+            <line class="flow-line" id="line-docs-in" x1="500" y1="100" x2="430" y2="195" marker-end="url(#arrow-hub)" color="#3a3429" stroke-dasharray="4 4"/>
+            <line class="flow-line" id="line-synth-out" x1="290" y1="245" x2="220" y2="340" marker-end="url(#arrow-hub)" color="#3a3429"/>
+            <line class="flow-line" id="line-synth-in" x1="220" y1="340" x2="290" y2="245" marker-end="url(#arrow-hub)" color="#3a3429" stroke-dasharray="4 4"/>
+            <line class="flow-line" id="line-report-out" x1="430" y1="245" x2="500" y2="340" marker-end="url(#arrow-hub)" color="#3a3429"/>
+            <line class="flow-line" id="line-report-in" x1="500" y1="340" x2="430" y2="245" marker-end="url(#arrow-hub)" color="#3a3429" stroke-dasharray="4 4"/>
+            <text class="flow-label" x="360" y="160">No subagent-to-subagent arrows</text>
+          </svg>
+        </div>
+        <div class="diagram-narration" id="hub-narration">Click "Animate flow" to walk through how a request fans out and aggregates back. Hover any node for its role.</div>
+      </div>
+
+      <h3 class="subhead" style="margin-top: 40px;">The narrow decomposition trap</h3>
+      <p>A research request: <em>"impact of AI on creative industries."</em> The coordinator decomposes it into <code>AI in digital art</code>, <code>AI in graphic design</code>, <code>AI in photography</code>. Every subagent executes correctly. The final report misses music, writing, and film entirely.</p>
+      <p>This is the canonical exam scenario. Distractor answers will blame the synthesis agent or the search agent. <strong>The bug is in the decomposition</strong> — and decomposition is the coordinator's job. When output has gaps, look at the coordinator's logs first.</p>
+
+      <div class="traps-block">
+        <div class="traps-header">
+          <span class="warn-icon">!</span>
+          <h4>Anti-patterns &amp; exam traps</h4>
+          <span class="traps-sub">Click each to expand</span>
+        </div>
+        <ul class="traps-list">
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">01</div>
+              <div class="trap-content">
+                <div class="trap-wrong">Blaming downstream subagents for output gaps.</div>
+                <div class="trap-detail">
+                  <div class="trap-why">If the coordinator's logs show narrow subtask assignments, the subagents executed correctly within their scope. Adding "coverage gap detection" to synthesis won't fix the missing topics.</div>
+                  <div class="trap-fix">Investigate the coordinator's decomposition. Use goal-based prompts, not procedural ones, so it adapts.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">02</div>
+              <div class="trap-content">
+                <div class="trap-wrong">Direct subagent-to-subagent communication.</div>
+                <div class="trap-detail">
+                  <div class="trap-why">It breaks observability, error handling, and information flow control. You lose the central audit point that makes multi-agent systems debuggable.</div>
+                  <div class="trap-fix">Route every byte through the coordinator. No exceptions.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">03</div>
+              <div class="trap-content">
+                <div class="trap-wrong">Always running the full pipeline.</div>
+                <div class="trap-detail">
+                  <div class="trap-why">A simple fact-check doesn't need synthesis and report generation. Forcing every query through every subagent wastes tokens and degrades results when subagents process irrelevant context.</div>
+                  <div class="trap-fix">Let the coordinator dynamically select subagents based on query complexity.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">04</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Subagents inherit the coordinator's context."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">They don't. Ever. Each subagent runs as a separate Claude instance with an empty conversation. Whatever isn't in its prompt doesn't exist for it.</div>
+                  <div class="trap-fix">Build every subagent's prompt with explicit content, metadata, and goal. Treat it as a stranger.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TASK 3: SPAWNING ============ -->
+<section class="task-section" id="task-3">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">01<span class="num-suffix">.3</span></div>
+      <div class="section-header-text">
+        <div class="section-tag">Task statement 1.3 · Spawning &amp; context passing</div>
+        <h2 class="section-title">The mechanics of delegation.</h2>
+        <div class="section-meaning">
+          On the exam: questions about parallel spawning, <code>fork_session</code>, and the <code>Task</code> tool's <code>allowedTools</code> requirement. Memorize that parallel spawning happens within a single response.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-body">
+      <div>
+        <h3 class="subhead">The Task tool</h3>
+        <p>Subagents are spawned by the coordinator calling a tool named <code>Task</code>. From the coordinator's perspective, spawning a subagent looks identical to calling any other tool. <strong>The coordinator's <code>allowedTools</code> must include <code>"Task"</code></strong> — without it, the coordinator literally cannot delegate.</p>
+
+        <h4 class="minor">Three slots in every subagent prompt</h4>
+        <ul class="bullets">
+          <li><strong>Content</strong> — the actual data: articles, search results, document excerpts.</li>
+          <li><strong>Metadata</strong> — source URLs, document names, page numbers, publication dates. Kept separate from content to preserve attribution through synthesis.</li>
+          <li><strong>Goal &amp; quality criteria</strong> — what good output looks like. Goal-based prompts let subagents adapt; procedural prompts lock them into fixed sequences.</li>
+        </ul>
+      </div>
+
+      <!-- DIAGRAM 3: PARALLEL SPAWNING -->
+      <div class="diagram-block">
+        <div class="diagram-header">
+          <div class="diagram-title">Figure 1.3 · Sequential vs parallel spawning</div>
+          <button class="diagram-toggle" onclick="toggleSpawn()">Toggle mode</button>
+        </div>
+        <div class="diagram-svg-wrap">
+          <svg id="spawn-diagram" viewBox="0 0 720 380" width="720" height="380">
+            <defs>
+              <marker id="arrow-spawn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+              </marker>
+            </defs>
+            <text class="flow-label" x="360" y="30" style="font-size: 12px; fill: var(--ink-muted);" id="spawn-mode-label">Mode: SEQUENTIAL · 90s total</text>
+            <g class="node-group">
+              <rect class="node-rect accent" x="280" y="60" width="160" height="60"/>
+              <text class="node-title" x="360" y="88">Coordinator</text>
+              <text class="node-sub" x="360" y="106">single response</text>
+            </g>
+            <g class="node-group" id="spawn-a">
+              <rect class="node-rect teal" x="40" y="200" width="180" height="60"/>
+              <text class="node-title" x="130" y="228">Web search</text>
+              <text class="node-sub" x="130" y="246" id="spawn-time-a">runs · 30s</text>
+            </g>
+            <g class="node-group" id="spawn-b">
+              <rect class="node-rect teal" x="270" y="200" width="180" height="60"/>
+              <text class="node-title" x="360" y="228">Internal docs</text>
+              <text class="node-sub" x="360" y="246" id="spawn-time-b">waits · then 30s</text>
+            </g>
+            <g class="node-group" id="spawn-c">
+              <rect class="node-rect teal" x="500" y="200" width="180" height="60"/>
+              <text class="node-title" x="590" y="228">Statistics</text>
+              <text class="node-sub" x="590" y="246" id="spawn-time-c">waits · then 30s</text>
+            </g>
+            <line class="flow-line" id="spawn-line-a" x1="320" y1="120" x2="160" y2="200" marker-end="url(#arrow-spawn)" color="#3a3429"/>
+            <line class="flow-line" id="spawn-line-b" x1="360" y1="120" x2="360" y2="200" marker-end="url(#arrow-spawn)" color="#3a3429"/>
+            <line class="flow-line" id="spawn-line-c" x1="400" y1="120" x2="555" y2="200" marker-end="url(#arrow-spawn)" color="#3a3429"/>
+            <text class="flow-label" x="360" y="320" id="spawn-mode-detail" style="font-size: 11px;">Tool calls emitted across separate turns. Each subagent waits.</text>
+          </svg>
+        </div>
+        <div class="diagram-narration" id="spawn-narration">Click "Toggle mode" to compare sequential vs parallel spawning. The fix: emit multiple <code>Task</code> tool calls in a <strong>single coordinator response</strong>.</div>
+      </div>
+
+      <h3 class="subhead" style="margin-top: 40px;">fork_session — divergent exploration</h3>
+      <p>Different mechanism, different use case. <code>fork_session</code> creates an independent branch from a shared baseline. Both branches start with the full prior context, then diverge.</p>
+      <p>The classic case: you've spent 20 minutes analyzing a codebase. Now you want to evaluate two refactoring approaches without redoing the analysis. Fork from the analysis baseline; one branch tries Approach A, the other Approach B; compare results.</p>
+
+      <table class="elegant-table">
+        <thead>
+          <tr><th>Mechanism</th><th>Purpose</th><th>Context relationship</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Task</td>
+            <td>Delegate specialized work</td>
+            <td>Subagent gets only what coordinator passes</td>
+          </tr>
+          <tr>
+            <td>fork_session</td>
+            <td>Explore divergent approaches</td>
+            <td>Both forks share the entire baseline, then diverge</td>
+          </tr>
+          <tr>
+            <td>--resume</td>
+            <td>Continue prior work</td>
+            <td>Same single thread, picked up later</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="traps-block">
+        <div class="traps-header">
+          <span class="warn-icon">!</span>
+          <h4>Anti-patterns &amp; exam traps</h4>
+          <span class="traps-sub">Click each to expand</span>
+        </div>
+        <ul class="traps-list">
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">01</div>
+              <div class="trap-content">
+                <div class="trap-wrong">Sequential <code>Task</code> calls across separate turns when latency matters.</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Tool calls emitted in different turns execute one after another. Three 30-second subagents = 90 seconds.</div>
+                  <div class="trap-fix">Emit multiple <code>Task</code> tool calls in a <strong>single coordinator response</strong>. Your code runs them concurrently.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">02</div>
+              <div class="trap-content">
+                <div class="trap-wrong">Forgetting <code>"Task"</code> in <code>allowedTools</code>.</div>
+                <div class="trap-detail">
+                  <div class="trap-why">If <code>Task</code> isn't in the coordinator's allow-list, it cannot spawn anything. The exam will describe a coordinator that "isn't delegating" — this is the answer.</div>
+                  <div class="trap-fix">Add <code>"Task"</code> to the coordinator's <code>allowedTools</code>. Subagents typically should NOT have it (no recursive spawning).</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">03</div>
+              <div class="trap-content">
+                <div class="trap-wrong">Using <code>fork_session</code> to delegate to specialists.</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Wrong tool. Fork is for divergent exploration from a shared baseline; Task is for delegation. They're not interchangeable.</div>
+                  <div class="trap-fix">Task → delegation. fork_session → parallel exploration of alternatives.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">04</div>
+              <div class="trap-content">
+                <div class="trap-wrong">Procedural prompts dictating step-by-step subagent behavior.</div>
+                <div class="trap-detail">
+                  <div class="trap-why">"Step 1: search X. Step 2: filter by Y. Step 3..." locks the subagent into a fixed sequence that can't recover from edge cases.</div>
+                  <div class="trap-fix">Specify the goal and quality criteria. Let the subagent decide how to achieve them.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TASK 4: WORKFLOW ENFORCEMENT ============ -->
+<section class="task-section" id="task-4">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">01<span class="num-suffix">.4</span></div>
+      <div class="section-header-text">
+        <div class="section-tag">Task statement 1.4 · Workflow enforcement &amp; handoff</div>
+        <h2 class="section-title">Probabilistic guidance · deterministic gates.</h2>
+        <div class="section-meaning">
+          On the exam: when failure has financial, security, or compliance consequences, the answer is programmatic enforcement — not a better prompt. Memorize the human-handoff field list.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-body">
+      <div>
+        <h3 class="subhead">The decision rule</h3>
+        <p>One sentence. Memorize it. <strong>Probabilistic compliance is fine for guidance. Deterministic compliance requires programmatic enforcement.</strong></p>
+        <p>Said another way: prompts are <em>suggestions</em> the model usually follows. Hooks are <em>gates</em> the model cannot bypass.</p>
+
+        <div class="dual">
+          <div class="dual-card wrong">
+            <div class="dual-card-tag">Probabilistic · WRONG for compliance</div>
+            <h5>Prompt instruction</h5>
+            <p>"Always call <code>get_customer</code> before any order operations."</p>
+            <div class="code-block"><span class="comment"># 12% failure rate in production</span>
+<span class="keyword">if</span> user_request:
+    <span class="comment"># model usually follows the instruction</span>
+    <span class="comment"># sometimes skips it</span>
+    <span class="comment"># cost: misidentified accounts, wrong refunds</span></div>
+          </div>
+          <div class="dual-card right">
+            <div class="dual-card-tag">Deterministic · CORRECT for compliance</div>
+            <h5>Pre-tool-use hook</h5>
+            <p>Hook intercepts <code>process_refund</code> calls before they execute.</p>
+            <div class="code-block"><span class="keyword">def</span> <span class="accent">pre_tool_use_hook</span>(tool, args, history):
+    <span class="keyword">if</span> tool <span class="keyword">in</span> sensitive_ops:
+        <span class="keyword">if</span> <span class="keyword">not</span> verified_id_in(history):
+            <span class="keyword">return</span> BLOCK
+    <span class="keyword">return</span> ALLOW  <span class="comment"># 0% failure rate</span></div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="subhead">Structured handoff to humans</h3>
+      <p>The other half of this task: when the agent escalates, <strong>the human reviewer does not have access to the conversation transcript</strong>. They see only what the AI compiled into a structured handoff. Six fields, every time.</p>
+
+      <!-- DIAGRAM 4: HANDOFF -->
+      <div class="diagram-block">
+        <div class="diagram-header">
+          <div class="diagram-title">Figure 1.4 · The structured handoff</div>
+          <button class="diagram-toggle" onclick="walkHandoff()">Walk fields</button>
+        </div>
+        <div class="diagram-svg-wrap">
+          <svg id="handoff-diagram" viewBox="0 0 720 400" width="720" height="400">
+            <defs>
+              <marker id="arrow-handoff" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+              </marker>
+            </defs>
+            <g class="node-group">
+              <rect class="node-rect accent" x="20" y="170" width="140" height="60"/>
+              <text class="node-title" x="90" y="198">AI agent</text>
+              <text class="node-sub" x="90" y="216">decides to escalate</text>
+            </g>
+            <g class="node-group" id="handoff-payload">
+              <rect class="node-rect" x="220" y="40" width="280" height="320"/>
+              <text class="node-title" x="360" y="68" style="font-size: 13px;">Handoff payload</text>
+              <line x1="240" y1="80" x2="480" y2="80" stroke="var(--rule-strong)" stroke-width="1"/>
+            </g>
+            <g class="node-group" id="hand-1" data-narration="Customer ID — verified, from get_customer. Without this, the human can't pull up the account.">
+              <rect class="node-rect" x="240" y="95" width="240" height="36"/>
+              <text class="node-title" x="360" y="118" style="font-size: 12px;">customer_id</text>
+            </g>
+            <g class="node-group" id="hand-2" data-narration="Conversation summary — what the customer asked. Replaces the transcript the human can't see.">
+              <rect class="node-rect" x="240" y="135" width="240" height="36"/>
+              <text class="node-title" x="360" y="158" style="font-size: 12px;">conversation_summary</text>
+            </g>
+            <g class="node-group" id="hand-3" data-narration="Investigation results — what the agent found. Tool outputs, account state, prior tickets.">
+              <rect class="node-rect" x="240" y="175" width="240" height="36"/>
+              <text class="node-title" x="360" y="198" style="font-size: 12px;">investigation_results</text>
+            </g>
+            <g class="node-group" id="hand-4" data-narration="Root cause — the agent's best understanding of why this is happening.">
+              <rect class="node-rect" x="240" y="215" width="240" height="36"/>
+              <text class="node-title" x="360" y="238" style="font-size: 12px;">root_cause</text>
+            </g>
+            <g class="node-group" id="hand-5" data-narration="Recommended action — what the agent thinks should be done. Refund $X, replace item, etc.">
+              <rect class="node-rect" x="240" y="255" width="240" height="36"/>
+              <text class="node-title" x="360" y="278" style="font-size: 12px;">recommended_action</text>
+            </g>
+            <g class="node-group" id="hand-6" data-narration="Reason for escalation — policy gap, customer demand, or agent's capability limit.">
+              <rect class="node-rect" x="240" y="295" width="240" height="36"/>
+              <text class="node-title" x="360" y="318" style="font-size: 12px;">reason_for_escalation</text>
+            </g>
+            <g class="node-group">
+              <rect class="node-rect coral" x="560" y="170" width="140" height="60"/>
+              <text class="node-title" x="630" y="198">Human</text>
+              <text class="node-sub" x="630" y="216">no transcript access</text>
+            </g>
+            <line class="flow-line" x1="160" y1="200" x2="218" y2="200" marker-end="url(#arrow-handoff)" color="#3a3429"/>
+            <line class="flow-line" x1="500" y1="200" x2="558" y2="200" marker-end="url(#arrow-handoff)" color="#3a3429"/>
+          </svg>
+        </div>
+        <div class="diagram-narration" id="handoff-narration">Click "Walk fields" to step through each required handoff field. Click any field directly for its purpose.</div>
+      </div>
+
+      <div class="traps-block">
+        <div class="traps-header">
+          <span class="warn-icon">!</span>
+          <h4>Anti-patterns &amp; exam traps</h4>
+          <span class="traps-sub">Click each to expand</span>
+        </div>
+        <ul class="traps-list">
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">01</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Improve the prompt to enforce ordering."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">When the question describes financial, security, or compliance failures with a non-zero failure rate, prompt-improvement options are distractors. They reduce the rate but never to zero.</div>
+                  <div class="trap-fix">Programmatic enforcement (pre-tool-use hook) is the answer. Prompts can stay for naturalness — but the hook is the safety net.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">02</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Add few-shot examples showing correct sequencing."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Same trap as #1. Few-shot examples are probabilistic. They help, but never produce guaranteed compliance.</div>
+                  <div class="trap-fix">For zero-failure requirements: hooks. Few-shot is for ambiguous-case handling, not compliance gates.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">03</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"The human agent will see the conversation history."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">A baked-in distractor assumption. The human gets only the structured handoff payload — nothing else.</div>
+                  <div class="trap-fix">Compile all six fields explicitly: customer_id, conversation_summary, investigation_results, root_cause, recommended_action, reason_for_escalation.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">04</div>
+              <div class="trap-content">
+                <div class="trap-wrong">Handling multi-concern requests one at a time across turns.</div>
+                <div class="trap-detail">
+                  <div class="trap-why">A customer with three concerns shouldn't get a sequential investigation. State gets lost; resolution becomes inconsistent.</div>
+                  <div class="trap-fix">Decompose into distinct items, investigate in parallel within a single turn, synthesize a unified resolution.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TASK 5: HOOKS ============ -->
+<section class="task-section" id="task-5">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">01<span class="num-suffix">.5</span></div>
+      <div class="section-header-text">
+        <div class="section-tag">Task statement 1.5 · Agent SDK hooks</div>
+        <h2 class="section-title">Two hook patterns. Two distinct jobs.</h2>
+        <div class="section-meaning">
+          On the exam: pre-tool-use blocks outgoing calls (compliance), PostToolUse transforms incoming results (normalization). Don't confuse the directions.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-body">
+      <div>
+        <h3 class="subhead">The two patterns</h3>
+        <p><strong>Pre-tool-use hook</strong> fires <em>before</em> a tool runs. Inspects the proposed tool call and decides: allow, block, or modify. Used for compliance gates — refund thresholds, identity prerequisites, GDPR consent.</p>
+        <p><strong>PostToolUse hook</strong> fires <em>after</em> a tool runs but <em>before</em> the model sees the result. Transforms the tool's output before it enters conversation history. Used for data normalization across heterogeneous backends.</p>
+      </div>
+
+      <!-- DIAGRAM 5: HOOK PATTERNS -->
+      <div class="diagram-block">
+        <div class="diagram-header">
+          <div class="diagram-title">Figure 1.5 · Hook positions in the loop</div>
+          <button class="diagram-toggle" onclick="hoverHook('pre')">Show pre-hook</button>
+          <button class="diagram-toggle" onclick="hoverHook('post')">Show post-hook</button>
+        </div>
+        <div class="diagram-svg-wrap">
+          <svg id="hook-diagram" viewBox="0 0 720 460" width="720" height="460">
+            <defs>
+              <marker id="arrow-hook" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+              </marker>
+            </defs>
+            <g class="node-group">
+              <rect class="node-rect accent" x="40" y="200" width="140" height="60"/>
+              <text class="node-title" x="110" y="228">Claude</text>
+              <text class="node-sub" x="110" y="246">reasons, decides</text>
+            </g>
+            <g class="node-group" id="hook-pre">
+              <rect class="node-rect coral" x="270" y="60" width="200" height="80"/>
+              <text class="node-title" x="370" y="90">Pre-tool-use hook</text>
+              <text class="node-sub" x="370" y="110">block refunds &gt; $500</text>
+              <text class="node-sub" x="370" y="126">allow · block · modify</text>
+            </g>
+            <g class="node-group" id="hook-post">
+              <rect class="node-rect coral" x="270" y="320" width="200" height="80"/>
+              <text class="node-title" x="370" y="350">PostToolUse hook</text>
+              <text class="node-sub" x="370" y="370">normalize timestamps</text>
+              <text class="node-sub" x="370" y="386">transform raw output</text>
+            </g>
+            <g class="node-group">
+              <rect class="node-rect" x="540" y="200" width="140" height="60"/>
+              <text class="node-title" x="610" y="228">Tool</text>
+              <text class="node-sub" x="610" y="246">backend system</text>
+            </g>
+            <path class="flow-line" id="hook-line-1" d="M 180 215 L 280 100" marker-end="url(#arrow-hook)" color="#3a3429"/>
+            <path class="flow-line" id="hook-line-2" d="M 470 100 L 540 215" marker-end="url(#arrow-hook)" color="#3a3429"/>
+            <path class="flow-line" id="hook-line-3" d="M 540 245 L 470 360" marker-end="url(#arrow-hook)" color="#3a3429"/>
+            <path class="flow-line" id="hook-line-4" d="M 270 360 L 180 245" marker-end="url(#arrow-hook)" color="#3a3429"/>
+            <text class="flow-label" x="220" y="160">Tool call</text>
+            <text class="flow-label" x="500" y="160">Approved</text>
+            <text class="flow-label" x="500" y="305">Raw result</text>
+            <text class="flow-label" x="220" y="305">Clean data</text>
+          </svg>
+        </div>
+        <div class="diagram-narration" id="hook-narration">Two hooks sit between Claude and the tools, doing opposite jobs. Pre-hook gates outgoing calls; PostToolUse cleans incoming results.</div>
+      </div>
+
+      <h3 class="subhead" style="margin-top: 40px;">Decision framework</h3>
+      <table class="elegant-table">
+        <thead>
+          <tr><th>If the requirement is...</th><th>Then use...</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Guaranteed compliance with a business rule</td><td>Pre-tool-use hook</td></tr>
+          <tr><td>Consistent data format across heterogeneous tools</td><td>PostToolUse hook</td></tr>
+          <tr><td>Style, tone, communication preference</td><td>Prompt</td></tr>
+          <tr><td>Tool selection guidance</td><td>Prompt + good tool descriptions</td></tr>
+          <tr><td>Failure rate must be zero</td><td>Hook</td></tr>
+          <tr><td>Probabilistic improvement is acceptable</td><td>Prompt</td></tr>
+        </tbody>
+      </table>
+
+      <div class="traps-block">
+        <div class="traps-header">
+          <span class="warn-icon">!</span>
+          <h4>Anti-patterns &amp; exam traps</h4>
+          <span class="traps-sub">Click each to expand</span>
+        </div>
+        <ul class="traps-list">
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">01</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Use a PostToolUse hook to enforce business rules."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Wrong direction. PostToolUse runs after the tool already executed — too late to block a refund.</div>
+                  <div class="trap-fix">Pre-tool-use hooks block calls before they run. PostToolUse only transforms results.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">02</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Use a pre-tool-use hook to normalize data formats."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Wrong direction. Pre-tool-use intercepts the call, not the result. By the time you have data to normalize, the tool has already returned.</div>
+                  <div class="trap-fix">PostToolUse is where you transform results. Pre is for blocking; Post is for cleaning.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">03</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Add prompt instructions to handle different timestamp formats."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Probabilistic fix to a deterministic problem. The model will get it right most of the time — and silently wrong sometimes.</div>
+                  <div class="trap-fix">PostToolUse normalization. The model never sees the inconsistency.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">04</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Hooks should be used for everything to maximize control."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Overcorrection. Hooks add latency and code complexity. Tool selection guidance, communication style, and optional behaviors belong in prompts.</div>
+                  <div class="trap-fix">Hooks for guarantees, prompts for guidance. Use both.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TASK 6: DECOMPOSITION ============ -->
+<section class="task-section" id="task-6">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">01<span class="num-suffix">.6</span></div>
+      <div class="section-header-text">
+        <div class="section-tag">Task statement 1.6 · Task decomposition</div>
+        <h2 class="section-title">Attention dilution &amp; the multi-pass fix.</h2>
+        <div class="section-meaning">
+          On the exam: when a single agent reviews many files at once and produces inconsistent results, the answer is decomposition into focused passes — never a bigger context window.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-body">
+      <div>
+        <h3 class="subhead">Two decomposition strategies</h3>
+        <ul class="bullets">
+          <li><strong>Fixed sequential pipelines (prompt chaining).</strong> Decide the sequence upfront. Each step's output feeds the next. Use when the structure is known and predictable.</li>
+          <li><strong>Dynamic adaptive decomposition.</strong> Generate the plan as you go, based on findings. Use for open-ended tasks where the right next step depends on what's already discovered.</li>
+        </ul>
+      </div>
+
+      <h3 class="subhead">The attention dilution problem</h3>
+      <p>A pull request modifies 14 files. A single review pass produces bizarre output — some files get detailed feedback, others superficial; obvious bugs are missed; the same code pattern is flagged in one file and approved in another.</p>
+      <p>This is <strong>not</strong> a context window issue. The 14 files might fit comfortably. The problem is that the model can't deeply focus on each one when juggling thirteen others. This is a cognitive load issue, and a bigger window doesn't fix it.</p>
+
+      <!-- DIAGRAM 6: ATTENTION DILUTION -->
+      <div class="diagram-block">
+        <div class="diagram-header">
+          <div class="diagram-title">Figure 1.6 · Single pass vs multi-pass review</div>
+          <button class="diagram-toggle" onclick="toggleDilution()">Toggle approach</button>
+        </div>
+        <div class="diagram-svg-wrap">
+          <svg id="dilution-diagram" viewBox="0 0 720 480" width="720" height="480">
+            <defs>
+              <marker id="arrow-dil" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+              </marker>
+            </defs>
+            <g id="dilution-bad">
+              <text class="flow-label" x="180" y="30" style="font-size: 12px; fill: var(--coral);">Single pass · attention diluted</text>
+              <g class="node-group">
+                <rect class="node-rect coral" x="60" y="50" width="240" height="60"/>
+                <text class="node-title" x="180" y="78">Single review pass</text>
+                <text class="node-sub" x="180" y="96">14 files at once</text>
+              </g>
+              <g class="node-group">
+                <rect class="node-rect" x="60" y="160" width="60" height="40"/>
+                <text class="node-sub" x="90" y="184">f1</text>
+              </g>
+              <g class="node-group">
+                <rect class="node-rect" x="130" y="160" width="60" height="40"/>
+                <text class="node-sub" x="160" y="184">f2</text>
+              </g>
+              <g class="node-group">
+                <rect class="node-rect" x="200" y="160" width="60" height="40"/>
+                <text class="node-sub" x="230" y="184">f3</text>
+              </g>
+              <g class="node-group">
+                <rect class="node-rect" x="270" y="160" width="40" height="40"/>
+                <text class="node-sub" x="290" y="184">…</text>
+              </g>
+              <text class="flow-label" x="180" y="230" style="font-size: 11px; fill: var(--coral);">Inconsistent depth · contradictory findings</text>
+            </g>
+            <g id="dilution-good">
+              <text class="flow-label" x="540" y="30" style="font-size: 12px; fill: var(--sage);">Multi-pass · focused attention</text>
+              <g class="node-group">
+                <rect class="node-rect sage" x="380" y="50" width="100" height="40"/>
+                <text class="node-sub" x="430" y="74">f1 pass</text>
+              </g>
+              <g class="node-group">
+                <rect class="node-rect sage" x="490" y="50" width="100" height="40"/>
+                <text class="node-sub" x="540" y="74">f2 pass</text>
+              </g>
+              <g class="node-group">
+                <rect class="node-rect sage" x="600" y="50" width="100" height="40"/>
+                <text class="node-sub" x="650" y="74">f3 pass</text>
+              </g>
+              <g class="node-group">
+                <rect class="node-rect sage" x="380" y="100" width="100" height="40"/>
+                <text class="node-sub" x="430" y="124">f4 pass</text>
+              </g>
+              <g class="node-group">
+                <rect class="node-rect sage" x="490" y="100" width="100" height="40"/>
+                <text class="node-sub" x="540" y="124">…</text>
+              </g>
+              <g class="node-group">
+                <rect class="node-rect sage" x="600" y="100" width="100" height="40"/>
+                <text class="node-sub" x="650" y="124">f14 pass</text>
+              </g>
+              <g class="node-group">
+                <rect class="node-rect accent" x="430" y="180" width="240" height="50"/>
+                <text class="node-title" x="550" y="200" style="font-size: 13px;">Integration pass</text>
+                <text class="node-sub" x="550" y="218">cross-file data flow only</text>
+              </g>
+              <line class="flow-line" x1="430" y1="140" x2="500" y2="180" marker-end="url(#arrow-dil)" color="#3a3429"/>
+              <line class="flow-line" x1="540" y1="140" x2="550" y2="180" marker-end="url(#arrow-dil)" color="#3a3429"/>
+              <line class="flow-line" x1="650" y1="140" x2="600" y2="180" marker-end="url(#arrow-dil)" color="#3a3429"/>
+              <text class="flow-label" x="550" y="270" style="font-size: 11px; fill: var(--sage);">Consistent depth · accurate findings</text>
+            </g>
+            <line x1="360" y1="40" x2="360" y2="320" stroke="var(--rule)" stroke-width="1" stroke-dasharray="4 4"/>
+            <g class="node-group">
+              <rect class="node-rect" x="200" y="380" width="320" height="60"/>
+              <text class="node-title" x="360" y="410">Aggregate findings</text>
+              <text class="node-sub" x="360" y="428">unified, consistent report</text>
+            </g>
+          </svg>
+        </div>
+        <div class="diagram-narration" id="dilution-narration">A bigger context window doesn't fix attention dilution. Decomposition into focused passes does. Click "Toggle approach" to compare.</div>
+      </div>
+
+      <div class="traps-block">
+        <div class="traps-header">
+          <span class="warn-icon">!</span>
+          <h4>Anti-patterns &amp; exam traps</h4>
+          <span class="traps-sub">Click each to expand</span>
+        </div>
+        <ul class="traps-list">
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">01</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Use a larger context window to handle more files."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Attention dilution is independent of capacity. A million-token window doesn't increase the model's ability to deeply focus on each item.</div>
+                  <div class="trap-fix">Split into per-file passes plus a separate integration pass for cross-file data flow.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">02</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Run multiple passes and require consensus."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Suppresses real findings that only one pass catches. You'd reduce false positives at the cost of missing true positives.</div>
+                  <div class="trap-fix">Per-file local passes + integration pass. Don't filter by consensus.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">03</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Use a fixed pipeline for an open-ended exploration."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Forces a plan onto a task that needs to discover its plan as it goes. Misses high-impact areas.</div>
+                  <div class="trap-fix">Dynamic adaptive: investigate first, generate the plan from findings, adapt as new dependencies surface.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">04</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Force developers to submit smaller PRs."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Shifts burden to humans without fixing the system. The bug is still there; you're just hiding it by avoiding the trigger.</div>
+                  <div class="trap-fix">Fix the review architecture, not the workflow around it.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TASK 7: SESSION STATE ============ -->
+<section class="task-section" id="task-7">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">01<span class="num-suffix">.7</span></div>
+      <div class="section-header-text">
+        <div class="section-tag">Task statement 1.7 · Session state</div>
+        <h2 class="section-title">Resume, fork, or start fresh.</h2>
+        <div class="section-meaning">
+          On the exam: when prior tool results are stale (files changed overnight), the answer is fresh session with injected summary — not resume. This is the trap most candidates miss.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-body">
+      <div>
+        <h3 class="subhead">Three mechanisms · three jobs</h3>
+        <ul class="bullets">
+          <li><code>--resume &lt;name&gt;</code> — continue a prior session. Same single thread, picked up later. Use when prior context is mostly still valid.</li>
+          <li><code>fork_session</code> — branch from a shared baseline to explore divergent approaches. Both forks start with the full prior context.</li>
+          <li><strong>Fresh session + injected summary</strong> — abandon the prior session entirely. Start new. Inject only the conclusions from before. Use when prior tool results are stale.</li>
+        </ul>
+      </div>
+
+      <h3 class="subhead">The stale context trap</h3>
+      <p>You spent yesterday investigating a codebase. The agent read 40 files, called 60 tools. Overnight, the codebase changed significantly — files renamed, functions refactored. Today you try to resume.</p>
+      <p>The prior context contains tool results that no longer match reality. References to functions that don't exist anymore. The agent reasons over <strong>stale data</strong> and produces wrong conclusions — <em>confidently</em>, because it has no way to know its information is outdated.</p>
+
+      <!-- DIAGRAM 7: SESSION STATE -->
+      <div class="diagram-block">
+        <div class="diagram-header">
+          <div class="diagram-title">Figure 1.7 · Session state decision tree</div>
+          <button class="diagram-toggle" onclick="walkSession()">Walk paths</button>
+        </div>
+        <div class="diagram-svg-wrap">
+          <svg id="session-diagram" viewBox="0 0 720 460" width="720" height="460">
+            <defs>
+              <marker id="arrow-sess" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+              </marker>
+            </defs>
+            <g class="node-group">
+              <rect class="node-rect accent" x="260" y="20" width="200" height="60"/>
+              <text class="node-title" x="360" y="48">Prior session exists</text>
+              <text class="node-sub" x="360" y="66">what's the state?</text>
+            </g>
+            <g class="node-group" id="path-resume">
+              <rect class="node-rect teal" x="20" y="170" width="200" height="80"/>
+              <text class="node-title" x="120" y="200">Context still valid</text>
+              <text class="node-sub" x="120" y="220">continue linearly</text>
+              <text class="node-sub" x="120" y="238">--resume name</text>
+            </g>
+            <g class="node-group" id="path-fork">
+              <rect class="node-rect sage" x="260" y="170" width="200" height="80"/>
+              <text class="node-title" x="360" y="200">Want divergent paths</text>
+              <text class="node-sub" x="360" y="220">branch from baseline</text>
+              <text class="node-sub" x="360" y="238">fork_session</text>
+            </g>
+            <g class="node-group" id="path-fresh">
+              <rect class="node-rect coral" x="500" y="170" width="200" height="80"/>
+              <text class="node-title" x="600" y="200">Tool results stale</text>
+              <text class="node-sub" x="600" y="220">files changed</text>
+              <text class="node-sub" x="600" y="238">fresh + summary</text>
+            </g>
+            <line class="flow-line" x1="320" y1="80" x2="180" y2="170" marker-end="url(#arrow-sess)" color="#3a3429"/>
+            <line class="flow-line" x1="360" y1="80" x2="360" y2="170" marker-end="url(#arrow-sess)" color="#3a3429"/>
+            <line class="flow-line" x1="400" y1="80" x2="540" y2="170" marker-end="url(#arrow-sess)" color="#3a3429"/>
+            <g class="node-group">
+              <rect class="node-rect" x="160" y="340" width="400" height="100"/>
+              <text class="node-title" x="360" y="370" style="fill: var(--coral);">The trap</text>
+              <text class="node-sub" x="360" y="394">Resuming with stale tool results</text>
+              <text class="node-sub" x="360" y="412">leads to confident wrong reasoning.</text>
+              <text class="node-sub" x="360" y="430">Carry forward conclusions, not raw tool results.</text>
+            </g>
+          </svg>
+        </div>
+        <div class="diagram-narration" id="session-narration">Top of the diagram: the decision tree. Bottom: the trap to avoid. Click "Walk paths" to step through each option.</div>
+      </div>
+
+      <div class="traps-block">
+        <div class="traps-header">
+          <span class="warn-icon">!</span>
+          <h4>Anti-patterns &amp; exam traps</h4>
+          <span class="traps-sub">Click each to expand</span>
+        </div>
+        <ul class="traps-list">
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">01</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Resume the session after the codebase changed."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">The most-tested trap in this task statement. Resuming carries forward stale tool results; the agent reasons confidently over outdated data.</div>
+                  <div class="trap-fix">Fresh session + injected summary. Carry forward conclusions, not raw tool results.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">02</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Use <code>fork_session</code> to continue work after a break."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Wrong tool. Fork is for parallel divergent paths from a shared baseline, not picking up where you left off.</div>
+                  <div class="trap-fix">--resume for continuation. fork_session for parallel exploration.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">03</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Always start fresh to avoid stale context."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Overcorrection. When context is still valid, resuming preserves nuance and saves significant work that summaries lose.</div>
+                  <div class="trap-fix">Match the mechanism to the situation: valid → resume; divergent → fork; stale → fresh + summary.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">04</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Tell the agent the codebase changed and let it figure out what's stale."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Insufficient. The agent has no mechanism to identify which specific tool results are now wrong.</div>
+                  <div class="trap-fix">Either name the changed files explicitly (resume + targeted re-analysis) or start fresh with summary.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRACTICE EXAM SECTION ============ -->
+<section class="task-section" id="practice">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">∞</div>
+      <div class="section-header-text">
+        <div class="section-tag">Practice · self-assessment</div>
+        <h2 class="section-title">Test what stuck.</h2>
+        <div class="section-meaning">
+          Two banks below: fourteen check questions woven through the seven tasks, and a ten-question scenario-based mock exam. Click an option to select it, then reveal to see the rationale.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-body">
+      <div class="exam-intro">
+        <div class="exam-intro-card checks">
+          <div class="count">Bank A · check questions</div>
+          <h4>Walk-through quick checks</h4>
+          <p>Fourteen short questions, two per task statement. Use these to confirm you understood each concept before moving on. Open-ended phrasing — match your reasoning against the model answer in the rationale.</p>
+        </div>
+        <div class="exam-intro-card exam">
+          <div class="count">Bank B · 10 mock exam questions</div>
+          <h4>Scenario-based mock exam</h4>
+          <p>The format and difficulty of the real certification: production scenarios, four options, one correct answer. Aim for 8/10 or above. Below that, revisit the relevant task statements before testing again.</p>
+        </div>
+      </div>
+
+      <!-- ====== BANK A: CHECK QUESTIONS ====== -->
+      <div class="qbank">
+
+        <!-- Task 1.1 -->
+        <div class="qbank-group-header">
+          <div class="qbank-group-num">1.1</div>
+          <div class="qbank-group-title">Agentic loops</div>
+          <div class="qbank-group-tag">2 check questions</div>
+        </div>
+
+        <div class="question-card check-q" id="cq-1">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q1</span>01</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 1.1</span><span>Loop control</span></div>
+              <p class="question-text">Your agent calls <code>lookup_order</code>, gets the result, and then your code sends the next request to Claude. What MUST you include in that request for the model to reason correctly about the next step?</p>
+            </div>
+          </div>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealCheck('cq-1')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">The <strong>tool result, appended to conversation history</strong> as a <code>tool_result</code> block. Without that appended result, Claude has no idea what <code>lookup_order</code> returned and will either re-call the tool or hallucinate a response. <code>stop_reason</code> drives <em>your code's</em> control flow; the appended <code>tool_result</code> is what tells <em>Claude</em> what happened.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card check-q" id="cq-2">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q2</span>02</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 1.1</span><span>Termination signal</span></div>
+              <p class="question-text">A teammate proposes: "Let's terminate the loop when Claude's response text contains 'Is there anything else I can help with?'" Why is this wrong, and what's the correct signal?</p>
+            </div>
+          </div>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealCheck('cq-2')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Wrong because (1) Claude can return text <strong>alongside</strong> a tool call in the same response — your code would terminate while the agent is mid-task; and (2) phrasing varies non-deterministically, so you'd be writing regex against probabilistic surface output. The correct signal is <code>stop_reason</code> — structured metadata the API guarantees. <code>"end_turn"</code> means done; <code>"tool_use"</code> means continue.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task 1.2 -->
+        <div class="qbank-group-header">
+          <div class="qbank-group-num">1.2</div>
+          <div class="qbank-group-title">Multi-agent orchestration</div>
+          <div class="qbank-group-tag">2 check questions</div>
+        </div>
+
+        <div class="question-card check-q" id="cq-3">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q3</span>03</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 1.2</span><span>Context passing</span></div>
+              <p class="question-text">A coordinator delegates a research task to a web search subagent and gets back 8 articles. Next, the coordinator wants the synthesis subagent to write a summary based on those articles. What MUST the coordinator do for synthesis to work?</p>
+            </div>
+          </div>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealCheck('cq-3')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Include the article details and URLs <strong>directly in the synthesis subagent's <code>Task</code> prompt</strong> as structured metadata, not just raw content. Subagents have no shared memory; if it's not in the prompt, it doesn't exist for them. Pass content separated from metadata (URLs, titles, dates) so the synthesis agent can preserve attribution through the synthesis step.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card check-q" id="cq-4">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q4</span>04</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 1.2</span><span>Output gaps</span></div>
+              <p class="question-text">Your multi-agent system produces final reports that are missing entire topic areas, even though every subagent's individual logs show clean execution. Where do you investigate first, and why?</p>
+            </div>
+          </div>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealCheck('cq-4')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Investigate the <strong>coordinator's task decomposition first</strong>. Subagents are constrained by the assignments they receive — if those assignments are too narrow, no downstream agent can recover from that. Mental shortcut: <em>gaps in output = decomposition problem = coordinator problem</em>. Subagent-level fixes don't address the root cause.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task 1.3 -->
+        <div class="qbank-group-header">
+          <div class="qbank-group-num">1.3</div>
+          <div class="qbank-group-title">Spawning &amp; context passing</div>
+          <div class="qbank-group-tag">2 check questions</div>
+        </div>
+
+        <div class="question-card check-q" id="cq-5">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q5</span>05</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 1.3</span><span>Missing context</span></div>
+              <p class="question-text">Your coordinator successfully runs the web search subagent and gets back results. It then emits a <code>Task</code> call for the synthesis subagent — but the synthesis subagent's output references "no available sources" even though the search succeeded. What's the most likely cause, and how do you fix it?</p>
+            </div>
+          </div>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealCheck('cq-5')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">The coordinator passed the synthesis subagent a <code>Task</code> call <strong>without including the web search results in its prompt</strong>. Subagents have no shared memory; the synthesis agent has no idea the search even happened. Fix: include the search results — content plus metadata (URLs, titles, dates) — directly in the synthesis subagent's prompt.</p>
+              <div class="rationale-distractors"><strong>Common wrong instinct:</strong> "increase the context window" — capacity isn't the issue, nothing was passed. "Have synthesis call web_search itself" — re-runs the search, defeats specialization.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card check-q" id="cq-6">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q6</span>06</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 1.3</span><span>Latency</span></div>
+              <p class="question-text">Your research pipeline runs three independent subagents (web search, internal docs, statistics database) and total latency is 90 seconds. All three are independent — none depends on another's output. How do you cut this to ~30 seconds without changing the subagents themselves?</p>
+            </div>
+          </div>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealCheck('cq-6')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Have the coordinator <strong>emit all three <code>Task</code> tool calls in a single response</strong> so they execute in parallel. The phrase that matters is <em>single response</em>: sequential calls across separate turns won't parallelize, even if you intend them to. Three 30-second subagents running concurrently = ~30 seconds total.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task 1.4 -->
+        <div class="qbank-group-header">
+          <div class="qbank-group-num">1.4</div>
+          <div class="qbank-group-title">Workflow enforcement &amp; handoff</div>
+          <div class="qbank-group-tag">2 check questions</div>
+        </div>
+
+        <div class="question-card check-q" id="cq-7">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q7</span>07</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 1.4</span><span>Compliance threshold</span></div>
+              <p class="question-text">Your customer support agent has a policy: no individual refund may exceed $500 without manager approval. Logs show that in 3% of cases, the agent processes refunds of $600–$800 anyway. What's the right fix, and why are prompt-based approaches insufficient here?</p>
+            </div>
+          </div>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealCheck('cq-7')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Add a <strong>pre-tool-use (tool call interception) hook</strong> that blocks any <code>process_refund</code> call where amount exceeds $500 and redirects the agent to <code>escalate_to_human</code>. Prompts have a non-zero failure rate; when business rules require <em>guaranteed</em> compliance — anything financial, security, or compliance-related — only programmatic enforcement provides the deterministic guarantee. The 3% failure rate translates directly into financial exposure.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card check-q" id="cq-8">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q8</span>08</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 1.4</span><span>Human handoff</span></div>
+              <p class="question-text">An AI agent escalates a billing dispute to a human. The human picks up the ticket and immediately asks the customer, "Can you tell me what's going on?" — frustrating the customer who already explained everything. What went wrong, and what specific information should the AI have included?</p>
+            </div>
+          </div>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealCheck('cq-8')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">The AI didn't compile a structured handoff for the human. <strong>The human reviewer has no access to the conversation transcript</strong> — they see only what the AI compiles. The handoff must include all six required fields: <em>customer_id</em>, <em>conversation_summary</em>, <em>investigation_results</em>, <em>root_cause</em>, <em>recommended_action</em>, <em>reason_for_escalation</em>. Without these, the human starts blind and the customer re-explains.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task 1.5 -->
+        <div class="qbank-group-header">
+          <div class="qbank-group-num">1.5</div>
+          <div class="qbank-group-title">Agent SDK hooks</div>
+          <div class="qbank-group-tag">2 check questions</div>
+        </div>
+
+        <div class="question-card check-q" id="cq-9">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q9</span>09</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 1.5</span><span>Heterogeneous data</span></div>
+              <p class="question-text">Your agent integrates three MCP servers from different teams. Each returns customer status as a different type: integer <code>1</code>, string <code>"active"</code>, boolean <code>true</code>. The agent occasionally produces wrong conclusions when comparing customer states across these tools. What's the right fix?</p>
+            </div>
+          </div>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealCheck('cq-9')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Implement a <strong>PostToolUse hook that normalizes the heterogeneous customer status formats</strong> — integer, string, boolean — into a single canonical representation before the agent processes them. Pick a format (probably string: <code>"active"</code>/<code>"inactive"</code>) and have the hook convert all three sources to it. The agent then reasons over uniform data and never sees the inconsistency.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card check-q" id="cq-10">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q10</span>10</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 1.5</span><span>GDPR enforcement</span></div>
+              <p class="question-text">You have a rule: the agent must never call <code>delete_user_data</code> if the conversation is from a region governed by GDPR without an additional consent verification step. A teammate proposes adding a strongly worded prompt instruction. Why is this insufficient, and what specific hook pattern do you use?</p>
+            </div>
+          </div>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealCheck('cq-10')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Use a <strong>pre-tool-use (tool call interception) hook</strong>. Prompts are probabilistic and have a non-zero failure rate; GDPR compliance requires <em>guaranteed</em> enforcement because a non-zero failure rate exposes the company to regulatory risk. The hook intercepts every <code>delete_user_data</code> call, checks the conversation context for the region, verifies consent has been explicitly obtained when GDPR applies, and blocks the call otherwise.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task 1.6 -->
+        <div class="qbank-group-header">
+          <div class="qbank-group-num">1.6</div>
+          <div class="qbank-group-title">Task decomposition</div>
+          <div class="qbank-group-tag">2 check questions</div>
+        </div>
+
+        <div class="question-card check-q" id="cq-11">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q11</span>11</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 1.6</span><span>Attention dilution</span></div>
+              <p class="question-text">For PRs touching 3–4 files the reviews are excellent. For PRs touching 12+ files, reviews become inconsistent — same code pattern flagged in one file, approved in another, obvious bugs missed. The team proposes upgrading to a model with a larger context window. Will this fix the problem?</p>
+            </div>
+          </div>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealCheck('cq-11')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">No. <strong>Attention dilution is independent of context window capacity.</strong> A bigger window is about <em>how much can fit</em>; attention is about <em>how deeply the model focuses on each piece</em>. Cramming more in often makes dilution worse. The fix is decomposition into focused passes — per-file local passes plus a separate cross-file integration pass.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card check-q" id="cq-12">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q12</span>12</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 1.6</span><span>Decomposition strategy</span></div>
+              <p class="question-text">You're tasked with refactoring a legacy authentication module to use a modern token-based system. You don't know the module's structure or dependencies. Should you use a fixed pipeline (analyze → design → implement → test) or a dynamic adaptive approach? Why?</p>
+            </div>
+          </div>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealCheck('cq-12')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>Dynamic adaptive.</strong> The task is open-ended, the structure of the legacy module is unknown, and the right next step depends on what's discovered at each stage. A fixed pipeline assumes the design phase can be planned without knowing what's in the code. Dynamic adaptive lets the plan emerge: map structure → identify dependencies → prioritize → adapt as new dependencies surface during refactoring. Trigger words for dynamic adaptive: <em>legacy</em>, <em>unfamiliar</em>, <em>unknown structure</em>, <em>open-ended</em>.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task 1.7 -->
+        <div class="qbank-group-header">
+          <div class="qbank-group-num">1.7</div>
+          <div class="qbank-group-title">Session state</div>
+          <div class="qbank-group-tag">2 check questions</div>
+        </div>
+
+        <div class="question-card check-q" id="cq-13">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q13</span>13</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 1.7</span><span>Stale context</span></div>
+              <p class="question-text">Yesterday you spent two hours investigating a payment processing bug. The agent read 25 files and identified three suspicious functions. Overnight, the team merged a major refactor that renamed several modules and restructured the payment flow. You want to continue today. Should you resume, fork, or start fresh? Why?</p>
+            </div>
+          </div>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealCheck('cq-13')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>Start fresh with an injected summary.</strong> The prior tool results — file contents, function signatures, dependency traces — are now stale because the codebase was refactored overnight. Resuming would carry those stale results forward, and the agent would reason over outdated data without any signal that it's wrong. The injected summary should contain <em>conclusions</em> from yesterday (suspected functions, hypotheses ruled out) — not raw tool results. The fresh session re-reads files as needed, getting current data.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card check-q" id="cq-14">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q14</span>14</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 1.7</span><span>Divergent exploration</span></div>
+              <p class="question-text">You've spent 45 minutes analyzing a complex algorithm. Now you want to evaluate two different optimization strategies in parallel — one focused on memory efficiency, the other on CPU efficiency. The codebase hasn't changed. What mechanism do you use, and why?</p>
+            </div>
+          </div>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealCheck('cq-14')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong><code>fork_session</code></strong>. You have a shared analysis baseline you don't want to redo, and you want to explore divergent approaches without one contaminating the other. Fork from the analysis baseline; one branch explores memory optimization, the other explores CPU optimization. Compare results. Running them sequentially in the same session would let the first strategy's reasoning bias the evaluation of the second.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============ BANK B: 10 MOCK EXAM QUESTIONS ============ -->
+      <div class="qbank" style="margin-top: 80px;" id="mock-exam">
+
+        <div class="qbank-group-header">
+          <div class="qbank-group-num" style="color: var(--coral);">B</div>
+          <div class="qbank-group-title">Mock exam · scenario-based</div>
+          <div class="qbank-group-tag">10 questions · pass mark 8/10</div>
+        </div>
+
+        <p style="margin-bottom: 24px;">Click any option to select it. The "Reveal answer" button shows the correct answer with rationale. Switch to <strong>Exam mode</strong> below to track a score across all 10 questions before revealing.</p>
+
+        <div style="display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;">
+          <button class="exam-mode-toggle" id="exam-mode-btn" onclick="toggleExamMode()">Start exam mode</button>
+          <button class="exam-mode-toggle" onclick="resetExam()">Reset all answers</button>
+        </div>
+
+        <!-- Q1 -->
+        <div class="question-card mock-q" data-correct="B" id="mq-1">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>01</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Customer Support</span><span>Loop control</span></div>
+              <p class="question-text">Your agentic loop terminates the conversation as soon as Claude returns any text content in its response. Production logs show that in 8% of cases, the agent stops mid-task — Claude returned a brief acknowledgment ("Let me check that for you") alongside a <code>tool_use</code> block, and your code interpreted the text as completion. What's the correct fix?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">Add a regex to detect closing phrases like "let me know" before terminating</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">Inspect <code>stop_reason</code> explicitly: continue when it's <code>"tool_use"</code>, terminate when it's <code>"end_turn"</code></span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">Set a higher minimum text length threshold before treating a response as final</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">Have Claude return only tool calls or only text, never both, by adjusting the system prompt</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-1')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: B</div>
+              <p class="rationale-text"><code>stop_reason</code> is the structured signal the API guarantees. Text content is generated output that can accompany a tool call in the same response.</p>
+              <div class="rationale-distractors"><strong>A:</strong> Regex is fragile and probabilistic. <strong>C:</strong> Length thresholds don't address the root cause. <strong>D:</strong> Constrains Claude unnaturally; doesn't fix the underlying control flow bug.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question-card mock-q" data-correct="C" id="mq-2">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>02</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Multi-Agent Research</span><span>Context passing</span></div>
+              <p class="question-text">Your coordinator delegates to a web search subagent and a synthesis subagent sequentially. The synthesis subagent's output frequently contains the phrase "based on available sources" but never cites specific URLs, even though the web search subagent successfully returned 12 articles with full URLs. What's the most likely cause?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">The synthesis subagent's context window is too small to hold the URLs</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">The web search subagent isn't returning URLs in a format the synthesis subagent recognizes</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">The coordinator is passing the article content but not the URL metadata to the synthesis subagent's prompt</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">The synthesis subagent needs its own <code>web_fetch</code> tool to retrieve the URLs</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-2')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: C</div>
+              <p class="rationale-text">Subagents have no shared memory. If the coordinator passes article content without URLs, the synthesis agent can't cite them — they don't exist in its context. Fix: pass content separated from metadata.</p>
+              <div class="rationale-distractors"><strong>A:</strong> Capacity isn't the issue if nothing was passed. <strong>B:</strong> Subagents don't communicate directly. <strong>D:</strong> Defeats specialization; URLs are already known to the coordinator.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question-card mock-q" data-correct="B" id="mq-3">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>03</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Customer Support</span><span>Compliance gate</span></div>
+              <p class="question-text">Your agent processes refunds. A new compliance requirement states: all refunds over $250 must trigger a notification to the compliance team via the <code>notify_compliance</code> tool before <code>process_refund</code> is called. You've added this rule to the system prompt, but logs show 4% of refunds over $250 skip the notification. What's the right architectural fix?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">Strengthen the prompt with bold formatting and few-shot examples showing correct sequencing</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">Add a pre-tool-use hook that intercepts <code>process_refund</code>, checks the amount, and blocks the call if <code>notify_compliance</code> hasn't run for refunds over $250</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">Add a PostToolUse hook on <code>process_refund</code> that retroactively calls <code>notify_compliance</code> after refunds complete</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">Train the agent on a fine-tuned dataset of correct refund sequences</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-3')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: B</div>
+              <p class="rationale-text">Compliance rules require deterministic enforcement. A pre-tool-use hook gates the sensitive operation before it executes — zero failure rate by construction.</p>
+              <div class="rationale-distractors"><strong>A:</strong> Prompts remain probabilistic regardless of formatting. <strong>C:</strong> PostToolUse runs after the refund — too late for "before" requirements. <strong>D:</strong> Out of scope and over-engineered.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question-card mock-q" data-correct="C" id="mq-4">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>04</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Multi-Agent Research</span><span>Latency</span></div>
+              <p class="question-text">Your coordinator runs three independent subagents — web search, internal docs, statistics database — sequentially. Total latency is 75 seconds and your SLA target is 30 seconds. None of the subagents depends on another's output. How should you reduce latency?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">Increase the coordinator's <code>max_tokens</code> to allow it to process subagents faster</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">Switch to a faster model variant for all three subagents</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">Have the coordinator emit all three <code>Task</code> tool calls in a single response so they execute in parallel</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">Combine the three subagents into a single subagent with all three tools available</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-4')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: C</div>
+              <p class="rationale-text">Parallel spawning happens within a <em>single</em> coordinator response. Three independent subagents become concurrent, total latency drops to the slowest one's runtime.</p>
+              <div class="rationale-distractors"><strong>A:</strong> <code>max_tokens</code> doesn't affect tool execution. <strong>B:</strong> Optimizes individual subagent speed but keeps sequential structure. <strong>D:</strong> Re-introduces attention dilution and tool selection complexity.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="question-card mock-q" data-correct="C" id="mq-5">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>05</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Session state</span></div>
+              <p class="question-text">You've been investigating a complex bug for two hours. The agent has read 30+ files and traced data flow through several modules. Overnight, a teammate merged a PR that renamed two of the modules involved and refactored their interfaces. You want to continue the investigation today. What's the right approach?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">Resume the session with <code>--resume</code> and let the agent re-read files when it needs them</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">Use <code>fork_session</code> to create an independent branch from yesterday's analysis</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">Start a fresh session and inject a structured summary of yesterday's findings (suspected functions, ruled-out hypotheses)</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">Resume the session but increase the model's temperature to encourage re-analysis</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-5')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: C</div>
+              <p class="rationale-text">Stale tool results in conversation history are dangerous — the agent reasons over outdated data without any signal it's wrong. Carry forward conclusions, not raw tool results.</p>
+              <div class="rationale-distractors"><strong>A:</strong> Resuming preserves stale results. The agent has no mechanism to detect which are now wrong. <strong>B:</strong> Fork is for divergent exploration, not stale-context recovery. <strong>D:</strong> Temperature doesn't solve stale grounding.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="question-card mock-q" data-correct="C" id="mq-6">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>06</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Multi-Agent Research</span><span>Coverage gaps</span></div>
+              <p class="question-text">Your final research reports about "the impact of remote work on urban economies" consistently miss findings about transportation infrastructure and commercial real estate, even though the synthesis and web search subagents both execute cleanly per their logs. The coordinator's logs show it decomposed the topic into "remote work productivity," "remote work and employee wellbeing," and "remote work tools." Where do you investigate first?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">The synthesis subagent — it's failing to identify coverage gaps</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">The web search subagent — its queries are too narrow</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">The coordinator's task decomposition — it's mapped the topic onto worker-experience subtopics and omitted economic dimensions</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">The document analysis subagent — it's filtering out economic sources</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-6')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: C</div>
+              <p class="rationale-text">Output gaps trace back to coordinator decomposition. The logs show the coordinator mapped "urban economies" onto worker-experience subtopics — subagents executed correctly within their assigned (narrow) scope.</p>
+              <div class="rationale-distractors"><strong>A, B, D:</strong> All blame downstream agents that worked correctly within their scope. The bug is upstream, in what they were assigned.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="question-card mock-q" data-correct="B" id="mq-7">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>07</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Customer Support</span><span>Data normalization</span></div>
+              <p class="question-text">Your agent integrates three MCP tools that return order timestamps in different formats: <code>lookup_order</code> returns Unix epochs, <code>get_shipment</code> returns ISO 8601 strings, and <code>check_warehouse</code> returns numeric date codes (YYYYMMDD as integer). The agent occasionally produces incorrect conclusions when comparing event ordering. What's the most reliable fix?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">Add detailed prompt instructions explaining each timestamp format and how to convert between them</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">Implement a PostToolUse hook that normalizes all timestamps to ISO 8601 before they reach the agent</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">Implement a pre-tool-use hook that rejects calls to tools with inconsistent timestamp formats</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">Have the agent call a separate <code>convert_timestamp</code> tool before reasoning about dates</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-7')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: B</div>
+              <p class="rationale-text">PostToolUse normalizes results before the agent sees them — deterministic and transparent. The agent reasons over consistent data without knowing the inconsistency existed.</p>
+              <div class="rationale-distractors"><strong>A:</strong> Probabilistic fix to a deterministic problem. <strong>C:</strong> Wrong direction — pre-hooks intercept calls, not results. <strong>D:</strong> Adds tool-call overhead for every comparison; agent may forget to call it.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="question-card mock-q" data-correct="C" id="mq-8">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>08</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Attention dilution</span></div>
+              <p class="question-text">You're reviewing a pull request that modifies 18 files across three modules. Your single-pass review produces inconsistent results: some files get detailed feedback, others get superficial comments, and the same code pattern is flagged as a bug in one file and approved in another. The team proposes upgrading to a model with a 1M token context window. Will this fix the problem?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">Yes — a larger context window allows the model to hold all files with room to spare, eliminating the inconsistency</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">Yes — but only if combined with a higher reasoning budget setting</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">No — attention dilution is independent of context window capacity; the fix is splitting into per-file passes plus a separate integration pass</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">No — the model needs more training data on multi-file reviews</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-8')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: C</div>
+              <p class="rationale-text">Attention dilution is a cognitive load issue, independent of capacity. Decomposition into focused passes is the fix.</p>
+              <div class="rationale-distractors"><strong>A, B:</strong> Both confuse capacity with focus. <strong>D:</strong> Out of scope and doesn't address the architectural issue.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q9 -->
+        <div class="question-card mock-q" data-correct="B" id="mq-9">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>09</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Multi-Agent Research</span><span>Error propagation</span></div>
+              <p class="question-text">Your coordinator spawns a web search subagent that times out after 60 seconds while researching a niche topic. You need the coordinator to make an intelligent recovery decision (retry with a modified query, try an alternative subagent, or proceed with partial results). Which error propagation approach best supports this?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">The subagent catches the timeout and returns an empty result set marked as successful</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">The subagent returns structured error context including the failure type, attempted query, partial results obtained before timeout, and potential alternative approaches</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">The subagent propagates the timeout exception directly to a top-level handler that terminates the workflow</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">The subagent retries internally with exponential backoff and returns a generic "search unavailable" status only after all retries fail</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-9')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: B</div>
+              <p class="rationale-text">Structured error context lets the coordinator make intelligent recovery decisions: retry with a modified query, try an alternative, or proceed with partial results.</p>
+              <div class="rationale-distractors"><strong>A:</strong> Suppresses the error — silent failure. <strong>C:</strong> Terminates the entire workflow unnecessarily. <strong>D:</strong> Generic status hides valuable context from the coordinator.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="question-card mock-q" data-correct="B" id="mq-10">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>10</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Customer Support</span><span>Human handoff</span></div>
+              <p class="question-text">Your AI agent decides to escalate a complex billing dispute to a human agent. When the human picks up the ticket, the customer is frustrated because the human asks them to re-explain everything they already told the AI. What's the root cause and the correct fix?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">The AI should have resolved the issue itself instead of escalating; add stricter escalation criteria</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">The human agent has no access to the conversation transcript; the AI must compile a structured handoff summary including customer ID, conversation summary, investigation results, root cause, and recommended action</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">The customer should be informed before escalation that they'll need to re-explain the issue</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">The AI should automatically forward the raw conversation transcript to the human via email before escalation</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-10')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: B</div>
+              <p class="rationale-text">The human reviewer has no transcript access by default. The AI must compile a structured handoff with all required fields so the human starts informed.</p>
+              <div class="rationale-distractors"><strong>A:</strong> Solves a different problem; the issue is about handoff quality, not escalation criteria. <strong>C:</strong> Worsens UX by accepting the broken pattern. <strong>D:</strong> Raw transcripts aren't structured for fast human consumption.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ====== SCORE PANEL ====== -->
+      <div class="score-panel hidden" id="score-panel">
+        <div class="score-stat">
+          <div class="score-value" id="score-current">0/10</div>
+          <div class="score-label">Score</div>
+        </div>
+        <div class="score-stat">
+          <div class="score-value" id="score-answered">0</div>
+          <div class="score-label">Answered</div>
+        </div>
+        <div class="score-stat">
+          <div class="score-value" id="score-status">In progress</div>
+          <div class="score-label">Status</div>
+        </div>
+        <div class="score-actions">
+          <button class="score-action-btn" onclick="resetExam()">Reset</button>
+          <button class="score-action-btn primary" onclick="submitExam()">Submit &amp; reveal all</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL PULL QUOTE ============ -->
+<div class="pull-quote">
+  <div class="container">
+    <div class="pull-quote-text">Hooks for <em>guarantees</em>. Prompts for <em>guidance</em>. Decomposition for <em>focus</em>. Explicit handoff for <em>everything that crosses a boundary</em>.</div>
+    <div class="pull-quote-attr">— The four mental shortcuts for Domain I</div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">A field manual for <em>practitioners</em>, not test-takers.</div>
+        <div class="footer-text">Domain I is 27% of the exam — the heaviest weight, and the foundation everything else builds on. Master these seven task statements and you've covered roughly a quarter of your passing score.</div>
+      </div>
+      <div class="footer-col">
+        <h6>Task statements</h6>
+        <ul>
+          <li>1.1 — Agentic loops</li>
+          <li>1.2 — Multi-agent orchestration</li>
+          <li>1.3 — Spawning &amp; context</li>
+          <li>1.4 — Workflow &amp; handoff</li>
+          <li>1.5 — Agent SDK hooks</li>
+          <li>1.6 — Task decomposition</li>
+          <li>1.7 — Session state</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h6>Coming next</h6>
+        <ul>
+          <li>Domain II · Tools &amp; MCP · 18%</li>
+          <li>Domain III · Claude Code · 20%</li>
+          <li>Domain IV · Prompt Eng · 20%</li>
+          <li>Domain V · Context · 15%</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-meta">
+      <div>Volume One · Domain I</div>
+      <div>The Architect's Companion</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ============ INTERACTIVE DIAGRAM LOGIC ============
+
+// === Loop diagram (Figure 1.1) ===
+const loopNarrations = {
+  '1': 'Step 1 — User submits a request. App code packages it into a Messages API call to Claude.',
+  '2': 'Step 2 — App code sends the request to Claude with the available tools. The loop begins here.',
+  '3': 'Step 3 — Claude returns a response with stop_reason. This is the structured signal that drives all control flow.',
+  '4': 'Step 4a — On stop_reason="tool_use", execute the tool, append the result to messages, and loop back.',
+  '5': 'Step 4b — On stop_reason="end_turn", the agent is finished. Exit the loop and return the response.',
+  '6': 'Step 5 — The response reaches the user. The loop terminated naturally on stop_reason, not on iteration count or text content.',
+};
+
+const defaultLoopText = 'Hover over any node — or click the steps below — to walk the loop. The control signal is <code>stop_reason</code>, never text content.';
+
+document.querySelectorAll('#loop-diagram .node-group').forEach(node => {
+  node.addEventListener('mouseenter', () => {
+    const step = node.dataset.step;
+    if (step) {
+      document.querySelectorAll('#loop-diagram .node-group').forEach(n => n.classList.remove('highlight'));
+      node.classList.add('highlight');
+      document.getElementById('loop-narration').innerHTML = loopNarrations[step] || defaultLoopText;
+    }
+  });
+});
+
+document.querySelectorAll('[data-loop-step]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const step = btn.dataset.loopStep;
+    document.querySelectorAll('[data-loop-step]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#loop-diagram .node-group').forEach(n => {
+      if (n.dataset.step === step) n.classList.add('highlight');
+      else n.classList.remove('highlight');
+    });
+    document.getElementById('loop-narration').innerHTML = loopNarrations[step];
+  });
+});
+
+function resetDiagram(name) {
+  if (name === 'loop') {
+    document.querySelectorAll('#loop-diagram .node-group').forEach(n => n.classList.remove('highlight'));
+    document.querySelectorAll('[data-loop-step]').forEach(b => b.classList.remove('active'));
+    document.getElementById('loop-narration').innerHTML = defaultLoopText;
+  }
+}
+
+// === Hub diagram (Figure 1.2) ===
+const hubNarrations = {
+  'hub': 'The coordinator decomposes the task, decides which subagents to invoke, passes explicit context, and aggregates results.',
+  'search': 'Web search subagent — receives a focused query and returns sources with URLs and dates. Has no memory of the parent conversation.',
+  'docs': 'Document analysis subagent — receives the documents to analyze (in its prompt) and returns structured claims with attribution.',
+  'synth': 'Synthesis subagent — receives ALL prior findings (passed explicitly) and merges them. Cannot see what other subagents did unless coordinator includes it.',
+  'report': 'Report generation subagent — formats the final output. Receives the synthesized content explicitly in its prompt.',
+};
+
+document.querySelectorAll('#hub-diagram .node-group').forEach(node => {
+  node.addEventListener('mouseenter', () => {
+    const step = node.dataset.step;
+    if (step && hubNarrations[step]) {
+      document.querySelectorAll('#hub-diagram .node-group').forEach(n => n.classList.remove('highlight'));
+      node.classList.add('highlight');
+      document.getElementById('hub-narration').innerHTML = hubNarrations[step];
+    }
+  });
+});
+
+let hubCycleIndex = 0;
+const hubCycleSteps = ['hub', 'search', 'docs', 'synth', 'report'];
+function cycleHub() {
+  document.querySelectorAll('#hub-diagram .node-group').forEach(n => n.classList.remove('highlight'));
+  const step = hubCycleSteps[hubCycleIndex];
+  const node = document.querySelector(`#hub-diagram [data-step="${step}"]`);
+  if (node) {
+    node.classList.add('highlight');
+    document.getElementById('hub-narration').innerHTML = hubNarrations[step];
+  }
+  hubCycleIndex = (hubCycleIndex + 1) % hubCycleSteps.length;
+}
+
+// === Spawn diagram (Figure 1.3) ===
+let spawnParallel = false;
+function toggleSpawn() {
+  spawnParallel = !spawnParallel;
+  const label = document.getElementById('spawn-mode-label');
+  const detail = document.getElementById('spawn-mode-detail');
+  const a = document.getElementById('spawn-time-a');
+  const b = document.getElementById('spawn-time-b');
+  const c = document.getElementById('spawn-time-c');
+  if (spawnParallel) {
+    label.textContent = 'Mode: PARALLEL · 30s total';
+    label.style.fill = 'var(--sage)';
+    detail.textContent = 'All three Task tool calls emitted in a SINGLE coordinator response. They run concurrently.';
+    detail.style.fill = 'var(--sage)';
+    a.textContent = 'runs · 30s';
+    b.textContent = 'runs · 30s';
+    c.textContent = 'runs · 30s';
+    document.querySelectorAll('#spawn-diagram .node-rect.teal').forEach(r => {
+      r.classList.add('sage');
+      r.classList.remove('teal');
+    });
+    document.getElementById('spawn-narration').innerHTML = 'PARALLEL mode — three subagents run concurrently. Total ~30s instead of 90s. The fix: emit multiple <code>Task</code> tool calls in a <strong>single coordinator response</strong>.';
+  } else {
+    label.textContent = 'Mode: SEQUENTIAL · 90s total';
+    label.style.fill = 'var(--ink-muted)';
+    detail.textContent = 'Tool calls emitted across separate turns. Each subagent waits.';
+    detail.style.fill = 'var(--ink-faint)';
+    a.textContent = 'runs · 30s';
+    b.textContent = 'waits · then 30s';
+    c.textContent = 'waits · then 30s';
+    document.querySelectorAll('#spawn-diagram .node-rect.sage').forEach(r => {
+      r.classList.add('teal');
+      r.classList.remove('sage');
+    });
+    document.getElementById('spawn-narration').innerHTML = 'SEQUENTIAL mode — Task calls across separate turns wait for each other. The exam trap: this is what most candidates produce by default.';
+  }
+}
+
+// === Handoff diagram (Figure 1.4) ===
+const handoffNarrations = {
+  'hand-1': 'customer_id — verified, from get_customer. Without this, the human can\'t pull up the account.',
+  'hand-2': 'conversation_summary — what the customer asked. Replaces the transcript the human can\'t see.',
+  'hand-3': 'investigation_results — what the agent found. Tool outputs, account state, prior tickets.',
+  'hand-4': 'root_cause — the agent\'s best understanding of why this is happening.',
+  'hand-5': 'recommended_action — what the agent thinks should be done.',
+  'hand-6': 'reason_for_escalation — policy gap, customer demand, or agent\'s capability limit.',
+};
+
+['hand-1', 'hand-2', 'hand-3', 'hand-4', 'hand-5', 'hand-6'].forEach(id => {
+  const node = document.getElementById(id);
+  if (node) {
+    node.addEventListener('mouseenter', () => {
+      ['hand-1', 'hand-2', 'hand-3', 'hand-4', 'hand-5', 'hand-6'].forEach(n => {
+        document.getElementById(n).classList.remove('highlight');
+      });
+      node.classList.add('highlight');
+      document.getElementById('handoff-narration').innerHTML = handoffNarrations[id];
+    });
+  }
+});
+
+let handoffWalkIndex = 0;
+function walkHandoff() {
+  const ids = ['hand-1', 'hand-2', 'hand-3', 'hand-4', 'hand-5', 'hand-6'];
+  ids.forEach(id => document.getElementById(id).classList.remove('highlight'));
+  const id = ids[handoffWalkIndex];
+  document.getElementById(id).classList.add('highlight');
+  document.getElementById('handoff-narration').innerHTML = handoffNarrations[id];
+  handoffWalkIndex = (handoffWalkIndex + 1) % ids.length;
+}
+
+// === Hook diagram (Figure 1.5) ===
+function hoverHook(which) {
+  const pre = document.getElementById('hook-pre');
+  const post = document.getElementById('hook-post');
+  pre.classList.remove('highlight');
+  post.classList.remove('highlight');
+  if (which === 'pre') {
+    pre.classList.add('highlight');
+    document.getElementById('hook-narration').innerHTML = '<strong style="color: var(--accent);">Pre-tool-use hook</strong> intercepts the model\'s tool call BEFORE the tool runs. Used to enforce policy: block refunds over $500, require identity verification, GDPR consent. Returns block, allow, or modify.';
+  } else {
+    post.classList.add('highlight');
+    document.getElementById('hook-narration').innerHTML = '<strong style="color: var(--accent);">PostToolUse hook</strong> transforms the tool\'s raw result BEFORE the model sees it. Used for normalization: Unix epochs to ISO 8601, status codes to strings, units conversion. The model only sees clean data.';
+  }
+}
+
+document.getElementById('hook-pre').addEventListener('mouseenter', () => hoverHook('pre'));
+document.getElementById('hook-post').addEventListener('mouseenter', () => hoverHook('post'));
+
+// === Dilution diagram (Figure 1.6) ===
+let dilutionMode = 'compare';
+function toggleDilution() {
+  const bad = document.getElementById('dilution-bad');
+  const good = document.getElementById('dilution-good');
+  if (dilutionMode === 'compare') {
+    dilutionMode = 'bad';
+    bad.style.opacity = 1;
+    good.style.opacity = 0.25;
+    document.getElementById('dilution-narration').innerHTML = '<strong style="color: var(--coral);">Single pass</strong> — 14 files reviewed at once. Attention spreads across all of them. Some get detailed analysis; others get superficial comments. The same code pattern is flagged in one file and approved in another.';
+  } else if (dilutionMode === 'bad') {
+    dilutionMode = 'good';
+    bad.style.opacity = 0.25;
+    good.style.opacity = 1;
+    document.getElementById('dilution-narration').innerHTML = '<strong style="color: var(--sage);">Multi-pass</strong> — each file gets its own focused pass for local issues. A separate integration pass examines cross-file data flow. Each pass has full attention. Findings are consistent and accurate.';
+  } else {
+    dilutionMode = 'compare';
+    bad.style.opacity = 1;
+    good.style.opacity = 1;
+    document.getElementById('dilution-narration').innerHTML = 'A bigger context window doesn\'t fix attention dilution. Decomposition into focused passes does. Click "Toggle approach" to compare.';
+  }
+}
+
+// === Session diagram (Figure 1.7) ===
+const sessionNarrations = {
+  'path-resume': '<strong style="color: var(--teal);">--resume name</strong> — continue a prior session linearly. Full context preserved. Use when prior tool results are still valid (no major data changes).',
+  'path-fork': '<strong style="color: var(--sage);">fork_session</strong> — branch from a shared baseline to explore divergent approaches in parallel. Both forks start with the full prior context.',
+  'path-fresh': '<strong style="color: var(--coral);">Fresh + summary</strong> — abandon the prior session. Inject ONLY the conclusions (not raw tool results) into a new session. Use when prior data is stale.',
+};
+
+['path-resume', 'path-fork', 'path-fresh'].forEach(id => {
+  const node = document.getElementById(id);
+  if (node) {
+    node.addEventListener('mouseenter', () => {
+      document.getElementById('session-narration').innerHTML = sessionNarrations[id];
+    });
+  }
+});
+
+let sessionWalkIndex = 0;
+function walkSession() {
+  const ids = ['path-resume', 'path-fork', 'path-fresh'];
+  ids.forEach(id => document.getElementById(id).classList.remove('highlight'));
+  const id = ids[sessionWalkIndex];
+  document.getElementById(id).classList.add('highlight');
+  document.getElementById('session-narration').innerHTML = sessionNarrations[id];
+  sessionWalkIndex = (sessionWalkIndex + 1) % ids.length;
+}
+
+// === Smooth scroll TOC ===
+document.querySelectorAll('nav.toc a').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      window.scrollTo({
+        top: target.offsetTop - 100,
+        behavior: 'smooth'
+      });
+    }
+  });
+});
+
+// === Fade-in on scroll ===
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.diagram-block, .traps-block').forEach(el => {
+  el.classList.add('fade-in');
+  fadeObserver.observe(el);
+});
+
+// ============ PRACTICE EXAM LOGIC ============
+
+let examMode = false;
+
+// Reveal answer for a check question
+function revealCheck(id) {
+  const card = document.getElementById(id);
+  if (card) card.classList.add('revealed');
+}
+
+// Toggle exam mode — shows score panel and changes behavior
+function toggleExamMode() {
+  examMode = !examMode;
+  const btn = document.getElementById('exam-mode-btn');
+  const panel = document.getElementById('score-panel');
+  if (examMode) {
+    btn.textContent = 'Exit exam mode';
+    btn.classList.add('active');
+    panel.classList.remove('hidden');
+    // Reset all mock answers when entering exam mode
+    resetExam();
+  } else {
+    btn.textContent = 'Start exam mode';
+    btn.classList.remove('active');
+    panel.classList.add('hidden');
+  }
+}
+
+// Select an option on a mock exam question
+function selectOption(optionEl) {
+  const card = optionEl.closest('.question-card');
+  if (!card || card.classList.contains('revealed')) return;
+
+  // Clear previous selection
+  card.querySelectorAll('.option-item').forEach(o => o.classList.remove('selected'));
+  optionEl.classList.add('selected');
+
+  // Update score panel if exam mode
+  if (examMode) updateScorePanel();
+}
+
+// Reveal a single mock question's answer
+function revealMock(id) {
+  const card = document.getElementById(id);
+  if (!card) return;
+
+  card.classList.add('revealed');
+  const correctLetter = card.dataset.correct;
+
+  // Mark the correct option
+  card.querySelectorAll('.option-item').forEach(opt => {
+    if (opt.dataset.letter === correctLetter) {
+      opt.classList.add('correct');
+    }
+  });
+
+  // If user selected wrong, mark their selection as incorrect
+  const selected = card.querySelector('.option-item.selected');
+  if (selected && selected.dataset.letter !== correctLetter) {
+    selected.classList.add('incorrect');
+    card.classList.add('answered', 'incorrect');
+  } else if (selected) {
+    card.classList.add('answered', 'correct');
+  }
+
+  if (examMode) updateScorePanel();
+}
+
+// Submit the entire exam — reveal all answers
+function submitExam() {
+  const cards = document.querySelectorAll('.mock-q');
+  cards.forEach(card => {
+    if (!card.classList.contains('revealed')) {
+      revealMock(card.id);
+    }
+  });
+  updateScorePanel(true);
+}
+
+// Reset all exam answers
+function resetExam() {
+  document.querySelectorAll('.mock-q').forEach(card => {
+    card.classList.remove('revealed', 'answered', 'correct', 'incorrect');
+    card.querySelectorAll('.option-item').forEach(opt => {
+      opt.classList.remove('selected', 'correct', 'incorrect');
+    });
+  });
+  updateScorePanel();
+}
+
+// Update the live score panel
+function updateScorePanel(submitted = false) {
+  const cards = document.querySelectorAll('.mock-q');
+  let answered = 0;
+  let correct = 0;
+
+  cards.forEach(card => {
+    const selected = card.querySelector('.option-item.selected');
+    if (selected) {
+      answered++;
+      if (selected.dataset.letter === card.dataset.correct) {
+        correct++;
+      }
+    }
+  });
+
+  const scoreEl = document.getElementById('score-current');
+  const answeredEl = document.getElementById('score-answered');
+  const statusEl = document.getElementById('score-status');
+
+  scoreEl.textContent = `${correct}/10`;
+  answeredEl.textContent = `${answered}/10`;
+
+  // Color coding & status messaging
+  if (submitted || answered === 10) {
+    if (correct >= 8) {
+      scoreEl.className = 'score-value good';
+      statusEl.textContent = 'Pass';
+      statusEl.className = 'score-value good';
+    } else {
+      scoreEl.className = 'score-value bad';
+      statusEl.textContent = 'Revisit';
+      statusEl.className = 'score-value bad';
+    }
+  } else {
+    scoreEl.className = 'score-value';
+    statusEl.textContent = answered === 0 ? 'Not started' : 'In progress';
+    statusEl.className = 'score-value';
+  }
+}
+</script>
+
+</body>
+</html>

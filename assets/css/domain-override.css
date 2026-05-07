@@ -1,0 +1,468 @@
+/* ─────────────────────────────────────────────────────────────
+   Claude Architect Foundations — Domain Module Editorial Override
+   Loaded AFTER each domain file's inline <style>; cascade flips
+   the warm-gold dark theme to the editorial paper palette.
+
+   Strategy:
+     1. Re-declare CSS variables → paper palette
+     2. Re-skin masthead, body grain, gradient backgrounds (hardcoded rgba)
+     3. Push typography to Fraunces variable axes + Instrument Sans
+     4. SVG attribute selectors for hardcoded fill/stroke hexes
+     5. Inline-style attribute selectors for domain4's bare hex literals
+   ───────────────────────────────────────────────────────────── */
+
+/* ── 1. Paper / ink / accent tokens ──────────────────────────── */
+:root {
+  /* paper system */
+  --paper:       #F4F1EA;
+  --paper-deep:  #ECE6D9;
+  --paper-card:  #FBF9F4;
+
+  /* ink */
+  --ink-base:    #0E1F26;
+  --ink-soft-2:  #3A4A52;
+  --ink-mute-2:  #6A7880;
+
+  /* accents */
+  --lava:        #FF3621;
+  --lava-deep:   #C72D1A;
+  --lava-soft:   rgba(255, 54, 33, 0.08);
+
+  --tone-rust:   #B0532E;
+  --tone-moss:   #4A6F3F;
+  --tone-ochre:  #A37B1F;
+  --tone-sepia:  #7A5F3A;
+  --tone-clay:   #8E3A28;
+
+  --rule-soft:   rgba(14, 31, 38, 0.18);
+  --rule-faint:  rgba(14, 31, 38, 0.10);
+
+  /* fonts */
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body:    "Instrument Sans", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+
+  /* ── re-map the original dark-mode tokens ── */
+  --bg:           var(--paper);
+  --bg-elevated:  var(--paper-deep);
+  --bg-card:      var(--paper-card);
+  --ink:          var(--ink-base);
+  --ink-muted:    var(--ink-soft-2);
+  --ink-faint:    var(--ink-mute-2);
+  --rule:         var(--rule-faint);
+  --rule-strong:  var(--rule-soft);
+  --accent:       var(--lava);
+  --accent-soft:  var(--lava-deep);
+  --teal:         var(--tone-moss);
+  --coral:        var(--tone-rust);
+  --rose:         var(--tone-clay);
+  --sage:         var(--tone-sepia);
+
+  --serif:        var(--font-display);
+  --sans:         var(--font-body);
+  --mono:         var(--font-mono);
+}
+
+/* ── 2. Body & grain overlay ─────────────────────────────────── */
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background-image:
+    radial-gradient(1100px 550px at 92% -8%,  rgba(255, 54, 33, 0.05), transparent 60%),
+    radial-gradient(900px 500px  at -8% 108%, rgba(199, 167, 122, 0.20), transparent 60%);
+  background-attachment: fixed;
+}
+/* Replace the gold dot-grain with a near-invisible warm grain */
+body::before {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(14, 31, 38, 0.025) 1px, transparent 0) !important;
+}
+
+/* ── 3. Masthead ─────────────────────────────────────────────── */
+header.masthead {
+  background: rgba(244, 241, 234, 0.88);
+  backdrop-filter: blur(16px) saturate(120%);
+  border-bottom: 1px solid var(--rule-faint);
+}
+.brand { color: var(--ink); }
+.brand .ampersand,
+.eyebrow { color: var(--lava); }
+nav.toc a { color: var(--ink-soft-2); }
+nav.toc a:hover { color: var(--lava); border-bottom-color: var(--lava); }
+
+/* ── 4. Typography (Fraunces variable axes) ──────────────────── */
+.hero h1 {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 144, "SOFT" 60, "wght" 360;
+  font-weight: 360;
+  color: var(--ink);
+  letter-spacing: -0.025em;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--lava);
+  font-variation-settings: "opsz" 144, "SOFT" 90, "wght" 380;
+}
+.hero-meta { color: var(--lava); }
+.hero-meta::after { background: var(--rule-soft); }
+.hero-lede {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 18, "SOFT" 30, "wght" 400;
+  font-style: italic;
+  color: var(--ink-soft-2);
+}
+.hero-stats { border-left-color: var(--rule-soft); }
+.stat-value {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 56, "SOFT" 50, "wght" 460;
+  color: var(--ink);
+  font-weight: 460;
+}
+.stat-value .pct { color: var(--lava); }
+.stat-label { color: var(--ink-mute-2); }
+
+h2.section-title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 56, "SOFT" 30, "wght" 420;
+  font-weight: 420;
+  color: var(--ink);
+  letter-spacing: -0.022em;
+}
+.section-num {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 144, "SOFT" 70, "wght" 360;
+  color: var(--lava);
+}
+.section-num .num-suffix { color: var(--ink-mute-2); }
+.section-tag { color: var(--ink-mute-2); }
+.section-meaning {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 18, "SOFT" 25, "wght" 400;
+  color: var(--ink-soft-2);
+  border-left-color: var(--lava);
+  background: linear-gradient(90deg, var(--lava-soft) 0%, transparent 100%);
+}
+
+h3.subhead {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 28, "SOFT" 30, "wght" 500;
+  color: var(--ink);
+  letter-spacing: -0.018em;
+}
+h4.minor { color: var(--lava); }
+
+p { color: var(--ink-soft-2); }
+p strong { color: var(--ink); font-weight: 600; }
+p code, li code {
+  font-family: var(--font-mono);
+  background: var(--paper-deep);
+  color: var(--lava-deep);
+  border: 1px solid var(--rule-faint);
+}
+
+ul.bullets li { color: var(--ink-soft-2); }
+ul.bullets li::before { color: var(--lava); }
+
+/* ── 5. Pull quote / eyebrow / accent text ───────────────────── */
+.pull-quote {
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+  border-left: 3px solid var(--lava);
+}
+.pull-quote-text {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 50, "wght" 400;
+  color: var(--ink);
+  font-style: italic;
+}
+.pull-quote-attr { color: var(--ink-mute-2); }
+.eyebrow { color: var(--lava); font-family: var(--font-mono); }
+.accent { color: var(--lava); }
+.keyword { color: var(--ink); }
+
+/* ── 6. Diagram blocks ───────────────────────────────────────── */
+.diagram-block {
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+}
+.diagram-header {
+  background: var(--paper-deep);
+  border-bottom: 1px solid var(--rule-faint);
+}
+.diagram-title { color: var(--ink-soft-2); font-family: var(--font-mono); }
+.diagram-narration { color: var(--ink-soft-2); background: var(--paper-card); border-top: 1px solid var(--rule-faint); }
+.diagram-toggle, .diagram-step-btn, .diagram-controls button {
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--rule-soft);
+  font-family: var(--font-mono);
+}
+.diagram-toggle:hover, .diagram-step-btn:hover { border-color: var(--lava); color: var(--lava); }
+.diagram-step-btn.active { background: var(--lava); color: var(--paper); border-color: var(--lava); }
+.diagram-caption, .diagram-legend { color: var(--ink-soft-2); }
+
+/* ── 7. SVG node rectangles & strokes ────────────────────────── */
+.node-rect {
+  fill: var(--paper-card);
+  stroke: var(--rule-soft);
+}
+.node-rect.accent  { stroke: var(--lava); }
+.node-rect.teal    { stroke: var(--tone-moss); }
+.node-rect.coral   { stroke: var(--tone-rust); }
+.node-rect.sage    { stroke: var(--tone-sepia); }
+.node-rect.rose    { stroke: var(--tone-clay); }
+.node-rect.fill-coral { fill: var(--tone-rust); stroke: var(--tone-rust); }
+.node-rect.fill-sage  { fill: var(--tone-sepia); stroke: var(--tone-sepia); }
+.node-rect.error      { stroke: var(--lava-deep); fill: var(--lava-soft); }
+.node-rect.success    { stroke: var(--tone-moss); fill: rgba(74,111,63,0.08); }
+.node-rect.warn       { stroke: var(--tone-ochre); fill: rgba(163,123,31,0.08); }
+.node-rect.persistent { stroke: var(--tone-sepia); fill: rgba(122,95,58,0.08); }
+
+.node-group:hover .node-rect { stroke-width: 2.5; }
+.node-group.highlight .node-rect { stroke: var(--lava); stroke-width: 2.5; }
+
+.node-label-accent { fill: var(--lava); }
+.node-label-coral  { fill: var(--tone-rust); }
+.node-label-sage   { fill: var(--tone-sepia); }
+.flow-label { fill: var(--ink-soft-2); }
+
+/* ── 8. SVG hardcoded fill/stroke remap ──────────────────────── */
+svg [fill="#3a3429"]  { fill: var(--rule-soft); }
+svg [fill="#5fb7a5"]  { fill: var(--tone-moss); }
+svg [fill="#6b6354"]  { fill: var(--ink-mute-2); }
+svg [fill="#8aa978"]  { fill: var(--tone-sepia); }
+svg [fill="#a89e8b"]  { fill: var(--ink-soft-2); }
+svg [fill="#e07b5a"]  { fill: var(--tone-rust); }
+svg [fill="#e8b04e"]  { fill: var(--lava); }
+svg [fill="#f4ede0"]  { fill: var(--ink); }
+
+svg [stroke="#3a3429"] { stroke: var(--rule-soft); }
+svg [stroke="#e8b04e"] { stroke: var(--lava); }
+
+/* domain4 inline-style hex literals — !important required to beat inline style attribute */
+[style*="fill:#a89e8b"] { fill: var(--ink-soft-2) !important; }
+[style*="fill:#e07b5a"] { fill: var(--tone-rust) !important; }
+[style*="fill:#e8b04e"] { fill: var(--lava) !important; }
+[style*="fill:#8aa978"] { fill: var(--tone-sepia) !important; }
+
+/* SVG text typography — push Playfair/Fraunces/Inter inside diagrams to editorial fonts */
+svg text                                   { fill: var(--ink-soft-2); }
+svg text[font-family*="Fraunces"],
+svg text[font-family*="Playfair"]          { font-family: var(--font-display); }
+svg text[font-family*="Inter"]             { font-family: var(--font-body); }
+svg text[font-family*="JetBrains"],
+svg text[font-family*="Mono"]              { font-family: var(--font-mono); }
+
+/* ── 9. Trap blocks (pitfalls / mistakes) ────────────────────── */
+.traps-block {
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+  border-left: 3px solid var(--tone-rust);
+  background-image: linear-gradient(90deg, rgba(176,83,46,0.06) 0%, transparent 60%);
+}
+.traps-header {
+  color: var(--tone-rust);
+  font-family: var(--font-mono);
+}
+.traps-sub { color: var(--ink-soft-2); }
+.trap-num {
+  background: var(--tone-rust);
+  color: var(--paper);
+  font-family: var(--font-mono);
+}
+.trap-item { border-bottom: 1px solid var(--rule-faint); }
+.trap-item-header { color: var(--ink); }
+.trap-wrong, .trap-why, .trap-fix, .trap-detail { color: var(--ink-soft-2); }
+.trap-wrong strong { color: var(--tone-rust); font-family: var(--font-mono); font-size: 0.7em; letter-spacing: 0.16em; text-transform: uppercase; }
+.trap-fix strong   { color: var(--tone-moss); font-family: var(--font-mono); font-size: 0.7em; letter-spacing: 0.16em; text-transform: uppercase; }
+.trap-why strong   { color: var(--ink); font-family: var(--font-mono); font-size: 0.7em; letter-spacing: 0.16em; text-transform: uppercase; }
+.warn-icon { color: var(--tone-rust); }
+
+/* ── 10. Dual compare cards (right vs wrong) ─────────────────── */
+.dual-card {
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+}
+.dual-card.wrong {
+  border-left: 3px solid var(--tone-rust);
+  background: linear-gradient(180deg, rgba(176,83,46,0.05), transparent 60%);
+}
+.dual-card.right {
+  border-left: 3px solid var(--tone-moss);
+  background: linear-gradient(180deg, rgba(74,111,63,0.05), transparent 60%);
+}
+.dual-card-tag { font-family: var(--font-mono); }
+.dual-card.wrong .dual-card-tag { color: var(--tone-rust); }
+.dual-card.right .dual-card-tag { color: var(--tone-moss); }
+.dual-card h5 {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 18, "wght" 540;
+  color: var(--ink);
+}
+.dual-card p { color: var(--ink-soft-2); }
+
+/* ── 11. Code blocks ─────────────────────────────────────────── */
+.code-block, .code-standalone {
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+  color: var(--ink);
+  font-family: var(--font-mono);
+}
+.code-block .keyword { color: var(--lava-deep); }
+.code-block .string  { color: var(--tone-moss); }
+.code-block .comment { color: var(--ink-mute-2); font-style: italic; }
+.code-block .accent  { color: var(--lava); }
+
+/* ── 12. Tables ──────────────────────────────────────────────── */
+.elegant-table {
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+}
+.elegant-table th {
+  background: var(--paper-deep);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.elegant-table td {
+  color: var(--ink-soft-2);
+  border-bottom: 1px solid var(--rule-faint);
+}
+.elegant-table td:first-child {
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+.elegant-table tbody tr:hover { background: var(--lava-soft); }
+
+/* ── 13. Question bank / quiz ────────────────────────────────── */
+.qbank, .qbank-group-header,
+.exam-intro, .exam-intro-card {
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+  color: var(--ink-soft-2);
+}
+.qbank-group-num { color: var(--lava); font-family: var(--font-mono); }
+.qbank-group-title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 25, "wght" 520;
+  color: var(--ink);
+}
+.qbank-group-tag { color: var(--ink-mute-2); font-family: var(--font-mono); }
+
+.question-card {
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+  border-left: 3px solid var(--lava);
+}
+.question-card.check-q { border-left-color: var(--tone-moss); }
+.question-card.mock-q  { border-left-color: var(--tone-ochre); }
+.question-card.exam-q  { border-left-color: var(--lava); }
+.question-num { color: var(--lava); font-family: var(--font-mono); }
+.question-text {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 18, "SOFT" 25, "wght" 460;
+  color: var(--ink);
+}
+.question-scenario { color: var(--ink-soft-2); }
+.options-list { list-style: none; padding: 0; }
+.option-item {
+  border: 1px solid var(--rule-faint);
+  background: var(--paper);
+  color: var(--ink-soft-2);
+}
+.option-letter {
+  background: var(--paper-deep);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  border: 1px solid var(--rule-faint);
+}
+.option-text { color: var(--ink-soft-2); }
+
+.reveal-btn {
+  background: var(--lava);
+  color: var(--paper);
+  border: 1px solid var(--lava);
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+}
+.reveal-btn:hover { background: var(--lava-deep); border-color: var(--lava-deep); }
+.reveal-btn:disabled { background: var(--paper-deep); color: var(--ink-mute-2); border-color: var(--rule-faint); }
+
+.rationale {
+  background: var(--paper);
+  border-left: 3px solid var(--tone-moss);
+}
+.rationale-tag { color: var(--tone-moss); font-family: var(--font-mono); }
+.rationale-text { color: var(--ink); }
+.rationale-distractors { color: var(--ink-soft-2); }
+.rationale-distractors strong { color: var(--tone-rust); }
+
+.exam-mode-toggle {
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--rule-soft);
+  font-family: var(--font-mono);
+}
+.exam-mode-toggle:hover { border-color: var(--lava); color: var(--lava); }
+.exam-mode-toggle.active { background: var(--lava); color: var(--paper); border-color: var(--lava); }
+
+.score-panel {
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+}
+.score-label { color: var(--ink-mute-2); font-family: var(--font-mono); }
+.score-value {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 56, "SOFT" 60, "wght" 460;
+  color: var(--lava);
+}
+.score-action-btn {
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--rule-soft);
+  font-family: var(--font-mono);
+}
+.score-action-btn:hover { border-color: var(--lava); color: var(--lava); }
+
+/* ── 14. Exercise blocks (domain4) ───────────────────────────── */
+.exercise-block {
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+  border-left: 3px solid var(--tone-ochre);
+}
+.exercise-tag {
+  color: var(--tone-ochre);
+  font-family: var(--font-mono);
+}
+
+/* ── 15. Footer ──────────────────────────────────────────────── */
+footer, .footer-grid, .footer-col {
+  background: transparent;
+  border-top: 1px solid var(--rule-faint);
+  color: var(--ink-soft-2);
+}
+.footer-brand {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 25, "wght" 540;
+  color: var(--ink);
+}
+.footer-text, .footer-meta { color: var(--ink-soft-2); }
+.footer-col a { color: var(--lava); }
+
+/* ── 16. Misc utilities ──────────────────────────────────────── */
+hr { border-color: var(--rule-faint); }
+::selection { background: var(--lava); color: var(--paper); }
+
+/* Focus outlines for accessibility */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--lava);
+  outline-offset: 3px;
+  border-radius: 2px;
+}

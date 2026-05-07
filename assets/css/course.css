@@ -1,0 +1,646 @@
+/* ─────────────────────────────────────────────────────────────
+   Databricks Identity Course — Editorial-Technical Theme
+   Loaded AFTER each module's inline <style>; rules here win
+   via cascade order on equal specificity. Primary mechanism:
+   override the existing dark-mode CSS variables and re-skin
+   the colour-coded diagram primitives (.pill-*, .fb-*, etc.)
+   ───────────────────────────────────────────────────────────── */
+
+/* ── 1. Tokens ───────────────────────────────────────────────── */
+:root {
+  /* paper system */
+  --paper:       #F4F1EA;
+  --paper-deep:  #ECE6D9;
+  --paper-card:  #FBF9F4;
+
+  /* ink */
+  --ink:         #0E1F26;
+  --ink-soft:    #3A4A52;
+  --ink-mute:    #6A7880;
+
+  /* accents */
+  --lava:        #FF3621;
+  --lava-deep:   #C72D1A;
+  --lava-soft:   rgba(255, 54, 33, 0.08);
+
+  /* secondary palette — warm, restrained, distinguishable in diagrams */
+  --tone-rust:   #B0532E;     /* primary subjects (users, accounts) */
+  --tone-rust-bg:    rgba(176, 83, 46, 0.08);
+  --tone-rust-line:  rgba(176, 83, 46, 0.30);
+
+  --tone-moss:   #4A6F3F;     /* affirmative / workspace */
+  --tone-moss-bg:    rgba(74, 111, 63, 0.09);
+  --tone-moss-line:  rgba(74, 111, 63, 0.28);
+
+  --tone-ochre:  #A37B1F;     /* warnings / SPs / secrets */
+  --tone-ochre-bg:   rgba(163, 123, 31, 0.10);
+  --tone-ochre-line: rgba(163, 123, 31, 0.30);
+
+  --tone-sepia:  #7A5F3A;     /* groups / structures */
+  --tone-sepia-bg:   rgba(122, 95, 58, 0.09);
+  --tone-sepia-line: rgba(122, 95, 58, 0.28);
+
+  --tone-clay:   #8E3A28;     /* unity catalog / data-plane */
+  --tone-clay-bg:    rgba(142, 58, 40, 0.07);
+  --tone-clay-line:  rgba(142, 58, 40, 0.25);
+
+  /* rules */
+  --rule:        rgba(14, 31, 38, 0.18);
+  --rule-faint:  rgba(14, 31, 38, 0.10);
+
+  /* fonts */
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body:    "Instrument Sans", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+
+  /* override the inherited dark-mode variables */
+  --bg:      var(--paper);
+  --bg2:     var(--paper-deep);
+  --bg3:     var(--paper-card);
+  --card:    var(--paper-card);
+  --border:  var(--rule-faint);
+  --accent:  var(--lava);
+  --accent2: var(--lava-deep);
+  --accent3: var(--tone-sepia);
+  --green:   var(--tone-moss);
+  --red:     var(--lava-deep);
+  --orange:  var(--tone-ochre);
+  --text:    var(--ink);
+  --muted:   var(--ink-soft);
+  --dim:     var(--ink-mute);
+}
+
+/* ── 2. Base ─────────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.65;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background-image:
+    radial-gradient(1100px 550px at 92% -8%,  rgba(255, 54, 33, 0.05), transparent 60%),
+    radial-gradient(900px 500px  at -8% 108%, rgba(199, 167, 122, 0.20), transparent 60%);
+  background-attachment: fixed;
+}
+
+p {
+  color: var(--ink-soft);
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+strong, b { color: var(--ink); font-weight: 600; }
+
+a { color: var(--lava); }
+a:hover { color: var(--lava-deep); }
+a:focus-visible {
+  outline: 2px solid var(--lava);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+code, kbd, samp {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--paper-deep);
+  color: var(--ink);
+  padding: 0.12em 0.4em;
+  border-radius: 3px;
+  border: 1px solid var(--rule-faint);
+}
+
+/* ── 3. Hero ─────────────────────────────────────────────────── */
+.hero {
+  background: var(--paper);
+  background-image:
+    radial-gradient(800px 300px at 100% 0%, var(--lava-soft), transparent 60%),
+    radial-gradient(600px 240px at 0% 100%, rgba(199, 167, 122, 0.18), transparent 60%);
+  border-bottom: 1px solid var(--rule-faint);
+  padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem) clamp(2rem, 4vw, 3rem);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before { display: none; }
+.hero::after {
+  content: "";
+  position: absolute;
+  left: clamp(1.5rem, 4vw, 3rem);
+  bottom: 0;
+  width: 56px;
+  height: 3px;
+  background: var(--lava);
+}
+
+.hero-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  color: var(--lava);
+  text-transform: uppercase;
+  margin-bottom: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-weight: 500;
+}
+.hero-tag::before {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background: var(--lava);
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 144, "SOFT" 30, "wght" 420;
+  font-weight: 420;
+  font-size: clamp(1.85rem, 1.5rem + 1.6vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.022em;
+  margin-bottom: 1.1rem;
+  color: var(--ink);
+  /* kill the dark-mode gradient-clip + width clamp from earlier */
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  -webkit-text-fill-color: var(--ink);
+  max-width: none;
+  text-wrap: balance;
+}
+.hero h1 br {
+  /* keep the hard-break, but let downstream lines size like a subtitle */
+  display: block;
+  content: "";
+  margin-top: 0.15em;
+}
+
+.hero p {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 14, "wght" 400;
+  font-size: clamp(1rem, 0.95rem + 0.35vw, 1.2rem);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  font-weight: 400;
+  max-width: 60ch;
+  text-wrap: pretty;
+}
+
+/* ── 4. Container & sections ─────────────────────────────────── */
+.container { max-width: 880px; padding-bottom: 5rem; }
+
+.section { padding: 4rem 0 1.25rem; }
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: var(--lava);
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  font-weight: 500;
+}
+
+h1, h2, h3, h4 { color: var(--ink); }
+
+h2 {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 36, "SOFT" 30, "wght" 480;
+  font-weight: 480;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.018em;
+  margin-bottom: 0.4rem;
+}
+
+h3 {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 25, "wght" 520;
+  font-weight: 520;
+  font-size: 1.2rem;
+  line-height: 1.25;
+  color: var(--ink);
+  margin: 2rem 0 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+h4 {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 18, "wght" 560;
+  font-size: 1rem;
+  color: var(--ink);
+  margin: 1.25rem 0 0.5rem;
+}
+
+.divider {
+  width: 36px;
+  height: 2px;
+  background: var(--lava);
+  margin: 0.85rem 0 1.6rem;
+}
+
+/* ── 5. Pills ────────────────────────────────────────────────── */
+.pill {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.35rem 0.75rem;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+  background: var(--paper-deep);
+  border: 1px solid var(--rule-faint);
+  color: var(--ink);
+}
+.pill-blue   { background: var(--tone-rust-bg);  border-color: var(--tone-rust-line);  color: var(--tone-rust); }
+.pill-cyan   { background: var(--lava-soft);     border-color: rgba(255,54,33,0.28);   color: var(--lava-deep); }
+.pill-purple { background: var(--tone-sepia-bg); border-color: var(--tone-sepia-line); color: var(--tone-sepia); }
+.pill-green  { background: var(--tone-moss-bg);  border-color: var(--tone-moss-line);  color: var(--tone-moss); }
+.pill-orange { background: var(--tone-ochre-bg); border-color: var(--tone-ochre-line); color: var(--tone-ochre); }
+.pill-red    { background: var(--tone-clay-bg);  border-color: var(--tone-clay-line);  color: var(--tone-clay); }
+
+/* ── 6. Cards ────────────────────────────────────────────────── */
+.card {
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+  border-radius: 6px;
+  padding: 1.5rem 1.6rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 0 rgba(14, 31, 38, 0.025);
+}
+.card-title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 25, "wght" 540;
+  font-weight: 540;
+  font-size: 1.05rem;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+  margin-bottom: 0.6rem;
+}
+
+/* ── 7. Lists ────────────────────────────────────────────────── */
+ul.clean { list-style: none; padding-left: 0; }
+ul.clean li {
+  color: var(--ink-soft);
+  padding: 0.3rem 0 0.3rem 1.1rem;
+  position: relative;
+  font-size: 0.95rem;
+}
+ul.clean li::before {
+  content: "→";
+  color: var(--lava);
+  position: absolute;
+  left: 0;
+  top: 0.32rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+/* ── 8. Info boxes ───────────────────────────────────────────── */
+.info-box {
+  border-radius: 4px;
+  padding: 1.1rem 1.3rem;
+  margin: 1.4rem 0;
+  border-left: 3px solid var(--ink);
+  background: var(--paper-card);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.info-box strong {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--ink);
+}
+.info-box.blue   { background: var(--tone-rust-bg);  border-left-color: var(--tone-rust);  color: var(--ink); }
+.info-box.blue   strong { color: var(--tone-rust); }
+.info-box.green  { background: var(--tone-moss-bg);  border-left-color: var(--tone-moss);  color: var(--ink); }
+.info-box.green  strong { color: var(--tone-moss); }
+.info-box.orange { background: var(--tone-ochre-bg); border-left-color: var(--tone-ochre); color: var(--ink); }
+.info-box.orange strong { color: var(--tone-ochre); }
+.info-box.red    { background: var(--lava-soft);     border-left-color: var(--lava);       color: var(--ink); }
+.info-box.red    strong { color: var(--lava-deep); }
+.info-box.purple { background: var(--tone-sepia-bg); border-left-color: var(--tone-sepia); color: var(--ink); }
+.info-box.purple strong { color: var(--tone-sepia); }
+
+/* ── 9. Diagram wrapper ──────────────────────────────────────── */
+.diagram-wrap {
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+  border-radius: 6px;
+  padding: 2rem 1.6rem;
+  margin: 1.75rem 0;
+}
+.diagram-title {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* flow boxes (generic) */
+.flow-box {
+  border-radius: 4px;
+  background: var(--paper-deep);
+  border: 1px solid var(--rule-faint);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+.flow-box .fb-icon { font-size: 1.1rem; }
+.flow-box .fb-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+}
+.flow-arrow { color: var(--ink-mute); font-family: var(--font-mono); }
+
+/* color variants — re-mapped to the warm palette */
+.fb-account { background: var(--tone-rust-bg);  border-color: var(--tone-rust-line);  color: var(--tone-rust); }
+.fb-ws      { background: var(--tone-moss-bg);  border-color: var(--tone-moss-line);  color: var(--tone-moss); }
+.fb-user    { background: var(--lava-soft);     border-color: rgba(255,54,33,0.25);   color: var(--lava-deep); }
+.fb-sp      { background: var(--tone-ochre-bg); border-color: var(--tone-ochre-line); color: var(--tone-ochre); }
+.fb-group   { background: var(--tone-sepia-bg); border-color: var(--tone-sepia-line); color: var(--tone-sepia); }
+.fb-uc      { background: var(--tone-clay-bg);  border-color: var(--tone-clay-line);  color: var(--tone-clay); }
+
+/* ── 10. SSO step list ───────────────────────────────────────── */
+.sso-num {
+  background: var(--paper);
+  border: 1px solid var(--lava);
+  color: var(--lava);
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+.sso-vline { background: var(--rule-faint); }
+.sso-content h4 {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 18, "wght" 540;
+  font-size: 0.95rem;
+  color: var(--ink);
+  margin: 0 0 0.25rem;
+}
+.sso-content p { color: var(--ink-soft); font-size: 0.9rem; }
+
+/* ── 11. AVW (account-vs-workspace) widget ───────────────────── */
+.avw-outer {
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 1.3rem;
+}
+.avw-label, .avw-inner-label, .avw-ws-title {
+  font-family: var(--font-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.avw-label { color: var(--lava); }
+.avw-inner-label { color: var(--ink-soft); }
+.avw-ws-title { color: var(--tone-moss); }
+
+.avw-item {
+  font-family: var(--font-mono);
+  border-radius: 4px;
+}
+.avw-user { background: var(--lava-soft);     border: 1px solid rgba(255,54,33,0.22);    color: var(--lava-deep); }
+.avw-sp   { background: var(--tone-ochre-bg); border: 1px solid var(--tone-ochre-line); color: var(--tone-ochre); }
+.avw-grp  { background: var(--tone-sepia-bg); border: 1px solid var(--tone-sepia-line); color: var(--tone-sepia); }
+
+.avw-ws {
+  border: 1px solid var(--tone-moss-line);
+  background: var(--tone-moss-bg);
+}
+.avw-ws-item {
+  font-family: var(--font-mono);
+  background: var(--paper);
+  border: 1px solid var(--rule-faint);
+  color: var(--ink-soft);
+}
+
+/* ── 12. Compare grid (cg-*) ─────────────────────────────────── */
+.cg-card {
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+  border-radius: 6px;
+}
+.cg-title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "wght" 540;
+  color: var(--ink);
+}
+.cg-user { background: var(--lava-soft);     border-color: rgba(255,54,33,0.20); }
+.cg-sp   { background: var(--tone-ochre-bg); border-color: var(--tone-ochre-line); }
+.cg-grp  { background: var(--tone-sepia-bg); border-color: var(--tone-sepia-line); }
+
+/* ── 13. Lifecycle (lc-*) ────────────────────────────────────── */
+.lc-circle {
+  font-family: var(--font-mono);
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+}
+.lc-text { color: var(--ink-soft); font-size: 0.85rem; }
+
+.lc-create { background: var(--tone-moss-bg);  border-color: var(--tone-moss-line)  !important; color: var(--tone-moss)  !important; }
+.lc-assign { background: var(--tone-rust-bg);  border-color: var(--tone-rust-line)  !important; color: var(--tone-rust)  !important; }
+.lc-secret { background: var(--tone-ochre-bg); border-color: var(--tone-ochre-line) !important; color: var(--tone-ochre) !important; }
+.lc-grant  { background: var(--tone-sepia-bg); border-color: var(--tone-sepia-line) !important; color: var(--tone-sepia) !important; }
+.lc-role   { background: var(--lava-soft);     border-color: rgba(255,54,33,0.22)   !important; color: var(--lava-deep)  !important; }
+
+/* ── 14. Nested groups (nest-*) ──────────────────────────────── */
+.nest-outer {
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+  border-radius: 6px;
+}
+.nest-label {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.nest-child {
+  background: var(--paper);
+  border: 1px solid var(--rule-faint);
+  border-radius: 4px;
+}
+.nest-child-title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 18, "wght" 540;
+  color: var(--ink);
+}
+.nest-member {
+  font-family: var(--font-mono);
+  background: var(--paper-deep);
+  border: 1px solid var(--rule-faint);
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+}
+
+/* ── 15. Checkpoint blocks ───────────────────────────────────── */
+.checkpoint {
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--lava);
+  border-radius: 4px;
+  padding: 1.2rem 1.4rem;
+  margin: 2rem 0;
+}
+.checkpoint-title {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--lava);
+  font-weight: 500;
+  margin-bottom: 0.6rem;
+}
+
+/* ── 16. TOC blocks ──────────────────────────────────────────── */
+.toc {
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+  border-radius: 6px;
+  padding: 1.5rem 1.6rem;
+}
+.toc-title {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+.toc-item {
+  border: 1px solid var(--rule-faint);
+  background: var(--paper);
+  border-radius: 4px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.toc-item:hover { border-color: var(--lava); background: var(--lava-soft); }
+.toc-item-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+.toc-item-overlay:focus-visible {
+  outline: 2px solid var(--lava);
+  outline-offset: 2px;
+}
+
+/* Anchor scroll offset so the fixed Syllabus link doesn't overlap section heads */
+.section { scroll-margin-top: 4.5rem; }
+[id^="s"] { scroll-margin-top: 4.5rem; }
+
+/* ── 17. Tables (any module that has them) ───────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.92rem;
+}
+th, td {
+  text-align: left;
+  padding: 0.7rem 0.85rem;
+  border-bottom: 1px solid var(--rule-faint);
+  color: var(--ink);
+}
+th {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 500;
+  background: var(--paper-deep);
+  border-bottom: 1px solid var(--rule);
+}
+tr:last-child td { border-bottom: none; }
+
+/* ── 18. Code blocks ─────────────────────────────────────────── */
+pre {
+  background: var(--paper-deep);
+  border: 1px solid var(--rule-faint);
+  border-left: 3px solid var(--lava);
+  border-radius: 4px;
+  padding: 1rem 1.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  overflow-x: auto;
+  color: var(--ink);
+  margin: 1.25rem 0;
+}
+pre code { background: none; border: none; padding: 0; font-size: inherit; }
+
+/* ── 19. Blockquote (if used) ────────────────────────────────── */
+blockquote {
+  border-left: 3px solid var(--lava);
+  padding: 0.4rem 0 0.4rem 1.2rem;
+  margin: 1.5rem 0;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 14, "wght" 400;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+/* ── 20. Site-chrome additions: back-to-syllabus link ────────── */
+.course-nav {
+  position: fixed;
+  top: 1.25rem;
+  left: 1.25rem;
+  z-index: 50;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  text-decoration: none;
+  background: rgba(244, 241, 234, 0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--rule-faint);
+  border-radius: 3px;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.course-nav:hover,
+.course-nav:focus-visible {
+  color: var(--lava);
+  border-color: var(--lava);
+  background: var(--paper);
+  outline: none;
+}
+.course-nav::before {
+  content: "← ";
+  font-family: var(--font-mono);
+}
+
+/* ── 21. Reduced motion ──────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .toc-item, .course-nav { transition: none; }
+}
+
+/* ── 22. Selection ───────────────────────────────────────────── */
+::selection {
+  background: var(--lava);
+  color: var(--paper);
+}

@@ -1,0 +1,3305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Domain 4 — Prompt Engineering &amp; Structured Output</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0d0b;
+  --bg-elevated: #16140f;
+  --bg-card: #1a1812;
+  --ink: #f4ede0;
+  --ink-muted: #a89e8b;
+  --ink-faint: #6b6354;
+  --rule: #2a2620;
+  --rule-strong: #3a3429;
+  --accent: #e8b04e;
+  --accent-soft: #c98f3f;
+  --teal: #5fb7a5;
+  --coral: #e07b5a;
+  --rose: #c66a7a;
+  --sage: #8aa978;
+  --serif: 'Fraunces', Georgia, serif;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --sans: 'Inter', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(232,176,78,0.015) 1px, transparent 0);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 32px;
+  position: relative;
+  z-index: 2;
+}
+
+/* HEADER */
+header.masthead {
+  border-bottom: 1px solid var(--rule);
+  padding: 32px 0;
+  position: sticky;
+  top: 0;
+  background: rgba(14, 13, 11, 0.92);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+}
+
+.masthead-inner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.brand {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  font-style: italic;
+}
+
+.brand .ampersand { color: var(--accent); font-style: italic; }
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+nav.toc {
+  display: flex;
+  gap: 24px;
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+nav.toc a {
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+}
+
+nav.toc a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* HERO */
+.hero {
+  padding: 120px 0 80px;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 80px;
+  align-items: end;
+}
+
+.hero-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.hero-meta::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule-strong);
+}
+
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(48px, 7vw, 96px);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  margin-bottom: 32px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.hero-lede {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 680px;
+  font-style: italic;
+}
+
+.hero-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  border-left: 1px solid var(--rule-strong);
+  padding-left: 32px;
+}
+
+.stat { display: flex; flex-direction: column; gap: 4px; }
+
+.stat-value {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.stat-value .pct { color: var(--accent); }
+
+.stat-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+/* SECTIONS */
+section.task-section {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.section-header {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 48px;
+  margin-bottom: 56px;
+  align-items: start;
+}
+
+.section-num {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 88px;
+  line-height: 1;
+  color: var(--accent);
+  letter-spacing: -0.04em;
+}
+
+.section-num .num-suffix {
+  font-size: 24px;
+  vertical-align: super;
+  color: var(--ink-faint);
+  margin-left: 4px;
+}
+
+.section-header-text { padding-top: 16px; }
+
+.section-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 16px;
+}
+
+h2.section-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(36px, 4.5vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin-bottom: 20px;
+}
+
+.section-meaning {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 720px;
+  padding: 16px 24px;
+  border-left: 3px solid var(--accent);
+  background: linear-gradient(90deg, rgba(232,176,78,0.04) 0%, transparent 100%);
+}
+
+.section-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+}
+
+h3.subhead {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  color: var(--ink);
+}
+
+h4.minor {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+
+p {
+  margin-bottom: 16px;
+  color: var(--ink-muted);
+  font-size: 15.5px;
+  line-height: 1.7;
+  max-width: 820px;
+}
+
+p strong { color: var(--ink); font-weight: 600; }
+
+p code, li code, td code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--bg-elevated);
+  padding: 2px 7px;
+  border-radius: 3px;
+  color: var(--accent);
+  border: 1px solid var(--rule);
+}
+
+ul.bullets {
+  list-style: none;
+  margin-bottom: 24px;
+  max-width: 860px;
+}
+
+ul.bullets li {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 14px;
+  color: var(--ink-muted);
+  line-height: 1.65;
+  font-size: 15.5px;
+}
+
+ul.bullets li::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent);
+  font-size: 10px;
+  line-height: 28px;
+}
+
+ul.bullets li strong { color: var(--ink); }
+
+/* DIAGRAM BLOCK */
+.diagram-block {
+  margin: 40px 0;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.diagram-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg-elevated);
+}
+
+.diagram-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-muted);
+}
+
+.diagram-fig {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.diagram-svg-wrap {
+  padding: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.diagram-svg-wrap svg { max-width: 100%; height: auto; }
+
+.diagram-caption {
+  padding: 18px 24px;
+  border-top: 1px solid var(--rule);
+  background: var(--bg-elevated);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+/* SVG */
+.node-rect {
+  fill: var(--bg-elevated);
+  stroke: var(--rule-strong);
+  stroke-width: 1.5;
+  rx: 4;
+}
+
+.node-rect.accent { stroke: var(--accent); }
+.node-rect.teal { stroke: var(--teal); }
+.node-rect.coral { stroke: var(--coral); }
+.node-rect.sage { stroke: var(--sage); }
+.node-rect.rose { stroke: var(--rose); }
+.node-rect.fill-coral { fill: rgba(224,123,90,0.08); stroke: var(--coral); }
+.node-rect.fill-sage { fill: rgba(138,169,120,0.08); stroke: var(--sage); }
+.node-rect.fill-accent { fill: rgba(232,176,78,0.08); stroke: var(--accent); }
+.node-rect.fill-teal { fill: rgba(95,183,165,0.08); stroke: var(--teal); }
+
+.node-title {
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 500;
+  fill: var(--ink);
+  text-anchor: middle;
+}
+
+.node-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  fill: var(--ink-muted);
+  text-anchor: middle;
+}
+
+.node-label-coral { fill: var(--coral); }
+.node-label-sage { fill: var(--sage); }
+.node-label-accent { fill: var(--accent); }
+.node-label-teal { fill: var(--teal); }
+
+.flow-line {
+  stroke: var(--rule-strong);
+  stroke-width: 1.5;
+  fill: none;
+}
+.flow-line.accent { stroke: var(--accent); }
+.flow-line.coral { stroke: var(--coral); }
+.flow-line.sage { stroke: var(--sage); }
+
+.flow-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  fill: var(--ink-faint);
+  text-anchor: middle;
+}
+
+.diagram-legend {
+  font-family: var(--mono);
+  font-size: 10px;
+  fill: var(--ink-muted);
+  text-anchor: start;
+}
+
+/* TRAPS BLOCK */
+.traps-block {
+  margin-top: 48px;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.traps-header {
+  background: linear-gradient(90deg, rgba(224,123,90,0.08) 0%, transparent 60%);
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.warn-icon {
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--coral);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--coral);
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.traps-header h4 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.traps-header .traps-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--coral);
+  margin-left: auto;
+}
+
+.traps-list { list-style: none; padding: 0; }
+
+.trap-item {
+  border-bottom: 1px solid var(--rule);
+  padding: 24px 28px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.trap-item:last-child { border-bottom: none; }
+.trap-item:hover { background: rgba(224,123,90,0.04); }
+
+.trap-item-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.trap-num {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 28px;
+  color: var(--coral);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  min-width: 36px;
+}
+
+.trap-content { flex: 1; }
+
+.trap-wrong {
+  font-family: var(--serif);
+  font-size: 17px;
+  color: var(--ink);
+  font-weight: 500;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.trap-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, margin-top 0.3s;
+}
+
+.trap-item.open .trap-detail {
+  max-height: 600px;
+  margin-top: 12px;
+}
+
+.trap-why {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-muted);
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+
+.trap-fix {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--sage);
+  background: rgba(138,169,120,0.06);
+  padding: 10px 14px;
+  border-left: 2px solid var(--sage);
+  border-radius: 0 2px 2px 0;
+}
+
+.trap-fix::before {
+  content: '→ ';
+  color: var(--sage);
+  font-weight: 600;
+}
+
+.expand-indicator {
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--ink-faint);
+  transition: transform 0.3s;
+  margin-left: auto;
+}
+
+.trap-item.open .expand-indicator {
+  transform: rotate(45deg);
+  color: var(--coral);
+}
+
+/* DUAL CARDS */
+.dual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin: 32px 0;
+}
+
+.dual-card {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dual-card.wrong { border-left: 3px solid var(--coral); }
+.dual-card.right { border-left: 3px solid var(--sage); }
+
+.dual-card-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.dual-card.wrong .dual-card-tag { color: var(--coral); }
+.dual-card.right .dual-card-tag { color: var(--sage); }
+
+.dual-card h5 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.dual-card p {
+  font-size: 14.5px;
+  margin-bottom: 0;
+}
+
+.code-block {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  padding: 16px;
+  border-radius: 3px;
+  margin-top: 12px;
+  color: var(--ink);
+  line-height: 1.6;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.code-block .keyword { color: var(--coral); }
+.code-block .string { color: var(--sage); }
+.code-block .comment { color: var(--ink-faint); font-style: italic; }
+.code-block .accent { color: var(--accent); }
+.code-block .num { color: var(--rose); }
+
+.code-standalone {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  padding: 24px;
+  border-radius: 4px;
+  margin: 24px 0;
+  color: var(--ink);
+  line-height: 1.65;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.code-standalone .keyword { color: var(--coral); }
+.code-standalone .string { color: var(--sage); }
+.code-standalone .comment { color: var(--ink-faint); font-style: italic; }
+.code-standalone .accent { color: var(--accent); }
+.code-standalone .num { color: var(--rose); }
+
+/* TABLE */
+.elegant-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 14.5px;
+}
+
+.elegant-table th {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rule-strong);
+  font-weight: 600;
+}
+
+.elegant-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-muted);
+  vertical-align: top;
+  line-height: 1.6;
+}
+
+.elegant-table td:first-child {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--accent);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.elegant-table tbody tr:hover { background: rgba(232,176,78,0.03); }
+
+/* PULL QUOTE */
+.pull-quote {
+  margin: 56px 0;
+  padding: 48px 0;
+  border-top: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule-strong);
+  text-align: center;
+}
+
+.pull-quote-text {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(28px, 3.5vw, 40px);
+  line-height: 1.3;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  max-width: 900px;
+  margin: 0 auto 16px;
+}
+
+.pull-quote-text em { color: var(--accent); font-weight: 500; }
+
+.pull-quote-attr {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--ink-faint);
+}
+
+/* CHECK QUESTIONS */
+.qbank { display: flex; flex-direction: column; gap: 24px; }
+
+.qbank-group-header {
+  margin: 32px 0 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.qbank-group-header:first-child { margin-top: 0; }
+
+.qbank-group-num {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 36px;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.qbank-group-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 22px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.qbank-group-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-left: auto;
+}
+
+.question-card {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.question-card:hover { border-color: var(--rule-strong); }
+.question-card.answered.correct { border-color: var(--sage); }
+.question-card.answered.incorrect { border-color: var(--coral); }
+
+.question-header {
+  padding: 24px 28px 16px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.question-num {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  min-width: 56px;
+  padding-top: 4px;
+}
+
+.question-num.check {
+  color: var(--teal);
+  font-size: 24px;
+}
+
+.question-num .q-prefix {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  display: block;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+}
+
+.question-body { flex: 1; }
+
+.question-scenario {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 10px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.scenario-tag {
+  background: rgba(232,176,78,0.08);
+  color: var(--accent);
+  padding: 3px 10px;
+  border-radius: 2px;
+  border: 1px solid rgba(232,176,78,0.2);
+}
+
+.question-text {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.55;
+  margin-bottom: 0;
+}
+
+.question-text code {
+  font-family: var(--mono);
+  font-size: 14px;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--accent);
+  border: 1px solid var(--rule);
+}
+
+.options-list {
+  list-style: none;
+  padding: 0 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px 18px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--bg);
+}
+
+.option-item:hover {
+  border-color: var(--rule-strong);
+  background: rgba(232,176,78,0.03);
+}
+
+.option-letter {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  min-width: 24px;
+  padding-top: 1px;
+}
+
+.option-text {
+  font-size: 14.5px;
+  color: var(--ink-muted);
+  line-height: 1.55;
+  flex: 1;
+}
+
+.option-text code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--bg-elevated);
+  padding: 1px 5px;
+  border-radius: 2px;
+  color: var(--accent);
+}
+
+.option-item.selected {
+  border-color: var(--accent);
+  background: rgba(232,176,78,0.06);
+}
+.option-item.selected .option-letter { color: var(--accent); }
+
+.question-card.revealed .option-item { cursor: default; }
+.question-card.revealed .option-item:hover {
+  background: var(--bg);
+  border-color: var(--rule);
+}
+.question-card.revealed .option-item.correct {
+  border-color: var(--sage);
+  background: rgba(138,169,120,0.08);
+}
+.question-card.revealed .option-item.correct .option-letter,
+.question-card.revealed .option-item.correct .option-text {
+  color: var(--ink);
+}
+.question-card.revealed .option-item.correct::after {
+  content: '✓';
+  font-family: var(--serif);
+  font-weight: 600;
+  color: var(--sage);
+  font-size: 18px;
+  margin-left: auto;
+}
+.question-card.revealed .option-item.selected.incorrect {
+  border-color: var(--coral);
+  background: rgba(224,123,90,0.08);
+}
+.question-card.revealed .option-item.selected.incorrect::after {
+  content: '✗';
+  font-family: var(--serif);
+  font-weight: 600;
+  color: var(--coral);
+  font-size: 18px;
+  margin-left: auto;
+}
+
+.question-actions {
+  padding: 0 28px 20px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.reveal-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background: transparent;
+  color: var(--ink-muted);
+  border: 1px solid var(--rule-strong);
+  padding: 8px 16px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reveal-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.rationale {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+  background: var(--bg-elevated);
+}
+
+.question-card.revealed .rationale { max-height: 1000px; }
+
+.rationale-inner {
+  padding: 24px 28px;
+  border-top: 1px solid var(--rule);
+}
+
+.rationale-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--sage);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.rationale-text {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  margin-bottom: 0;
+  font-style: italic;
+}
+
+.rationale-text strong {
+  color: var(--ink);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.rationale-text code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--accent);
+  font-style: normal;
+}
+
+/* Score panel */
+.score-panel {
+  position: sticky;
+  bottom: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  padding: 20px 28px;
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+.score-stat { display: flex; flex-direction: column; gap: 2px; }
+
+.score-value {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1;
+}
+.score-value.good { color: var(--sage); }
+.score-value.bad { color: var(--coral); }
+
+.score-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+.score-actions { margin-left: auto; display: flex; gap: 8px; }
+
+.score-action-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background: transparent;
+  color: var(--ink-muted);
+  border: 1px solid var(--rule-strong);
+  padding: 8px 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.score-action-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+/* Build exercise */
+.exercise-block {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 40px;
+  margin-top: 32px;
+  border-left: 3px solid var(--teal);
+}
+
+.exercise-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--teal);
+  margin-bottom: 12px;
+}
+
+.exercise-block h3 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 28px;
+  color: var(--ink);
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.exercise-block ol {
+  margin: 16px 0 16px 28px;
+  color: var(--ink-muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.exercise-block ol li { margin-bottom: 10px; }
+.exercise-block ol li strong { color: var(--ink); }
+
+/* FOOTER */
+footer {
+  padding: 80px 0 60px;
+  border-top: 1px solid var(--rule-strong);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 64px;
+}
+
+.footer-brand {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 32px;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.footer-brand em { color: var(--accent); font-weight: 500; }
+
+.footer-text {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--ink-muted);
+  font-style: italic;
+  max-width: 380px;
+  line-height: 1.6;
+}
+
+.footer-col h6 {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.footer-col ul { list-style: none; }
+.footer-col li {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+
+.footer-meta {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 880px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+  .hero-stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-left: none;
+    border-top: 1px solid var(--rule-strong);
+    padding-left: 0;
+    padding-top: 32px;
+  }
+  .section-header { grid-template-columns: 1fr; gap: 16px; }
+  .section-num { font-size: 64px; }
+  .dual { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  nav.toc { display: none; }
+}
+</style>
+<link rel="stylesheet" href="assets/css/domain-override.css">
+</head>
+<body>
+
+<!-- =================== MASTHEAD =================== -->
+<header class="masthead">
+  <div class="container">
+    <div class="masthead-inner">
+      <div>
+        <div class="brand">Prompt <span class="ampersand">&amp;</span> Output</div>
+        <div class="eyebrow">Domain IV · The Architect's Companion</div>
+      </div>
+      <nav class="toc">
+        <a href="#t41">4.1 Criteria</a>
+        <a href="#t42">4.2 Few-Shot</a>
+        <a href="#t43">4.3 Tool Use</a>
+        <a href="#t44">4.4 Validate</a>
+        <a href="#t45">4.5 Batch</a>
+        <a href="#t46">4.6 Multi-Pass</a>
+        <a href="#exam">Exam</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- =================== HERO =================== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-meta">Domain IV · 6 task statements · 20% of scored content</div>
+        <h1>Prompt engineering &amp; <em>structured output</em>.</h1>
+        <p class="hero-lede">
+          Six task statements that form a quality pipeline. Explicit criteria define
+          <em>what</em>; few-shot teaches <em>judgment</em>; tool use guarantees
+          <em>format</em>; validation-retry catches <em>semantic errors</em>; batch
+          scales the workload; multi-pass review catches what self-review misses.
+          Each task patches a failure mode of the one before it.
+        </p>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-value"><span class="pct">20</span>%</div>
+          <div class="stat-label">Of scored content</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">6</div>
+          <div class="stat-label">Task statements</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">8</div>
+          <div class="stat-label">Practice questions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== TASK 4.1 =================== -->
+<section class="task-section" id="t41">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">4<span class="num-suffix">.1</span></div>
+      <div class="section-header-text">
+        <div class="section-tag">Task statement 4.1</div>
+        <h2 class="section-title">Explicit criteria over vague confidence.</h2>
+        <p class="section-meaning">
+          Categorical criteria are binary tests the model can answer the same way every
+          time. Vague confidence instructions are theater — the model has no calibrated
+          notion of "high confidence," so it invents one and the threshold drifts.
+        </p>
+      </div>
+    </div>
+
+    <div class="section-body">
+
+      <div>
+        <h3 class="subhead">The false-positive trust problem.</h3>
+        <p>
+          A reviewer that flags 100 issues with 30 wrong doesn't just lose 30% of its
+          accuracy — it loses the trust developers had in the other 70. High false-positive
+          categories <strong>poison the categories around them</strong>. Once a developer
+          starts dismissing one category, they stop reading the others too.
+        </p>
+        <p>
+          The counter-intuitive fix: <strong>temporarily disable the noisy category</strong>
+          while you rewrite its criteria. Don't leave it on with vague hedge words — those
+          aren't real levers. The disable-rewrite-re-enable cycle is the answer the exam
+          tests, not "lower confidence threshold" or "be more conservative."
+        </p>
+      </div>
+
+      <div class="dual">
+        <div class="dual-card wrong">
+          <div class="dual-card-tag">Anti-pattern</div>
+          <h5>Vague confidence-based criteria</h5>
+          <p>The model has no calibrated definition of "high confidence." It invents one each call. Output drifts; FP rate is unstable.</p>
+<pre class="code-block"><span class="comment"># Sounds reasonable, achieves nothing</span>
+prompt = <span class="string">"""Review this code change.
+Be conservative and only flag
+high-confidence issues. Use your
+judgment on severity."""</span></pre>
+        </div>
+        <div class="dual-card right">
+          <div class="dual-card-tag">Production grade</div>
+          <h5>Categorical inclusion + exclusion</h5>
+          <p>Each criterion is a binary test. Severity is anchored to concrete code patterns. Output is verifiable.</p>
+<pre class="code-block"><span class="comment"># Each rule is checkable</span>
+prompt = <span class="string">"""Flag a finding ONLY when:
+- SQL: user input concatenated
+  into query without parameter
+- Auth: route missing auth check
+  that similar routes have
+- Null: .get() result deref'd
+  without null check
+
+Skip: style, naming, patterns
+that match the file's existing
+convention."""</span></pre>
+        </div>
+      </div>
+
+      <h3 class="subhead">Severity calibration with anchored examples.</h3>
+      <p>
+        "Critical / High / Medium / Low" without anchors means nothing — the model picks
+        severity by vibes, and the same bug gets a different label across runs. Anchor each
+        level to a concrete code snippet. Now the model has reference points instead of
+        adjectives.
+      </p>
+
+      <table class="elegant-table">
+        <thead>
+          <tr><th>Severity</th><th>Anchored definition</th><th>Concrete example</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Critical</td>
+            <td>Exploitable by an external user with no auth</td>
+            <td><code>db.query("... WHERE id=" + req.id)</code></td>
+          </tr>
+          <tr>
+            <td>High</td>
+            <td>Exploitable by an authenticated user</td>
+            <td><code>if (user.role == 'admin' || true)</code></td>
+          </tr>
+          <tr>
+            <td>Medium</td>
+            <td>Requires unusual conditions to trigger</td>
+            <td>race condition under high concurrency only</td>
+          </tr>
+          <tr>
+            <td>Low</td>
+            <td>Code-quality only, no exploit path</td>
+            <td>unused variable, dead branch</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- DIAGRAM: VAGUE vs CATEGORICAL -->
+      <div class="diagram-block">
+        <div class="diagram-header">
+          <span class="diagram-title">Figure 4.1 · Vague vs categorical criteria</span>
+          <span class="diagram-fig">why vague prompts can't improve precision</span>
+        </div>
+        <div class="diagram-svg-wrap">
+          <svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg">
+            <!-- LEFT: VAGUE column -->
+            <text x="180" y="30" class="node-title node-label-coral">Vague prompt</text>
+            <rect class="node-rect coral" x="60" y="50" width="240" height="56"/>
+            <text class="node-title" x="180" y="75">"be conservative"</text>
+            <text class="node-sub" x="180" y="92">no objective test</text>
+
+            <path class="flow-line coral" d="M 180 110 L 180 140" marker-end="url(#arrowCoral)"/>
+
+            <rect class="node-rect coral" x="60" y="144" width="240" height="56"/>
+            <text class="node-title" x="180" y="169">model invents threshold</text>
+            <text class="node-sub" x="180" y="186">drifts call to call</text>
+
+            <path class="flow-line coral" d="M 180 204 L 180 234" marker-end="url(#arrowCoral)"/>
+
+            <rect class="node-rect fill-coral" x="60" y="238" width="240" height="56"/>
+            <text class="node-title node-label-coral" x="180" y="263">unstable FP rate</text>
+            <text class="node-sub" x="180" y="280">trust collapses</text>
+
+            <!-- DIVIDER -->
+            <line x1="380" y1="40" x2="380" y2="310" stroke="#3a3429" stroke-dasharray="3,4"/>
+
+            <!-- RIGHT: CATEGORICAL column -->
+            <text x="580" y="30" class="node-title node-label-sage">Categorical prompt</text>
+            <rect class="node-rect sage" x="460" y="50" width="240" height="56"/>
+            <text class="node-title" x="580" y="75">"flag if X contradicts Y"</text>
+            <text class="node-sub" x="580" y="92">binary test</text>
+
+            <path class="flow-line sage" d="M 580 110 L 580 140" marker-end="url(#arrowSage)"/>
+
+            <rect class="node-rect sage" x="460" y="144" width="240" height="56"/>
+            <text class="node-title" x="580" y="169">verifiable each call</text>
+            <text class="node-sub" x="580" y="186">no judgment drift</text>
+
+            <path class="flow-line sage" d="M 580 204 L 580 234" marker-end="url(#arrowSage)"/>
+
+            <rect class="node-rect fill-sage" x="460" y="238" width="240" height="56"/>
+            <text class="node-title node-label-sage" x="580" y="263">stable FP rate</text>
+            <text class="node-sub" x="580" y="280">trust preserved</text>
+
+            <!-- arrow defs -->
+            <defs>
+              <marker id="arrowCoral" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" fill="#e07b5a"/>
+              </marker>
+              <marker id="arrowSage" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" fill="#8aa978"/>
+              </marker>
+            </defs>
+          </svg>
+        </div>
+        <div class="diagram-caption">
+          The left column degrades silently — the model produces output but the precision
+          changes between calls. The right column is auditable: a finding either matches a
+          binary criterion or it doesn't.
+        </div>
+      </div>
+
+      <h3 class="subhead">Code example.</h3>
+<pre class="code-standalone"><span class="comment"># WEAK — vague, confidence-based</span>
+weak_prompt = <span class="string">"""
+Review this code change. Be conservative and only flag
+high-confidence issues. Rate severity from 1-5.
+"""</span>
+
+<span class="comment"># STRONG — categorical + anchored severity</span>
+strong_prompt = <span class="string">"""
+Review the diff. Flag findings ONLY when one of these is true:
+  - SQL injection: user input concatenated into a SQL string
+    without parameterization
+  - Auth bypass: a route handler missing an auth check that
+    similar routes in this file have
+  - Null deref: a value returned from .get() or .find() is
+    dereferenced without a null check
+
+Do NOT flag: style issues, naming, code that follows
+the existing pattern in the file.
+
+Severity rules (anchored):
+  - CRITICAL: exploitable by an external user with no auth
+    Example: db.query("SELECT * FROM users WHERE id=" + req.id)
+  - HIGH: exploitable by an authenticated user
+    Example: if (user.role == 'admin' || true)
+  - MEDIUM: requires unusual conditions to trigger
+    Example: race condition under high concurrency only
+
+For each finding return:
+  location, issue_type, severity, suggested_fix
+"""</span></pre>
+
+      <!-- TRAPS 4.1 -->
+      <div class="traps-block">
+        <div class="traps-header">
+          <span class="warn-icon">!</span>
+          <h4>Anti-patterns &amp; exam traps</h4>
+          <span class="traps-sub">Click each to expand</span>
+        </div>
+        <ul class="traps-list">
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">01</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Add 'be more conservative' to the prompt to reduce false positives."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Vague language is not a real lever. The model has no calibrated notion of "conservative" — it improvises a threshold per call. Precision doesn't improve; it just becomes unmeasurable.</div>
+                  <div class="trap-fix">Rewrite criteria as inclusion + exclusion lists. Anchor severity to concrete code examples. Make every flag verifiable.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">02</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Lower the temperature to reduce false positives."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Temperature controls sampling randomness, not what the model considers a finding. A deterministic wrong answer is still wrong.</div>
+                  <div class="trap-fix">Fix criteria, not sampling. Temperature is unrelated to precision.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">03</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Have the model self-report a confidence score and filter to >0.8."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Self-reported confidence is theater unless calibrated against a labeled validation set. The model has no inherent calibration — its 0.9 might still be 60% correct in practice.</div>
+                  <div class="trap-fix">Use categorical criteria as the gate. If you want confidence routing later, calibrate it against ground truth first (Task 4.6).</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">04</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Leave the noisy category running while you tweak the prompt."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">A high-FP category in production poisons trust in the accurate categories. Developers who start ignoring one category begin ignoring others.</div>
+                  <div class="trap-fix">Disable the category temporarily. Rewrite criteria. Validate offline. Re-enable only when FP rate is back below threshold.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- CHECK QUESTIONS 4.1 -->
+      <div class="qbank-group-header" style="margin-top:48px;">
+        <div class="qbank-group-num">4.1</div>
+        <div class="qbank-group-title">Check questions</div>
+        <div class="qbank-group-tag">2 questions</div>
+      </div>
+      <div class="qbank">
+
+        <div class="question-card check-q" id="cq-1">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q1</span>01</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 4.1</span><span>FP trust</span></div>
+              <p class="question-text">Your security review agent has 70% precision overall, but the "code style" category has 35% precision and developers complain it's noisy. A teammate suggests adding "only flag style issues you're highly confident about." Will this fix it? What's the right move?</p>
+            </div>
+          </div>
+          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-1')">Reveal answer</button></div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>No.</strong> "High confidence" is vague — the model has no calibrated notion of confidence. Two real fixes: (a) <strong>temporarily disable</strong> the style category to restore developer trust in the accurate categories, then (b) rewrite style criteria as a categorical inclusion/exclusion list (e.g., flag only naming that violates the documented convention; skip everything else).</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card check-q" id="cq-2">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q2</span>02</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 4.1</span><span>severity drift</span></div>
+              <p class="question-text">You're classifying support tickets as Critical/High/Medium/Low. The same ticket gets different severities on re-runs. What single change fixes this?</p>
+            </div>
+          </div>
+          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-2')">Reveal answer</button></div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>Anchor each severity level to a concrete example ticket.</strong> The model needs reference points, not adjectives. Without anchors, it picks severity by vibes — and the same ticket gets a different label each time. Adjective-only severity scales never produce stable classification.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =================== TASK 4.2 =================== -->
+<section class="task-section" id="t42">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">4<span class="num-suffix">.2</span></div>
+      <div class="section-header-text">
+        <div class="section-tag">Task statement 4.2</div>
+        <h2 class="section-title">Few-shot prompting for consistency.</h2>
+        <p class="section-meaning">
+          The single most effective technique for output consistency when instructions
+          alone aren't enough. Two to four worked examples — with reasoning — teach the
+          model a generalizable judgment pattern, not a list of cases to match.
+        </p>
+      </div>
+    </div>
+
+    <div class="section-body">
+
+      <div>
+        <h3 class="subhead">When to deploy.</h3>
+        <p>
+          Reach for few-shot when detailed instructions still produce drifting output. The
+          tells: same field returned in different formats (<code>"$1,200"</code> vs
+          <code>1200</code>), hallucination on missing data, drift on borderline cases,
+          empty/null on required fields the model could have extracted from non-standard
+          phrasing.
+        </p>
+        <p>
+          Few-shot does <strong>not</strong> make the model memorize cases. It makes the
+          model generalize the underlying judgment pattern. Two well-chosen examples covering
+          ambiguous cases beat twenty that all look the same.
+        </p>
+      </div>
+
+      <h3 class="subhead">How to construct examples.</h3>
+      <ul class="bullets">
+        <li><strong>Cover ambiguous cases, not obvious ones.</strong> A clearly malicious SQL injection teaches nothing. A safe-vs-unsafe pair where the difference is parameterization — that's where judgment lives.</li>
+        <li><strong>Show reasoning, not just the answer.</strong> Include a short rationale per example. The model picks up the decision pattern, not just the output shape.</li>
+        <li><strong>Span the failure mode.</strong> If the model confuses inline citations with bibliography entries, show one of each. Examples should map to the failure surface, not to your most common case.</li>
+      </ul>
+
+      <!-- DIAGRAM: WHEN TO DEPLOY FEW-SHOT -->
+      <div class="diagram-block">
+        <div class="diagram-header">
+          <span class="diagram-title">Figure 4.2 · When to deploy few-shot</span>
+          <span class="diagram-fig">decision flow</span>
+        </div>
+        <div class="diagram-svg-wrap">
+          <svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg">
+            <!-- top: instructions only -->
+            <rect class="node-rect" x="280" y="20" width="200" height="56"/>
+            <text class="node-title" x="380" y="45">Instructions only</text>
+            <text class="node-sub" x="380" y="62">test on real data</text>
+
+            <path class="flow-line" d="M 380 80 L 380 110" marker-end="url(#arrowDef)"/>
+
+            <!-- decision diamond -->
+            <polygon class="node-rect accent" points="380,116 480,166 380,216 280,166" fill="rgba(232,176,78,0.06)"/>
+            <text class="node-title" x="380" y="160">Output stable?</text>
+            <text class="node-sub" x="380" y="178">across cases</text>
+
+            <!-- yes branch -->
+            <path class="flow-line sage" d="M 480 166 L 600 166" marker-end="url(#arrowSage2)"/>
+            <text class="flow-label node-label-sage" x="540" y="158">YES</text>
+            <rect class="node-rect fill-sage" x="600" y="138" width="140" height="56"/>
+            <text class="node-title" x="670" y="163">ship it</text>
+            <text class="node-sub" x="670" y="180">no need</text>
+
+            <!-- no branch -->
+            <path class="flow-line coral" d="M 380 216 L 380 246" marker-end="url(#arrowCoral2)"/>
+            <text class="flow-label node-label-coral" x="395" y="234">NO</text>
+
+            <rect class="node-rect fill-coral" x="240" y="250" width="280" height="56"/>
+            <text class="node-title" x="380" y="275">add 2-4 few-shot examples</text>
+            <text class="node-sub" x="380" y="292">cover ambiguous cases</text>
+
+            <path class="flow-line" d="M 380 308 L 380 330" stroke-dasharray="3,3"/>
+            <text class="flow-label" x="380" y="348">re-test → loop</text>
+
+            <defs>
+              <marker id="arrowDef" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" fill="#3a3429"/>
+              </marker>
+              <marker id="arrowSage2" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" fill="#8aa978"/>
+              </marker>
+              <marker id="arrowCoral2" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" fill="#e07b5a"/>
+              </marker>
+            </defs>
+          </svg>
+        </div>
+        <div class="diagram-caption">
+          Don't add few-shot speculatively. Run instructions-only against real data first;
+          deploy examples only against the specific failure modes you observe.
+        </div>
+      </div>
+
+      <h3 class="subhead">Code example — medical dosage extraction.</h3>
+      <p>
+        The third example is the most important: it teaches the model to <strong>return
+        null when info is absent</strong> rather than fabricate. This single example
+        dramatically reduces hallucination on incomplete documents.
+      </p>
+
+<pre class="code-standalone">extraction_prompt = <span class="string">"""
+Extract the dosage from medical records. Dosages may appear
+as numeric values, ranges, or informal language.
+
+Examples:
+
+---
+INPUT: "Patient takes 10mg lisinopril once daily."
+OUTPUT: {
+  "drug": "lisinopril",
+  "amount_mg": 10,
+  "frequency": "daily",
+  "reasoning": "Standard format - dose explicit in mg"
+}
+---
+INPUT: "Pt on a baby aspirin qd"
+OUTPUT: {
+  "drug": "aspirin",
+  "amount_mg": 81,
+  "frequency": "daily",
+  "reasoning": "'baby aspirin' is the standard term for 81mg;
+   'qd' is the medical abbreviation for once daily"
+}
+---
+INPUT: "Started on metformin, titrating up"
+OUTPUT: {
+  "drug": "metformin",
+  "amount_mg": null,
+  "frequency": null,
+  "reasoning": "Dose not stated. Returning null rather than
+   guessing - titration implies dose is changing"
+}
+---
+
+Now extract from this record:
+{document}
+"""</span></pre>
+
+      <!-- TRAPS 4.2 -->
+      <div class="traps-block">
+        <div class="traps-header">
+          <span class="warn-icon">!</span>
+          <h4>Anti-patterns &amp; exam traps</h4>
+          <span class="traps-sub">Click each to expand</span>
+        </div>
+        <ul class="traps-list">
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">01</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"More examples = better. Use 10-20 to maximize coverage."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Diminishing returns kick in past 4. Past that, you're spending context window for marginal gain — sometimes negative gain when surface patterns in your examples bias the model.</div>
+                  <div class="trap-fix">2-4 well-chosen examples covering distinct ambiguous cases. Quality over quantity, every time.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">02</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Examples should match the user's exact case for maximum relevance."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">That's the failure mode. Examples teach a generalizable judgment pattern. If your example is a duplicate of the user's case, the model learns to memorize, not generalize — and breaks on the next variant.</div>
+                  <div class="trap-fix">Pick examples that span the failure surface. Different inputs, same judgment principle.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">03</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Use few-shot to enforce a strict JSON output format."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Few-shot is for judgment. JSON format enforcement belongs in tool_use schemas (Task 4.3) — that's the only mechanism that actually guarantees schema compliance.</div>
+                  <div class="trap-fix">Use few-shot for judgment on edge cases. Use tool_use for format guarantees.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- CHECK QUESTIONS 4.2 -->
+      <div class="qbank-group-header" style="margin-top:48px;">
+        <div class="qbank-group-num">4.2</div>
+        <div class="qbank-group-title">Check questions</div>
+        <div class="qbank-group-tag">2 questions</div>
+      </div>
+      <div class="qbank">
+
+        <div class="question-card check-q" id="cq-3">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q3</span>03</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 4.2</span><span>format variation</span></div>
+              <p class="question-text">Your invoice extractor handles standard PDFs perfectly but drops <code>tax_amount</code> as null when tax appears as <code>"VAT @ 20%"</code> instead of a dollar figure. Schema is already specified. What do you add?</p>
+            </div>
+          </div>
+          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-3')">Reveal answer</button></div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Add <strong>1-2 few-shot examples</strong> showing extraction from VAT-style invoices, with reasoning that explicitly converts the percentage form into a dollar amount. Schema enforces format; few-shot teaches judgment on format variation. The schema alone can't tell the model how to do the conversion.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card check-q" id="cq-4">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q4</span>04</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 4.2</span><span>quantity</span></div>
+              <p class="question-text">You're choosing between (a) 12 few-shot examples covering every variation you've seen, or (b) 3 examples carefully chosen to illustrate ambiguous cases. Which performs better and why?</p>
+            </div>
+          </div>
+          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-4')">Reveal answer</button></div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>(b).</strong> Three well-chosen examples teach a generalizable judgment pattern. Twelve examples eat the context window, increase cost, and often hurt by overfitting the model to surface patterns in your examples. Past 4, marginal example value drops sharply.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =================== TASK 4.3 =================== -->
+<section class="task-section" id="t43">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">4<span class="num-suffix">.3</span></div>
+      <div class="section-header-text">
+        <div class="section-tag">Task statement 4.3</div>
+        <h2 class="section-title">Structured output via tool use.</h2>
+        <p class="section-meaning">
+          <code>tool_use</code> with a JSON schema is the only mechanism that
+          <em>guarantees</em> schema-compliant output. It eliminates JSON syntax errors,
+          missing required fields, and bad types — but it does <em>not</em> eliminate
+          semantic errors. Hold both ideas at once.
+        </p>
+      </div>
+    </div>
+
+    <div class="section-body">
+
+      <div>
+        <h3 class="subhead">What tool_use eliminates — and what it doesn't.</h3>
+        <p>
+          The core trap on this task: assuming "schema-validated" means "correct." It
+          doesn't. Schema validation is a <strong>syntactic</strong> guarantee. The line
+          items might still not sum to the total. The vendor name might still land in the
+          customer field. Semantic correctness is Task 4.4's problem.
+        </p>
+      </div>
+
+      <div class="dual">
+        <div class="dual-card right">
+          <div class="dual-card-tag">Eliminated by tool_use</div>
+          <h5>Syntactic errors disappear</h5>
+          <ul class="bullets" style="margin-top:12px;">
+            <li>JSON syntax errors</li>
+            <li>Missing required fields</li>
+            <li>Wrong type (string vs number)</li>
+            <li>Invalid enum values</li>
+          </ul>
+        </div>
+        <div class="dual-card wrong">
+          <div class="dual-card-tag">NOT eliminated</div>
+          <h5>Semantic errors survive</h5>
+          <ul class="bullets" style="margin-top:12px;">
+            <li>Line items don't sum to total</li>
+            <li>Value placed in wrong field</li>
+            <li>Hallucinated values for required fields</li>
+            <li>Calculations referencing wrong source</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="subhead">tool_choice modes — memorize this table.</h3>
+      <table class="elegant-table">
+        <thead>
+          <tr><th>tool_choice value</th><th>Behavior</th><th>When to use</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>"auto"</td>
+            <td>Model MAY call a tool OR return conversational text</td>
+            <td>Conversational agent that sometimes extracts</td>
+          </tr>
+          <tr>
+            <td>{"type":"any"}</td>
+            <td>Model MUST call ONE of the provided tools (its choice)</td>
+            <td>Multiple extractors, document type unknown</td>
+          </tr>
+          <tr>
+            <td>{"type":"tool", "name":"X"}</td>
+            <td>Model MUST call this SPECIFIC named tool</td>
+            <td>Single extractor that must run</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 class="subhead">Schema design patterns.</h3>
+      <ul class="bullets">
+        <li><strong>Pattern 1 — Nullable for missing data.</strong> Mark fields nullable when the source <em>may not</em> contain them. Required + non-nullable forces the model to fabricate values to satisfy the schema.</li>
+        <li><strong>Pattern 2 — "unclear" enum value.</strong> Add <code>"unclear"</code> as a valid enum option so the model has somewhere to land for ambiguous cases. Otherwise it picks the least-wrong real category, silently corrupting your data.</li>
+        <li><strong>Pattern 3 — "other" + detail string.</strong> Combine <code>"other"</code> enum with a free-text <code>X_other</code> sibling field for extensible categorization. New categories captured without a schema change.</li>
+      </ul>
+
+      <!-- DIAGRAM: tool_choice modes -->
+      <div class="diagram-block">
+        <div class="diagram-header">
+          <span class="diagram-title">Figure 4.3 · tool_choice modes</span>
+          <span class="diagram-fig">three guarantees, three use cases</span>
+        </div>
+        <div class="diagram-svg-wrap">
+          <svg viewBox="0 0 780 280" xmlns="http://www.w3.org/2000/svg">
+            <!-- AUTO -->
+            <rect class="node-rect coral" x="20" y="30" width="240" height="200" rx="6"/>
+            <text class="node-title node-label-coral" x="140" y="58">"auto"</text>
+            <text class="node-sub" x="140" y="78">default · risky for structured</text>
+            <line x1="40" y1="92" x2="240" y2="92" stroke="#3a3429"/>
+            <text class="node-sub" x="140" y="118" style="fill:#a89e8b;">may return text</text>
+            <text class="node-sub" x="140" y="138" style="fill:#a89e8b;">may call a tool</text>
+            <text class="node-sub" x="140" y="158" style="fill:#a89e8b;">model decides</text>
+            <line x1="40" y1="178" x2="240" y2="178" stroke="#3a3429"/>
+            <text class="node-sub" x="140" y="200" style="fill:#e07b5a;">use: chat agent</text>
+            <text class="node-sub" x="140" y="218" style="fill:#e07b5a;">avoid: extraction</text>
+
+            <!-- ANY -->
+            <rect class="node-rect accent" x="270" y="30" width="240" height="200" rx="6"/>
+            <text class="node-title node-label-accent" x="390" y="58">{"type": "any"}</text>
+            <text class="node-sub" x="390" y="78">flexible · structured</text>
+            <line x1="290" y1="92" x2="490" y2="92" stroke="#3a3429"/>
+            <text class="node-sub" x="390" y="118" style="fill:#a89e8b;">MUST call a tool</text>
+            <text class="node-sub" x="390" y="138" style="fill:#a89e8b;">picks which one</text>
+            <text class="node-sub" x="390" y="158" style="fill:#a89e8b;">based on input</text>
+            <line x1="290" y1="178" x2="490" y2="178" stroke="#3a3429"/>
+            <text class="node-sub" x="390" y="200" style="fill:#e8b04e;">use: many extractors</text>
+            <text class="node-sub" x="390" y="218" style="fill:#e8b04e;">unknown doc type</text>
+
+            <!-- FORCED -->
+            <rect class="node-rect sage" x="520" y="30" width="240" height="200" rx="6"/>
+            <text class="node-title node-label-sage" x="640" y="58">{"type":"tool","name":...}</text>
+            <text class="node-sub" x="640" y="78">strict · single tool</text>
+            <line x1="540" y1="92" x2="740" y2="92" stroke="#3a3429"/>
+            <text class="node-sub" x="640" y="118" style="fill:#a89e8b;">MUST call this one</text>
+            <text class="node-sub" x="640" y="138" style="fill:#a89e8b;">no choice</text>
+            <text class="node-sub" x="640" y="158" style="fill:#a89e8b;">always structured</text>
+            <line x1="540" y1="178" x2="740" y2="178" stroke="#3a3429"/>
+            <text class="node-sub" x="640" y="200" style="fill:#8aa978;">use: one extractor</text>
+            <text class="node-sub" x="640" y="218" style="fill:#8aa978;">must always run</text>
+          </svg>
+        </div>
+        <div class="diagram-caption">
+          When you need guaranteed structured output and you have one extractor, force it
+          by name. When you have multiple extractors and the model needs to pick, use
+          "any". "auto" is for conversational flows — never for blind extraction pipelines.
+        </div>
+      </div>
+
+      <h3 class="subhead">Code example — invoice extractor with all three patterns.</h3>
+
+<pre class="code-standalone"><span class="keyword">import</span> anthropic
+client = anthropic.Anthropic()
+
+extract_invoice = {
+    <span class="string">"name"</span>: <span class="string">"extract_invoice"</span>,
+    <span class="string">"description"</span>: <span class="string">"Extract structured fields from an invoice"</span>,
+    <span class="string">"input_schema"</span>: {
+        <span class="string">"type"</span>: <span class="string">"object"</span>,
+        <span class="string">"properties"</span>: {
+            <span class="string">"vendor_name"</span>: {<span class="string">"type"</span>: <span class="string">"string"</span>},
+            <span class="string">"total_amount"</span>: {
+                <span class="string">"type"</span>: [<span class="string">"number"</span>, <span class="string">"null"</span>]   <span class="comment"># Pattern 1: nullable</span>
+            },
+            <span class="string">"currency"</span>: {
+                <span class="string">"type"</span>: <span class="string">"string"</span>,
+                <span class="string">"enum"</span>: [<span class="string">"USD"</span>, <span class="string">"EUR"</span>, <span class="string">"GBP"</span>, <span class="string">"unclear"</span>]  <span class="comment"># Pattern 2: unclear</span>
+            },
+            <span class="string">"payment_method"</span>: {
+                <span class="string">"type"</span>: <span class="string">"string"</span>,
+                <span class="string">"enum"</span>: [<span class="string">"card"</span>, <span class="string">"wire"</span>, <span class="string">"check"</span>, <span class="string">"ach"</span>, <span class="string">"other"</span>]
+            },
+            <span class="string">"payment_method_other"</span>: {            <span class="comment"># Pattern 3: other + detail</span>
+                <span class="string">"type"</span>: [<span class="string">"string"</span>, <span class="string">"null"</span>],
+                <span class="string">"description"</span>: <span class="string">"If payment_method is 'other', describe it"</span>
+            }
+        },
+        <span class="string">"required"</span>: [<span class="string">"vendor_name"</span>, <span class="string">"currency"</span>, <span class="string">"payment_method"</span>]
+        <span class="comment"># total_amount NOT required - may be missing on quotes</span>
+    }
+}
+
+response = client.messages.create(
+    model=<span class="string">"claude-sonnet-4-5"</span>,
+    max_tokens=<span class="num">1024</span>,
+    tools=[extract_invoice],
+    tool_choice={<span class="string">"type"</span>: <span class="string">"tool"</span>, <span class="string">"name"</span>: <span class="string">"extract_invoice"</span>},
+    messages=[{<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: f<span class="string">"Extract:\n\n{document_text}"</span>}]
+)
+
+<span class="comment"># Output guaranteed to be schema-valid</span>
+extracted = response.content[<span class="num">0</span>].input</pre>
+
+      <!-- TRAPS 4.3 -->
+      <div class="traps-block">
+        <div class="traps-header">
+          <span class="warn-icon">!</span>
+          <h4>Anti-patterns &amp; exam traps</h4>
+          <span class="traps-sub">Click each to expand</span>
+        </div>
+        <ul class="traps-list">
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">01</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"tool_use guarantees correct output."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">It guarantees schema-compliant output, not semantic correctness. Numbers can still be wrong, fields can still be swapped, line items can still fail to sum.</div>
+                  <div class="trap-fix">Add Pydantic semantic validators (Task 4.4). Schema is necessary but not sufficient.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">02</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Use tool_choice 'auto' when you want flexibility."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">"auto" lets Claude return conversational text instead of calling the tool. If your downstream code parses tool_use output, this is silent failure.</div>
+                  <div class="trap-fix">Use "any" or forced selection whenever you need parseable structured output.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">03</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Mark every field required so we never get nulls."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Required + non-nullable forces fabrication. The model picks a plausible-looking value rather than violating the schema. Your "required field" is now silently hallucinated.</div>
+                  <div class="trap-fix">Mark fields nullable when source data may not contain them. Let the model return null honestly.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">04</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Use a strict enum without 'other' for clean categorization."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Brittle. The first new category that appears in production breaks the pipeline — or, worse, gets misclassified into the closest existing bucket without you knowing.</div>
+                  <div class="trap-fix">Add "other" + a sibling detail string. New categories surface as data, not as crashes.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- CHECK QUESTIONS 4.3 -->
+      <div class="qbank-group-header" style="margin-top:48px;">
+        <div class="qbank-group-num">4.3</div>
+        <div class="qbank-group-title">Check questions</div>
+        <div class="qbank-group-tag">2 questions</div>
+      </div>
+      <div class="qbank">
+
+        <div class="question-card check-q" id="cq-5">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q5</span>05</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 4.3</span><span>tool_choice</span></div>
+              <p class="question-text">You have three extraction tools (<code>invoice</code>, <code>receipt</code>, <code>contract</code>) and the document type is unknown until Claude reads it. You need guaranteed structured output. Which <code>tool_choice</code>?</p>
+            </div>
+          </div>
+          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-5')">Reveal answer</button></div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><code>tool_choice={"type": "any"}</code>. It forces Claude to call one of the three tools (so output is structured) while letting Claude pick based on the document. <code>"auto"</code> allows text responses; forced selection on a specific tool would lock you to one extractor regardless of doc type.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card check-q" id="cq-6">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q6</span>06</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 4.3</span><span>fabrication</span></div>
+              <p class="question-text">Your contract extractor returns <code>governing_law: "California"</code> for every contract — including ones where the clause is missing. Schema marks the field as required, type string. What's wrong and how do you fix it?</p>
+            </div>
+          </div>
+          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-6')">Reveal answer</button></div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">The schema forces fabrication. Required + non-nullable means the model must produce <em>some</em> string, so it picks a plausible default. Fix: make <code>governing_law</code> nullable (<code>"type": ["string", "null"]</code>) so the model can return <code>null</code> when the clause is absent. Optionally add an <code>"unclear"</code> enum if you want to distinguish "missing" from "ambiguous."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =================== TASK 4.4 =================== -->
+<section class="task-section" id="t44">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">4<span class="num-suffix">.4</span></div>
+      <div class="section-header-text">
+        <div class="section-tag">Task statement 4.4</div>
+        <h2 class="section-title">Validation, retry, and feedback loops.</h2>
+        <p class="section-meaning">
+          Catch semantic errors at runtime with retry-with-error-feedback. Send the failed
+          extraction and the specific validation error back to the model for self-correction.
+          Recognize when retries are pointless — when the data isn't in the document, no
+          number of retries makes it appear.
+        </p>
+      </div>
+    </div>
+
+    <div class="section-body">
+
+      <h3 class="subhead">The retry-with-error-feedback pattern.</h3>
+      <p>
+        After tool_use returns, run a validator (Pydantic is standard). On failure, send a
+        follow-up request that contains: the original document, the failed extraction, and
+        the <strong>specific</strong> validation error. The model self-corrects. Bound the
+        retry count (typically 2-3) and route persistent failures to human review.
+      </p>
+
+      <!-- DIAGRAM: VALIDATION-RETRY LOOP -->
+      <div class="diagram-block">
+        <div class="diagram-header">
+          <span class="diagram-title">Figure 4.4 · Validation-retry loop</span>
+          <span class="diagram-fig">runtime semantic correction</span>
+        </div>
+        <div class="diagram-svg-wrap">
+          <svg viewBox="0 0 780 380" xmlns="http://www.w3.org/2000/svg">
+            <!-- doc -->
+            <rect class="node-rect" x="40" y="40" width="160" height="56"/>
+            <text class="node-title" x="120" y="65">Document</text>
+            <text class="node-sub" x="120" y="82">+ schema</text>
+
+            <path class="flow-line" d="M 200 68 L 260 68" marker-end="url(#arr1)"/>
+
+            <!-- claude -->
+            <rect class="node-rect accent" x="260" y="40" width="180" height="56"/>
+            <text class="node-title" x="350" y="65">Claude tool_use</text>
+            <text class="node-sub" x="350" y="82">structured output</text>
+
+            <path class="flow-line" d="M 440 68 L 500 68" marker-end="url(#arr1)"/>
+
+            <!-- validate -->
+            <rect class="node-rect teal" x="500" y="40" width="180" height="56"/>
+            <text class="node-title" x="590" y="65">Pydantic validate</text>
+            <text class="node-sub" x="590" y="82">semantic checks</text>
+
+            <!-- pass branch -->
+            <path class="flow-line sage" d="M 590 96 L 590 140" marker-end="url(#arrSage)"/>
+            <text class="flow-label node-label-sage" x="615" y="120">PASS</text>
+            <rect class="node-rect fill-sage" x="500" y="144" width="180" height="56"/>
+            <text class="node-title" x="590" y="169">Return result</text>
+            <text class="node-sub" x="590" y="186">downstream system</text>
+
+            <!-- fail branch -->
+            <path class="flow-line coral" d="M 500 80 Q 380 80 380 200 L 380 230" marker-end="url(#arrCoral)" fill="none"/>
+            <text class="flow-label node-label-coral" x="380" y="190">FAIL</text>
+
+            <rect class="node-rect coral" x="200" y="234" width="360" height="76"/>
+            <text class="node-title" x="380" y="262">Retry with error feedback</text>
+            <text class="node-sub" x="380" y="282">document + failed output + error</text>
+            <text class="node-sub" x="380" y="298">"return null if data is absent"</text>
+
+            <!-- retry loop arrow back -->
+            <path class="flow-line" d="M 200 272 Q 130 272 130 100 L 130 68 L 198 68" stroke-dasharray="3,3" marker-end="url(#arr1)"/>
+            <text class="flow-label" x="80" y="180">retry · max 2-3</text>
+
+            <!-- escalate -->
+            <path class="flow-line coral" d="M 380 310 L 380 340" marker-end="url(#arrCoral)"/>
+            <rect class="node-rect fill-coral" x="280" y="344" width="200" height="32"/>
+            <text class="node-title" x="380" y="365">Human review queue</text>
+
+            <defs>
+              <marker id="arr1" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" fill="#3a3429"/>
+              </marker>
+              <marker id="arrSage" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" fill="#8aa978"/>
+              </marker>
+              <marker id="arrCoral" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" fill="#e07b5a"/>
+              </marker>
+            </defs>
+          </svg>
+        </div>
+        <div class="diagram-caption">
+          The retry message includes the specific validator error — not "try again." The
+          specificity is what enables self-correction. Bound retries; don't loop forever.
+        </div>
+      </div>
+
+      <h3 class="subhead">The effectiveness boundary.</h3>
+      <p>
+        This is the single most testable concept on this task. Retry helps when the
+        information is in the document and the model produced it wrong. Retry does not
+        help when the information is genuinely absent. Recognize the difference or you
+        burn cost on unfixable retries.
+      </p>
+
+      <div class="dual">
+        <div class="dual-card right">
+          <div class="dual-card-tag">Retry fixes</div>
+          <h5>Format and structural errors</h5>
+          <ul class="bullets" style="margin-top:12px;">
+            <li>"$1,200" returned as string when number required</li>
+            <li>Vendor placed in customer field</li>
+            <li>line_items don't sum to stated_total</li>
+            <li>Missing required field that IS in the document</li>
+          </ul>
+        </div>
+        <div class="dual-card wrong">
+          <div class="dual-card-tag">Retry can't fix</div>
+          <h5>Information absent from source</h5>
+          <ul class="bullets" style="margin-top:12px;">
+            <li>Field truly missing from the document</li>
+            <li>Required external context never provided</li>
+            <li>Domain knowledge gap</li>
+            <li>Source document refers to another doc not given</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="subhead">Two production patterns the exam tests.</h3>
+      <ul class="bullets">
+        <li><strong>calculated_total vs stated_total.</strong> Have the model extract both the stated total and a calculated total (sum of line items). Flag disagreement. The model checking its own arithmetic surfaces semantic errors that schema validation can't.</li>
+        <li><strong>detected_pattern field.</strong> When flagging an issue, have the model record which code pattern triggered the flag. When developers dismiss findings, you can analyze dismissals by pattern to find systematic FP sources. Confidence scores don't enable this; pattern names do.</li>
+      </ul>
+
+      <h3 class="subhead">Code example — Pydantic validator with semantic check.</h3>
+<pre class="code-standalone"><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel, ValidationError, field_validator
+<span class="keyword">from</span> typing <span class="keyword">import</span> Optional, List
+
+<span class="keyword">class</span> LineItem(BaseModel):
+    description: str
+    amount: float
+
+<span class="keyword">class</span> Invoice(BaseModel):
+    vendor: str
+    line_items: List[LineItem]
+    stated_total: float
+    calculated_total: float   <span class="comment"># model computes; we verify</span>
+
+    @field_validator(<span class="string">'calculated_total'</span>)
+    @classmethod
+    <span class="keyword">def</span> totals_must_match(cls, v, info):
+        items_sum = sum(item.amount <span class="keyword">for</span> item <span class="keyword">in</span> info.data[<span class="string">'line_items'</span>])
+        <span class="keyword">if</span> abs(v - items_sum) > <span class="num">0.01</span>:
+            <span class="keyword">raise</span> ValueError(
+                f<span class="string">"calculated_total ({v}) doesn't match sum "</span>
+                f<span class="string">"of line_items ({items_sum})"</span>
+            )
+        <span class="keyword">return</span> v
+
+<span class="keyword">def</span> extract_with_retry(document, max_retries=<span class="num">3</span>):
+    messages = [{<span class="string">"role"</span>: <span class="string">"user"</span>,
+                 <span class="string">"content"</span>: f<span class="string">"Extract:\n\n{document}"</span>}]
+
+    <span class="keyword">for</span> attempt <span class="keyword">in</span> range(max_retries):
+        response = client.messages.create(
+            model=<span class="string">"claude-sonnet-4-5"</span>,
+            tools=[invoice_tool],
+            tool_choice={<span class="string">"type"</span>: <span class="string">"tool"</span>, <span class="string">"name"</span>: <span class="string">"extract_invoice"</span>},
+            messages=messages,
+            max_tokens=<span class="num">1024</span>
+        )
+        raw = response.content[<span class="num">0</span>].input
+
+        <span class="keyword">try</span>:
+            <span class="keyword">return</span> Invoice(**raw)
+        <span class="keyword">except</span> ValidationError <span class="keyword">as</span> e:
+            messages.append({<span class="string">"role"</span>: <span class="string">"assistant"</span>, <span class="string">"content"</span>: response.content})
+            messages.append({
+                <span class="string">"role"</span>: <span class="string">"user"</span>,
+                <span class="string">"content"</span>: (
+                    f<span class="string">"Validation failed:\n{e}\n\n"</span>
+                    f<span class="string">"Re-examine the document. If data is "</span>
+                    f<span class="string">"genuinely absent, return null rather than "</span>
+                    f<span class="string">"guessing."</span>
+                )
+            })
+
+    <span class="keyword">raise</span> RuntimeError(<span class="string">"Failed after retries - route to human"</span>)</pre>
+
+      <!-- TRAPS 4.4 -->
+      <div class="traps-block">
+        <div class="traps-header">
+          <span class="warn-icon">!</span>
+          <h4>Anti-patterns &amp; exam traps</h4>
+          <span class="traps-sub">Click each to expand</span>
+        </div>
+        <ul class="traps-list">
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">01</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Retry indefinitely until validation passes."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Wastes cost on unfixable cases. If the data is absent, retry-loop will never converge — you'll just burn API calls.</div>
+                  <div class="trap-fix">Bound retries (2-3). Route persistent failures to human review.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">02</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Schema validation is enough — semantic errors are rare."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Schema validation catches syntax. Semantic errors (line items not summing, fields swapped, hallucinated values) are common and silent. Without semantic validators they reach production undetected.</div>
+                  <div class="trap-fix">Add Pydantic validators with cross-field semantic checks. calculated_total vs stated_total is the canonical pattern.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">03</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Just send 'try again' on failure — the model will figure it out."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Without the specific error, the model retries the same way. Specificity is what enables correction.</div>
+                  <div class="trap-fix">Always include the original document, the failed extraction, AND the specific validation error message in the retry prompt.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- CHECK QUESTIONS 4.4 -->
+      <div class="qbank-group-header" style="margin-top:48px;">
+        <div class="qbank-group-num">4.4</div>
+        <div class="qbank-group-title">Check questions</div>
+        <div class="qbank-group-tag">2 questions</div>
+      </div>
+      <div class="qbank">
+
+        <div class="question-card check-q" id="cq-7">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q7</span>07</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 4.4</span><span>retry boundary</span></div>
+              <p class="question-text">Your contract extractor fails validation 8% of the time because <code>effective_date</code> doesn't parse as ISO 8601. Retries succeed on 95% of those. The remaining 5% are contracts where the date is genuinely not stated. What's the right architecture?</p>
+            </div>
+          </div>
+          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-7')">Reveal answer</button></div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Bounded retry with error feedback for the format issues, then route the remaining 5% to human review. Don't keep retrying — the data isn't there. Architecture: try → validate → retry-with-error → after 2-3 retries, mark the field null with a <code>requires_human_review</code> flag.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card check-q" id="cq-8">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q8</span>08</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 4.4</span><span>FP debugging</span></div>
+              <p class="question-text">Why is a <code>detected_pattern</code> field on findings more valuable than a <code>confidence_score</code> for debugging false positives?</p>
+            </div>
+          </div>
+          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-8')">Reveal answer</button></div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><code>detected_pattern</code> lets you cluster dismissed findings: <em>"all dismissed flags fire on Logger.debug() calls"</em> → concrete prompt fix. <code>confidence_score</code> just tells you the model felt unsure — not what category of input triggered the failure. Pattern names enable systematic debugging; confidence scores don't.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =================== TASK 4.5 =================== -->
+<section class="task-section" id="t45">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">4<span class="num-suffix">.5</span></div>
+      <div class="section-header-text">
+        <div class="section-tag">Task statement 4.5</div>
+        <h2 class="section-title">Batch processing strategy.</h2>
+        <p class="section-meaning">
+          The Message Batches API trades latency for cost. 50% cheaper, up to a 24-hour
+          processing window, no latency SLA, no multi-turn tool calling within a single
+          batch request. Match each workflow to the right API.
+        </p>
+      </div>
+    </div>
+
+    <div class="section-body">
+
+      <h3 class="subhead">The decision rule.</h3>
+      <p>
+        One question decides everything: <strong>does the user or system wait for the
+        response?</strong> If yes, use the synchronous API. If no, batch is on the table.
+        From there, the only question is whether the SLA window leaves room for the
+        24-hour batch ceiling.
+      </p>
+
+      <!-- DIAGRAM: SYNC vs BATCH -->
+      <div class="diagram-block">
+        <div class="diagram-header">
+          <span class="diagram-title">Figure 4.5 · Sync vs batch decision tree</span>
+          <span class="diagram-fig">match API to workflow</span>
+        </div>
+        <div class="diagram-svg-wrap">
+          <svg viewBox="0 0 780 380" xmlns="http://www.w3.org/2000/svg">
+            <!-- top question -->
+            <polygon class="node-rect accent" points="390,20 540,80 390,140 240,80" fill="rgba(232,176,78,0.06)"/>
+            <text class="node-title" x="390" y="74">User waits for it?</text>
+            <text class="node-sub" x="390" y="92">blocking workflow?</text>
+
+            <!-- yes branch -->
+            <path class="flow-line coral" d="M 240 80 L 130 80 L 130 180" marker-end="url(#arrC2)"/>
+            <text class="flow-label node-label-coral" x="180" y="70">YES</text>
+            <rect class="node-rect fill-coral" x="40" y="184" width="180" height="80"/>
+            <text class="node-title node-label-coral" x="130" y="212">Synchronous API</text>
+            <text class="node-sub" x="130" y="230">full price</text>
+            <text class="node-sub" x="130" y="246">guaranteed latency</text>
+
+            <text class="node-sub" x="130" y="290" style="fill:#a89e8b;">PR review</text>
+            <text class="node-sub" x="130" y="305" style="fill:#a89e8b;">customer chat</text>
+            <text class="node-sub" x="130" y="320" style="fill:#a89e8b;">interactive</text>
+
+            <!-- no branch -->
+            <path class="flow-line" d="M 540 80 L 650 80 L 650 140" marker-end="url(#arr2)"/>
+            <text class="flow-label" x="600" y="70">NO</text>
+
+            <polygon class="node-rect accent" points="650,144 770,184 650,224 530,184" fill="rgba(232,176,78,0.06)"/>
+            <text class="node-title" x="650" y="178">SLA window?</text>
+            <text class="node-sub" x="650" y="196">vs 24h ceiling</text>
+
+            <!-- < 24h: still batch but small windows -->
+            <path class="flow-line sage" d="M 530 184 L 410 184 L 410 244" marker-end="url(#arrS2)"/>
+            <text class="flow-label" x="470" y="174">≥ 30h</text>
+            <rect class="node-rect fill-sage" x="320" y="248" width="180" height="60"/>
+            <text class="node-title node-label-sage" x="410" y="276">Batch API</text>
+            <text class="node-sub" x="410" y="294">submit every 4h</text>
+
+            <!-- > 24h flexible -->
+            <path class="flow-line sage" d="M 650 224 L 650 244" marker-end="url(#arrS2)"/>
+            <rect class="node-rect fill-sage" x="560" y="248" width="180" height="60"/>
+            <text class="node-title node-label-sage" x="650" y="276">Batch API</text>
+            <text class="node-sub" x="650" y="294">flexible cadence</text>
+
+            <!-- legend -->
+            <text x="40" y="365" class="diagram-legend">batch saves 50% but offers no latency SLA</text>
+
+            <defs>
+              <marker id="arr2" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#3a3429"/></marker>
+              <marker id="arrS2" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#8aa978"/></marker>
+              <marker id="arrC2" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#e07b5a"/></marker>
+            </defs>
+          </svg>
+        </div>
+        <div class="diagram-caption">
+          Sync for blocking workflows. Batch for everything that can wait. The 24-hour
+          ceiling means a 30-hour SLA needs submissions at least every 6 hours; practical
+          designs use 4-hour windows for safety margin.
+        </div>
+      </div>
+
+      <h3 class="subhead">Hard constraints — memorize these.</h3>
+      <ul class="bullets">
+        <li><strong>50% cost savings</strong> — the headline benefit.</li>
+        <li><strong>Up to 24-hour processing window</strong> — "often faster" is not a guarantee. Don't design around it.</li>
+        <li><strong>No multi-turn tool calling within a single batch request.</strong> This kills validation-retry loops inside the batch. You can extract via tool_use, but you can't retry-with-error inside the same batch request.</li>
+        <li><strong>custom_id is your correlation key.</strong> Without it you cannot match responses to inputs. Don't rely on submission order.</li>
+      </ul>
+
+      <h3 class="subhead">SLA math the exam loves.</h3>
+      <p>
+        If your SLA is 30 hours and the batch ceiling is 24 hours, you must submit batches
+        at least every <strong>6 hours</strong> (24 + 6 = 30) to guarantee compliance.
+        Practical designs use shorter windows — every 4 hours — for safety margin against
+        batch slowness.
+      </p>
+
+      <h3 class="subhead">Failure handling.</h3>
+      <ul class="bullets">
+        <li>Identify failures by <code>custom_id</code>.</li>
+        <li>Diagnose: oversized? malformed? schema mismatch?</li>
+        <li>Modify (chunk oversized docs, fix schema mismatch).</li>
+        <li><strong>Resubmit only the failures.</strong> Never re-run the whole batch.</li>
+      </ul>
+
+<pre class="code-standalone"><span class="comment"># Submit batch of 100 doc extractions</span>
+batch_requests = [
+    {
+        <span class="string">"custom_id"</span>: f<span class="string">"doc_{doc.id}"</span>,            <span class="comment"># YOUR correlation key</span>
+        <span class="string">"params"</span>: {
+            <span class="string">"model"</span>: <span class="string">"claude-sonnet-4-5"</span>,
+            <span class="string">"max_tokens"</span>: <span class="num">1024</span>,
+            <span class="string">"tools"</span>: [extract_invoice],
+            <span class="string">"tool_choice"</span>: {<span class="string">"type"</span>: <span class="string">"tool"</span>, <span class="string">"name"</span>: <span class="string">"extract_invoice"</span>},
+            <span class="string">"messages"</span>: [{<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: f<span class="string">"Extract:\n\n{doc.text}"</span>}]
+        }
+    }
+    <span class="keyword">for</span> doc <span class="keyword">in</span> documents
+]
+
+batch = client.messages.batches.create(requests=batch_requests)
+
+<span class="comment"># Poll for completion</span>
+<span class="keyword">while</span> True:
+    status = client.messages.batches.retrieve(batch.id)
+    <span class="keyword">if</span> status.processing_status == <span class="string">"ended"</span>:
+        <span class="keyword">break</span>
+    time.sleep(<span class="num">60</span>)
+
+<span class="comment"># Correlate via custom_id</span>
+results, failures = {}, []
+<span class="keyword">for</span> r <span class="keyword">in</span> client.messages.batches.results(batch.id):
+    <span class="keyword">if</span> r.result.type == <span class="string">"succeeded"</span>:
+        results[r.custom_id] = r.result.message
+    <span class="keyword">else</span>:
+        failures.append(r.custom_id)
+
+<span class="comment"># Resubmit ONLY failures - chunk oversized docs first</span></pre>
+
+      <!-- TRAPS 4.5 -->
+      <div class="traps-block">
+        <div class="traps-header">
+          <span class="warn-icon">!</span>
+          <h4>Anti-patterns &amp; exam traps</h4>
+          <span class="traps-sub">Click each to expand</span>
+        </div>
+        <ul class="traps-list">
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">01</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Switch all workflows to batch for the cost savings."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Blocking workflows can't tolerate the 24-hour window. The savings are real for non-blocking work; they're crippling for anything a developer or user is waiting on.</div>
+                  <div class="trap-fix">Match API to workflow latency tolerance. Sync for blocking, batch for non-blocking.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">02</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Run validation-retry loops inside a single batch request."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Batch API doesn't support multi-turn tool calling within one request. Retry-on-failure is a separate, post-batch step.</div>
+                  <div class="trap-fix">Extract in batch. Validate after results return. Retry failures in a follow-up sync call or a follow-up batch.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">03</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Add a real-time fallback if the batch is slow."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Over-engineered. The right answer is matching each workflow to the right API up front. Fallback complexity is a sign of unclear requirements.</div>
+                  <div class="trap-fix">Decide ONCE per workflow: sync or batch. Don't blend.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">04</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Re-run the whole batch when some docs fail."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Wastes cost. The successful docs are already done.</div>
+                  <div class="trap-fix">Identify failures by custom_id. Modify only those (chunk, fix schema). Resubmit only the failures.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- CHECK QUESTIONS 4.5 -->
+      <div class="qbank-group-header" style="margin-top:48px;">
+        <div class="qbank-group-num">4.5</div>
+        <div class="qbank-group-title">Check questions</div>
+        <div class="qbank-group-tag">2 questions</div>
+      </div>
+      <div class="qbank">
+
+        <div class="question-card check-q" id="cq-9">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q9</span>09</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 4.5</span><span>API selection</span></div>
+              <p class="question-text">You have two workflows: (a) PR-blocking automated code review, (b) overnight tech-debt scan. Manager says: "Switch both to batch for the 50% savings." What do you tell them?</p>
+            </div>
+          </div>
+          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-9')">Reveal answer</button></div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Move only the overnight scan to batch — that's a non-blocking, latency-tolerant workload, perfect fit. Keep PR review on the synchronous API: developers wait for the result, and the 24-hour batch window destroys the workflow. Match each workflow to its appropriate API.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card check-q" id="cq-10">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q10</span>10</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 4.5</span><span>failure handling</span></div>
+              <p class="question-text">Your nightly batch of 5,000 invoices had 47 failures, all due to documents over the context limit. Fix it before tomorrow night.</p>
+            </div>
+          </div>
+          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-10')">Reveal answer</button></div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Identify the 47 failures by <code>custom_id</code>, chunk those documents (split into sections that fit context, extract each, merge), resubmit only those 47 as a fresh batch. Don't re-run all 5,000. Optionally add a pre-flight token-count check so oversized docs auto-chunk before the next nightly run.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =================== TASK 4.6 =================== -->
+<section class="task-section" id="t46">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">4<span class="num-suffix">.6</span></div>
+      <div class="section-header-text">
+        <div class="section-tag">Task statement 4.6</div>
+        <h2 class="section-title">Multi-instance and multi-pass review.</h2>
+        <p class="section-meaning">
+          Self-review fails because the model retains its reasoning context. An independent
+          instance with no prior context is a far better critic. Large reviews split into
+          per-file local passes plus an integration pass to avoid attention dilution.
+        </p>
+      </div>
+    </div>
+
+    <div class="section-body">
+
+      <h3 class="subhead">Why self-review doesn't work.</h3>
+      <p>
+        A single Claude instance retains the reasoning context from generation. Telling it
+        <em>"now check your work"</em> in the same conversation rarely catches subtle
+        issues — the model has already committed to its line of reasoning and tends to
+        defend, not challenge, that commitment. Even extended thinking inside the same
+        call shows the same limitation.
+      </p>
+      <p>
+        The fix: a second, <strong>independent</strong> Claude instance with no prior
+        reasoning context evaluates the artifact fresh. Nothing to defend, no committed
+        mental model — it sees the artifact for the first time.
+      </p>
+
+      <h3 class="subhead">Multi-pass for large reviews.</h3>
+      <p>
+        Single-pass review of a 14-file PR suffers from <strong>attention dilution</strong>.
+        Detailed feedback on some files; superficial on others; obvious bugs missed; and
+        contradictory findings — flag a pattern in file A, approve the same pattern in
+        file B. Bigger context windows don't fix this; the dilution is structural.
+      </p>
+
+      <!-- DIAGRAM: MULTI-PASS -->
+      <div class="diagram-block">
+        <div class="diagram-header">
+          <span class="diagram-title">Figure 4.6 · Multi-pass review architecture</span>
+          <span class="diagram-fig">focused passes beat one pass</span>
+        </div>
+        <div class="diagram-svg-wrap">
+          <svg viewBox="0 0 780 380" xmlns="http://www.w3.org/2000/svg">
+            <!-- top: 14-file PR -->
+            <rect class="node-rect accent" x="280" y="20" width="220" height="56"/>
+            <text class="node-title" x="390" y="45">14-file PR</text>
+            <text class="node-sub" x="390" y="62">large multi-file change</text>
+
+            <!-- fan-out -->
+            <path class="flow-line" d="M 390 76 L 130 130" marker-end="url(#a3)"/>
+            <path class="flow-line" d="M 390 76 L 290 130" marker-end="url(#a3)"/>
+            <path class="flow-line" d="M 390 76 L 490 130" marker-end="url(#a3)"/>
+            <path class="flow-line" d="M 390 76 L 650 130" marker-end="url(#a3)"/>
+
+            <!-- per-file passes -->
+            <rect class="node-rect teal" x="60" y="134" width="140" height="56"/>
+            <text class="node-title" x="130" y="159">Pass A</text>
+            <text class="node-sub" x="130" y="176">file_1 local</text>
+
+            <rect class="node-rect teal" x="220" y="134" width="140" height="56"/>
+            <text class="node-title" x="290" y="159">Pass B</text>
+            <text class="node-sub" x="290" y="176">file_2 local</text>
+
+            <rect class="node-rect teal" x="420" y="134" width="140" height="56"/>
+            <text class="node-title" x="490" y="159">Pass C</text>
+            <text class="node-sub" x="490" y="176">file_N local</text>
+
+            <rect class="node-rect teal" x="580" y="134" width="140" height="56"/>
+            <text class="node-title" x="650" y="159">Pass D</text>
+            <text class="node-sub" x="650" y="176">file_14 local</text>
+
+            <!-- integration -->
+            <path class="flow-line" d="M 130 190 L 390 240" marker-end="url(#a3)"/>
+            <path class="flow-line" d="M 290 190 L 390 240" marker-end="url(#a3)"/>
+            <path class="flow-line" d="M 490 190 L 390 240" marker-end="url(#a3)"/>
+            <path class="flow-line" d="M 650 190 L 390 240" marker-end="url(#a3)"/>
+
+            <rect class="node-rect accent" x="240" y="244" width="300" height="56"/>
+            <text class="node-title" x="390" y="269">Integration pass</text>
+            <text class="node-sub" x="390" y="286">cross-file flow only</text>
+
+            <!-- final -->
+            <path class="flow-line" d="M 390 300 L 390 320" marker-end="url(#a3)"/>
+            <rect class="node-rect fill-sage" x="280" y="324" width="220" height="40"/>
+            <text class="node-title node-label-sage" x="390" y="348">Combined findings</text>
+
+            <text x="40" y="370" class="diagram-legend">each pass attends fully to its scope · no dilution</text>
+
+            <defs>
+              <marker id="a3" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#3a3429"/></marker>
+            </defs>
+          </svg>
+        </div>
+        <div class="diagram-caption">
+          Per-file passes catch local bugs with full attention. The integration pass
+          examines cross-file data flow without re-flagging local issues. Each pass owns
+          one concern.
+        </div>
+      </div>
+
+      <h3 class="subhead">Confidence-based routing.</h3>
+      <p>
+        Have the reviewer instance self-report confidence per finding (or per field). Auto-
+        accept high-confidence; route low-confidence to humans. Crucial: confidence scores
+        must be <strong>calibrated</strong> against a labeled validation set before they're
+        trusted as routing signal. Uncalibrated, the model's "high" might still be 60%.
+      </p>
+
+      <h3 class="subhead">Code example — independent reviewer + multi-pass.</h3>
+<pre class="code-standalone"><span class="comment"># Stage 1: per-file review (independent instance per file)</span>
+<span class="keyword">def</span> review_file(file_diff):
+    <span class="keyword">return</span> client.messages.create(
+        model=<span class="string">"claude-sonnet-4-5"</span>,
+        max_tokens=<span class="num">2048</span>,
+        system=<span class="string">"""You are a code reviewer focused on LOCAL issues
+                  in this single file. Do not consider cross-file
+                  interactions. Flag bugs, security, null derefs.
+                  Skip style."""</span>,
+        messages=[{<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: file_diff}]
+    )
+
+per_file = [review_file(d) <span class="keyword">for</span> d <span class="keyword">in</span> pr.file_diffs]
+
+<span class="comment"># Stage 2: cross-file integration pass</span>
+integration = client.messages.create(
+    model=<span class="string">"claude-sonnet-4-5"</span>,
+    max_tokens=<span class="num">2048</span>,
+    system=<span class="string">"""Review ONLY cross-file interactions: API contract
+              changes, data flow between modules, breaking imports.
+              Do NOT re-flag local issues."""</span>,
+    messages=[{<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: pr.full_diff}]
+)
+
+<span class="comment"># Stage 3: independent reviewer of generated code</span>
+<span class="comment"># (different conversation - no prior reasoning context)</span>
+independent = client.messages.create(
+    model=<span class="string">"claude-sonnet-4-5"</span>,
+    max_tokens=<span class="num">2048</span>,
+    system=<span class="string">"""You have not seen this code before. Review for
+              correctness and edge cases. Output each finding
+              with a confidence: high | medium | low."""</span>,
+    messages=[{<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: f<span class="string">"Review:\n\n{generated_code}"</span>}]
+)
+
+<span class="comment"># Stage 4: confidence-based routing</span>
+<span class="keyword">for</span> finding <span class="keyword">in</span> parse(independent):
+    <span class="keyword">if</span> finding.confidence == <span class="string">"high"</span>:
+        auto_apply(finding)
+    <span class="keyword">else</span>:
+        route_to_human(finding)</pre>
+
+      <!-- TRAPS 4.6 -->
+      <div class="traps-block">
+        <div class="traps-header">
+          <span class="warn-icon">!</span>
+          <h4>Anti-patterns &amp; exam traps</h4>
+          <span class="traps-sub">Click each to expand</span>
+        </div>
+        <ul class="traps-list">
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">01</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Tell the model to review its own work in the same conversation."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">The model retains its reasoning context. It already has a committed mental model and is biased toward confirming, not challenging, it. Subtle issues survive.</div>
+                  <div class="trap-fix">Spawn an independent instance with no prior context. The fresh evaluator catches what the original missed.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">02</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Upgrade to a model with bigger context to fix attention dilution."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Bigger context still gives every file diluted attention. The dilution is structural — too many concerns at once. A 1M-token model with 14 files gets the same diluted output, just with more available room.</div>
+                  <div class="trap-fix">Split into per-file focused passes plus an integration pass. The architecture is the fix.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">03</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Run three full-PR passes and only flag findings appearing in 2+ of 3."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Crude consensus. Misses findings unique to one pass and adds 3× cost without addressing the actual problem (attention dilution from breadth, not from sampling variance).</div>
+                  <div class="trap-fix">Address breadth structurally: per-file plus integration. Save consensus voting for cases where the model is genuinely uncertain on a known issue.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+          <li class="trap-item" onclick="this.classList.toggle('open')">
+            <div class="trap-item-header">
+              <div class="trap-num">04</div>
+              <div class="trap-content">
+                <div class="trap-wrong">"Trust self-reported confidence scores for routing decisions."</div>
+                <div class="trap-detail">
+                  <div class="trap-why">Uncalibrated confidence is just a number. The model's 0.9 might be 60% accurate in your domain. Routing on uncalibrated scores is theater.</div>
+                  <div class="trap-fix">Calibrate against a labeled validation set first. Track accuracy by confidence bucket. Only then route on confidence.</div>
+                </div>
+              </div>
+              <span class="expand-indicator">+</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- CHECK QUESTIONS 4.6 -->
+      <div class="qbank-group-header" style="margin-top:48px;">
+        <div class="qbank-group-num">4.6</div>
+        <div class="qbank-group-title">Check questions</div>
+        <div class="qbank-group-tag">2 questions</div>
+      </div>
+      <div class="qbank">
+
+        <div class="question-card check-q" id="cq-11">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q11</span>11</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 4.6</span><span>self-review</span></div>
+              <p class="question-text">Your code-generation agent produces a function. You add an instruction at the end of the same prompt: "Now review your work for bugs." Why does this rarely catch real issues?</p>
+            </div>
+          </div>
+          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-11')">Reveal answer</button></div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">The model retains its reasoning context from generation. It already has a committed mental model of what the code does and why — it's biased toward confirming, not challenging, that model. An <strong>independent instance</strong> with no prior context evaluates the artifact fresh and is far more likely to surface subtle issues.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card check-q" id="cq-12">
+          <div class="question-header">
+            <div class="question-num check"><span class="q-prefix">Check Q12</span>12</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Task 4.6</span><span>attention dilution</span></div>
+              <p class="question-text">A 14-file PR review gives detailed feedback on 4 files, superficial on 10, and contradicts itself across files. Two suggestions: (a) upgrade to 1M-token context, (b) split into per-file passes plus an integration pass. Which fixes it?</p>
+            </div>
+          </div>
+          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-12')">Reveal answer</button></div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>(b).</strong> Root cause = attention dilution across files in a single pass — a structural problem with how attention allocates, not a context-size problem. A bigger context window still gives every file diluted attention. Per-file passes give each file focused attention; the integration pass handles cross-file concerns separately.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =================== PULL QUOTE =================== -->
+<section style="padding: 40px 0;">
+  <div class="container">
+    <div class="pull-quote">
+      <div class="pull-quote-text">
+        Criteria for <em>what</em>. Few-shot for <em>judgment</em>. Schemas for <em>format</em>. Validators for <em>semantics</em>. Batch for <em>scale</em>. Independent passes for <em>truth</em>.
+      </div>
+      <div class="pull-quote-attr">— The six levers of Domain IV</div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== PRACTICE EXAM =================== -->
+<section class="task-section" id="exam" style="border-bottom:none;">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num" style="color:var(--teal);">EX</div>
+      <div class="section-header-text">
+        <div class="section-tag">Practice exam</div>
+        <h2 class="section-title">Eight questions. Aim for 7/8.</h2>
+        <p class="section-meaning">
+          Click an option to select it, then "Reveal answer" to see the rationale and
+          which option you should have picked. Your score updates at the bottom.
+        </p>
+      </div>
+    </div>
+
+    <div class="qbank">
+
+      <!-- EXAM Q1 -->
+      <div class="question-card exam-q" id="eq-1" data-correct="C">
+        <div class="question-header">
+          <div class="question-num"><span class="q-prefix">Question 01</span>01</div>
+          <div class="question-body">
+            <div class="question-scenario"><span class="scenario-tag">Task 4.1</span><span>FP trust</span></div>
+            <p class="question-text">Your security review agent flags 200 issues per week. The "input validation" category has 22% precision; developers ignore that category and now also ignore the "auth" category (which has 88% precision). Which action <em>first</em>?</p>
+          </div>
+        </div>
+        <ul class="options-list">
+          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">Add "only flag with high confidence" to the prompt.</span></li>
+          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">Lower the temperature to 0.</span></li>
+          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Temporarily disable the input-validation category, rewrite its criteria, then re-enable.</span></li>
+          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Add a confidence score field and filter to scores &gt; 0.8.</span></li>
+        </ul>
+        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-1')">Reveal answer</button></div>
+        <div class="rationale">
+          <div class="rationale-inner">
+            <div class="rationale-tag">Why C</div>
+            <p class="rationale-text">High-FP categories poison trust in the accurate ones around them. The fix is disable-and-rewrite: protect developer trust in the working categories while you fix the broken one offline. <strong>A and D</strong> are vague-confidence theater — the model has no calibrated notion of confidence. <strong>B</strong> is unrelated; temperature controls sampling randomness, not what counts as a finding.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXAM Q2 -->
+      <div class="question-card exam-q" id="eq-2" data-correct="B">
+        <div class="question-header">
+          <div class="question-num"><span class="q-prefix">Question 02</span>02</div>
+          <div class="question-body">
+            <div class="question-scenario"><span class="scenario-tag">Task 4.3</span><span>tool_choice</span></div>
+            <p class="question-text">You have three extraction tools (<code>invoice</code>, <code>receipt</code>, <code>purchase_order</code>) and the document type is unknown. You need guaranteed structured output. What <code>tool_choice</code>?</p>
+          </div>
+        </div>
+        <ul class="options-list">
+          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text"><code>"auto"</code></span></li>
+          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text"><code>{"type": "any"}</code></span></li>
+          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text"><code>{"type": "tool", "name": "invoice"}</code></span></li>
+          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Omit <code>tool_choice</code> entirely.</span></li>
+        </ul>
+        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-2')">Reveal answer</button></div>
+        <div class="rationale">
+          <div class="rationale-inner">
+            <div class="rationale-tag">Why B</div>
+            <p class="rationale-text"><code>{"type": "any"}</code> forces a tool call (so output is always structured) while letting Claude choose which extractor based on the document. <strong>A and D</strong> default to "auto" — Claude may return text. <strong>C</strong> locks to one extractor regardless of document type, which is wrong when the type is unknown.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXAM Q3 -->
+      <div class="question-card exam-q" id="eq-3" data-correct="B">
+        <div class="question-header">
+          <div class="question-num"><span class="q-prefix">Question 03</span>03</div>
+          <div class="question-body">
+            <div class="question-scenario"><span class="scenario-tag">Task 4.3</span><span>fabrication</span></div>
+            <p class="question-text">Your contract extractor's <code>governing_law</code> field returns <code>"California"</code> even for contracts with no governing-law clause. Schema marks the field required, type string. What's the fix?</p>
+          </div>
+        </div>
+        <ul class="options-list">
+          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">Add a few-shot example showing the model to default to "California" when missing.</span></li>
+          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">Make the field nullable so the model can return null when the clause is absent.</span></li>
+          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Add a Pydantic validator that rejects "California".</span></li>
+          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Force a retry until the model returns something different.</span></li>
+        </ul>
+        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-3')">Reveal answer</button></div>
+        <div class="rationale">
+          <div class="rationale-inner">
+            <div class="rationale-tag">Why B</div>
+            <p class="rationale-text">Required + non-nullable forces the model to fabricate to satisfy the schema. Nullable lets it correctly return null when the clause is absent. <strong>A</strong> teaches it to fabricate worse. <strong>C</strong> just rejects the symptom — model will pick another plausible default. <strong>D</strong> wastes calls on a problem the schema is causing.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXAM Q4 -->
+      <div class="question-card exam-q" id="eq-4" data-correct="B">
+        <div class="question-header">
+          <div class="question-num"><span class="q-prefix">Question 04</span>04</div>
+          <div class="question-body">
+            <div class="question-scenario"><span class="scenario-tag">Task 4.5</span><span>API selection</span></div>
+            <p class="question-text">You have two workflows: (a) PR-blocking pre-merge review, (b) nightly tech-debt scan. Manager wants both moved to the Message Batches API for 50% savings. What's correct?</p>
+          </div>
+        </div>
+        <ul class="options-list">
+          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">Move both — savings outweigh latency.</span></li>
+          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">Move only the nightly scan; keep PR review on sync.</span></li>
+          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Keep both on sync — batch result ordering is unreliable.</span></li>
+          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Move both, with a fallback to sync if a batch is slow.</span></li>
+        </ul>
+        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-4')">Reveal answer</button></div>
+        <div class="rationale">
+          <div class="rationale-inner">
+            <div class="rationale-tag">Why B</div>
+            <p class="rationale-text">Batch fits non-blocking, latency-tolerant workloads; sync fits blocking workflows where developers are waiting. The 24-hour batch ceiling makes batch unworkable for pre-merge. <strong>C</strong> reflects a misconception — <code>custom_id</code> handles correlation cleanly. <strong>D</strong> over-engineers; matching API to workflow is the simpler, correct answer.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXAM Q5 -->
+      <div class="question-card exam-q" id="eq-5" data-correct="B">
+        <div class="question-header">
+          <div class="question-num"><span class="q-prefix">Question 05</span>05</div>
+          <div class="question-body">
+            <div class="question-scenario"><span class="scenario-tag">Task 4.4</span><span>retry boundary</span></div>
+            <p class="question-text">Your invoice extractor sometimes fails validation: <code>line_items.sum() != stated_total</code>. About 60% of failures are model errors fixable on retry; the other 40% are documents where the line items are genuinely missing. What architecture?</p>
+          </div>
+        </div>
+        <ul class="options-list">
+          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">Retry indefinitely until validation passes.</span></li>
+          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">Bounded retries (2-3) with the validation error appended; route remaining failures to human review.</span></li>
+          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Lower the model temperature to reduce the failure rate.</span></li>
+          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Remove the line-items sum check and trust <code>stated_total</code>.</span></li>
+        </ul>
+        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-5')">Reveal answer</button></div>
+        <div class="rationale">
+          <div class="rationale-inner">
+            <div class="rationale-tag">Why B</div>
+            <p class="rationale-text">Bounded retry with error feedback for the fixable 60%; human routing for the unfixable 40% (data genuinely absent). <strong>A</strong> wastes cost on unfixable cases. <strong>C</strong> doesn't address what's wrong. <strong>D</strong> abandons the most valuable semantic check you have.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXAM Q6 -->
+      <div class="question-card exam-q" id="eq-6" data-correct="C">
+        <div class="question-header">
+          <div class="question-num"><span class="q-prefix">Question 06</span>06</div>
+          <div class="question-body">
+            <div class="question-scenario"><span class="scenario-tag">Task 4.6</span><span>multi-pass</span></div>
+            <p class="question-text">A 14-file PR review produces inconsistent depth, missed bugs, and contradictory findings (same pattern flagged in one file, approved in another). Best fix?</p>
+          </div>
+        </div>
+        <ul class="options-list">
+          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">Upgrade to a model with a 1M-token context window.</span></li>
+          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">Run three independent passes on the full PR; only flag issues appearing in ≥2 of 3.</span></li>
+          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Split into per-file passes for local issues + a separate integration pass for cross-file flow.</span></li>
+          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Require developers to split the PR into 3-4 file submissions.</span></li>
+        </ul>
+        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-6')">Reveal answer</button></div>
+        <div class="rationale">
+          <div class="rationale-inner">
+            <div class="rationale-tag">Why C</div>
+            <p class="rationale-text">Root cause is attention dilution across files. Per-file focused passes plus an integration pass solves it. <strong>A</strong> doesn't fix dilution — bigger context still spreads attention across files. <strong>B</strong> is crude consensus that misses unique findings and adds 3× cost. <strong>D</strong> shifts the architectural problem onto humans.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXAM Q7 -->
+      <div class="question-card exam-q" id="eq-7" data-correct="A">
+        <div class="question-header">
+          <div class="question-num"><span class="q-prefix">Question 07</span>07</div>
+          <div class="question-body">
+            <div class="question-scenario"><span class="scenario-tag">Task 4.3</span><span>schema scope</span></div>
+            <p class="question-text">Which set of failures does <code>tool_use</code> with a strict JSON schema eliminate?</p>
+          </div>
+        </div>
+        <ul class="options-list">
+          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">JSON syntax errors, missing required fields, wrong-type fields, invalid enums.</span></li>
+          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">All semantic correctness errors.</span></li>
+          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Hallucinated values for required fields.</span></li>
+          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Line items not summing to the stated total.</span></li>
+        </ul>
+        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-7')">Reveal answer</button></div>
+        <div class="rationale">
+          <div class="rationale-inner">
+            <div class="rationale-tag">Why A</div>
+            <p class="rationale-text"><code>tool_use</code> eliminates <em>syntactic</em> errors only. Semantic errors (B-D) survive — that's why Task 4.4 (validation-retry with semantic validators) exists. The most-tested confusion on this domain is conflating "schema-validated" with "correct."</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXAM Q8 -->
+      <div class="question-card exam-q" id="eq-8" data-correct="B">
+        <div class="question-header">
+          <div class="question-num"><span class="q-prefix">Question 08</span>08</div>
+          <div class="question-body">
+            <div class="question-scenario"><span class="scenario-tag">Task 4.2</span><span>format judgment</span></div>
+            <p class="question-text">Your invoice extractor returns <code>tax_amount: null</code> on invoices that show tax as <code>"VAT @ 20%"</code> rather than a dollar amount. Schema is correct (nullable). What's the right fix?</p>
+          </div>
+        </div>
+        <ul class="options-list">
+          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">Force <code>tax_amount</code> to be required so the model has to produce a value.</span></li>
+          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">Add 1-2 few-shot examples showing extraction from VAT-style invoices, with reasoning that converts the percentage to a dollar amount.</span></li>
+          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Set <code>tool_choice</code> to <code>"any"</code> instead of forced.</span></li>
+          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Switch to the Message Batches API.</span></li>
+        </ul>
+        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-8')">Reveal answer</button></div>
+        <div class="rationale">
+          <div class="rationale-inner">
+            <div class="rationale-tag">Why B</div>
+            <p class="rationale-text">Few-shot teaches the judgment to convert percentage to dollar amount. The schema is fine (nullable allows correct null behavior); what's missing is the judgment that the data <em>is</em> there in a different form. <strong>A</strong> causes hallucination. <strong>C and D</strong> are unrelated to format judgment.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SCORE PANEL -->
+    <div class="score-panel" id="score-panel">
+      <div class="score-stat">
+        <div class="score-value" id="score-correct">0</div>
+        <div class="score-label">Correct</div>
+      </div>
+      <div class="score-stat">
+        <div class="score-value" id="score-total">0/8</div>
+        <div class="score-label">Answered</div>
+      </div>
+      <div class="score-stat">
+        <div class="score-value" id="score-pct">—</div>
+        <div class="score-label">Percent</div>
+      </div>
+      <div class="score-actions">
+        <button class="score-action-btn" onclick="resetExam()">Reset</button>
+        <button class="score-action-btn" onclick="revealAll()">Reveal all</button>
+      </div>
+    </div>
+
+    <!-- BUILD EXERCISE -->
+    <div class="exercise-block" style="margin-top:80px;">
+      <div class="exercise-tag">Build exercise · all 6 tasks</div>
+      <h3>Production extraction tool with validation-retry.</h3>
+      <p>
+        Build an extraction tool that processes 10 documents end-to-end with all six
+        Domain 4 concepts wired together. This is the canonical full-stack exercise — if
+        you can ship this cleanly, you've operationalized the entire domain.
+      </p>
+      <ol>
+        <li><strong>JSON schema</strong> with required, optional, and nullable fields; an enum that includes <code>"unclear"</code> and <code>"other"</code> + detail string.</li>
+        <li><strong>2-3 few-shot examples</strong> in the system prompt — at least one demonstrating null-return for missing data.</li>
+        <li><strong>tool_choice forced selection</strong> (single extractor, must run).</li>
+        <li><strong>Pydantic validation</strong> including a semantic check (<code>calculated_total</code> vs <code>stated_total</code>).</li>
+        <li><strong>Validation-retry loop</strong>, bounded at 2 retries, with the specific error appended to the retry message.</li>
+        <li><strong>Process 10 documents</strong>, log each outcome (pass / passed-on-retry / human-review).</li>
+      </ol>
+      <p style="margin-top:24px;"><strong>Stretch goals.</strong> Add a <code>detected_pattern</code> field for FP analysis. Wrap the 10 docs in a batch submission with <code>custom_id</code>. Add a second independent reviewer instance that flags suspicious values with a confidence label, then route low-confidence to a <code>needs_review</code> queue.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- =================== FOOTER =================== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Quality is the product of <em>structure</em>, not effort.</div>
+        <div class="footer-text">Domain IV is 20% of the exam. Six task statements that form a quality pipeline — explicit criteria, few-shot, schemas, validators, batch, multi-pass. Each one fixes a failure mode of the one before.</div>
+      </div>
+      <div class="footer-col">
+        <h6>Task statements</h6>
+        <ul>
+          <li>4.1 — Explicit criteria</li>
+          <li>4.2 — Few-shot prompting</li>
+          <li>4.3 — Tool use schemas</li>
+          <li>4.4 — Validation &amp; retry</li>
+          <li>4.5 — Batch processing</li>
+          <li>4.6 — Multi-instance review</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h6>The series</h6>
+        <ul>
+          <li>Domain I · Agentic · 27%</li>
+          <li>Domain II · Tools &amp; MCP · 18%</li>
+          <li>Domain III · Claude Code · 20%</li>
+          <li>Domain IV · Prompt Eng · 20%</li>
+          <li>Domain V · Context · 15%</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-meta">
+      <div>Volume Four · Domain IV</div>
+      <div>The Architect's Companion</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ============ CHECK QUESTION REVEAL ============
+function revealCheck(id) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  card.classList.add('revealed');
+  const btn = card.querySelector('.reveal-btn');
+  if (btn) { btn.textContent = 'Revealed'; btn.disabled = true; btn.style.opacity = '0.5'; }
+}
+
+// ============ EXAM SCORING ============
+const examState = {};
+
+function selectOption(el) {
+  const card = el.closest('.question-card');
+  if (card.classList.contains('revealed')) return;
+  card.querySelectorAll('.option-item').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  examState[card.id] = el.dataset.letter;
+}
+
+function revealExam(id) {
+  const card = document.getElementById(id);
+  if (!card || card.classList.contains('revealed')) return;
+  card.classList.add('revealed');
+  const correct = card.dataset.correct;
+  const selected = examState[id];
+
+  card.querySelectorAll('.option-item').forEach(o => {
+    if (o.dataset.letter === correct) o.classList.add('correct');
+    if (o.dataset.letter === selected && selected !== correct) o.classList.add('incorrect');
+  });
+
+  if (selected === correct) card.classList.add('answered','correct');
+  else if (selected) card.classList.add('answered','incorrect');
+
+  const btn = card.querySelector('.reveal-btn');
+  if (btn) { btn.textContent = 'Revealed'; btn.disabled = true; btn.style.opacity = '0.5'; }
+
+  updateScore();
+}
+
+function updateScore() {
+  const cards = document.querySelectorAll('.exam-q.revealed');
+  let correct = 0, answered = cards.length;
+  cards.forEach(c => {
+    if (examState[c.id] === c.dataset.correct) correct++;
+  });
+  const total = document.querySelectorAll('.exam-q').length;
+  document.getElementById('score-correct').textContent = correct;
+  document.getElementById('score-total').textContent = `${answered}/${total}`;
+  const pct = answered === 0 ? '—' : Math.round((correct/answered)*100) + '%';
+  document.getElementById('score-pct').textContent = pct;
+
+  const correctEl = document.getElementById('score-correct');
+  correctEl.classList.remove('good','bad');
+  if (answered > 0) {
+    if (correct/answered >= 0.875) correctEl.classList.add('good');
+    else if (correct/answered < 0.6) correctEl.classList.add('bad');
+  }
+}
+
+function resetExam() {
+  for (const k in examState) delete examState[k];
+  document.querySelectorAll('.exam-q').forEach(card => {
+    card.classList.remove('revealed','answered','correct','incorrect');
+    card.querySelectorAll('.option-item').forEach(o => {
+      o.classList.remove('selected','correct','incorrect');
+    });
+    const btn = card.querySelector('.reveal-btn');
+    if (btn) { btn.textContent = 'Reveal answer'; btn.disabled = false; btn.style.opacity = '1'; }
+  });
+  updateScore();
+}
+
+function revealAll() {
+  document.querySelectorAll('.exam-q').forEach(card => revealExam(card.id));
+}
+</script>
+</body>
+</html>

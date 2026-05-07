@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Certified Architect — Foundations · Study Guide</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Inline dark-mode fallback. course.css below overrides these tokens to
+     produce the warm "paper editorial" theme. */
+  :root {
+    --bg: #0a0e17;
+    --bg2: #0f1520;
+    --bg3: #141c2e;
+    --card: #111827;
+    --border: #1e2d45;
+    --accent: #3b82f6;
+    --accent2: #06b6d4;
+    --accent3: #8b5cf6;
+    --green: #10b981;
+    --red: #ef4444;
+    --orange: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --dim: #334155;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); line-height: 1.7; font-size: 15px; }
+  .hero { padding: 64px 40px 48px; border-bottom: 1px solid var(--border); }
+  .hero h1 { font-size: clamp(28px, 4vw, 46px); font-weight: 800; line-height: 1.1; margin-bottom: 16px; }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 32px 80px; }
+  .section { padding: 56px 0 24px; }
+  h2 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  h3 { font-size: 18px; font-weight: 600; margin: 32px 0 12px; }
+  h4 { font-size: 14px; font-weight: 500; margin: 24px 0 8px; }
+  p { margin-bottom: 14px; }
+  ul.clean, ul.prose { list-style: none; margin-bottom: 14px; }
+  ul.clean li, ul.prose li { padding: 5px 0 5px 18px; position: relative; font-size: 14px; }
+  ul.clean li::before, ul.prose li::before { content: '→'; position: absolute; left: 0; top: 7px; }
+  .card, .info-box, .callout, .checkpoint, .diagram-wrap, .dw, .toc {
+    border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 16px; background: var(--card);
+  }
+  .pill { display: inline-flex; padding: 4px 12px; border-radius: 999px; font-size: 11px; margin-right: 8px; margin-top: 20px; }
+  .divider, .rule { width: 40px; height: 2px; background: var(--accent); margin: 12px 0 24px; }
+  .section-label, .toc-title, .hero-tag { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+  .toc-item { font-size: 12px; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  hr.sep { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+</style>
+<link rel="stylesheet" href="assets/css/course.css">
+<style>
+  /* Index-specific embellishments — the editorial chapter-card treatment. */
+  .masthead-rule {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 1.6rem 32px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .masthead-rule .mark { color: var(--lava); font-weight: 500; }
+  .masthead-rule .stamp::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 1px;
+    background: var(--ink-mute);
+    vertical-align: middle;
+    margin-right: 0.55rem;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 360;
+    color: var(--lava);
+  }
+
+  .meta-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1px;
+    background: var(--rule-faint);
+    border: 1px solid var(--rule-faint);
+    border-radius: 4px;
+    margin: 2.4rem 0 0;
+    overflow: hidden;
+  }
+  .meta-strip .cell {
+    background: var(--paper-card);
+    padding: 0.9rem 1.1rem;
+  }
+  .meta-strip .lbl {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 0.25rem;
+  }
+  .meta-strip .val {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 25, "wght" 520;
+    font-size: 1.05rem;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+
+  /* Chapter spread — the differentiation anchor. */
+  .chapter {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 1.8rem;
+    align-items: start;
+    padding: 2.4rem 0;
+    border-top: 1px solid var(--rule-faint);
+  }
+  .chapter:first-of-type { border-top: 1px solid var(--ink); }
+  .chapter-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .chapter-num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    color: var(--lava);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .chapter-weight {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 144, "SOFT" 60, "wght" 380;
+    font-size: clamp(2.6rem, 2rem + 2vw, 3.6rem);
+    line-height: 0.95;
+    color: var(--ink);
+    letter-spacing: -0.04em;
+  }
+  .chapter-weight sup {
+    font-size: 0.45em;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--ink-mute);
+    margin-left: 0.05em;
+    vertical-align: super;
+    font-variation-settings: "opsz" 24, "wght" 460;
+  }
+  .chapter-weight-lbl {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .chapter-body h3 {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 36, "SOFT" 30, "wght" 480;
+    font-size: clamp(1.3rem, 1.1rem + 0.7vw, 1.7rem);
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.018em;
+    line-height: 1.15;
+  }
+  .chapter-body h3 em {
+    font-style: italic;
+    color: var(--lava);
+    font-variation-settings: "opsz" 36, "SOFT" 80, "wght" 380;
+  }
+  .chapter-lede {
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    max-width: 60ch;
+  }
+  .chapter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1.2rem;
+  }
+  .chapter-tags .pill { margin: 0; }
+  .chapter-link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lava);
+    text-decoration: none;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid var(--lava);
+    transition: gap 0.2s ease;
+  }
+  .chapter-link:hover { gap: 0.9rem; color: var(--lava-deep); border-color: var(--lava-deep); }
+  .chapter-link::after { content: "→"; }
+
+  @media (max-width: 640px) {
+    .chapter { grid-template-columns: 1fr; gap: 0.8rem; padding: 1.8rem 0; }
+    .chapter-meta { flex-direction: row; align-items: baseline; gap: 0.8rem; flex-wrap: wrap; }
+    .chapter-weight { font-size: 2.2rem; }
+  }
+
+  /* Scenarios grid */
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.9rem;
+    margin: 1.2rem 0 0;
+  }
+  .scenario-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 6px;
+    padding: 1.1rem 1.2rem;
+    border-top: 2px solid var(--lava);
+  }
+  .scenario-card .num {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 0.35rem;
+  }
+  .scenario-card h4 {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 18, "SOFT" 25, "wght" 540;
+    font-size: 1rem;
+    margin: 0 0 0.5rem;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .scenario-card p {
+    font-size: 0.86rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0 0 0.7rem;
+  }
+  .scenario-card .domains {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+  }
+
+  .scenario-card.s1 { border-top-color: var(--tone-rust); }
+  .scenario-card.s2 { border-top-color: var(--tone-moss); }
+  .scenario-card.s3 { border-top-color: var(--tone-sepia); }
+  .scenario-card.s4 { border-top-color: var(--tone-ochre); }
+  .scenario-card.s5 { border-top-color: var(--tone-clay); }
+  .scenario-card.s6 { border-top-color: var(--lava); }
+
+  /* Closing colophon */
+  .colophon {
+    text-align: center;
+    padding: 4rem 0 2rem;
+    border-top: 1px solid var(--rule-faint);
+    margin-top: 3rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+  }
+  .colophon span { color: var(--lava); }
+</style>
+</head>
+<body>
+
+<div class="masthead-rule">
+  <span><span class="mark">A</span>NTHROP\C</span>
+  <span class="stamp">Volume 01 · Foundations</span>
+</div>
+
+<div class="hero">
+  <div class="hero-tag">Study Guide · Edition 2026</div>
+  <h1>Claude Certified Architect<br>Foundations <em>Exam Companion.</em></h1>
+  <p>A long-form study guide for solution architects preparing the Anthropic Foundations certification — five domains, six production scenarios, one disciplined reading rhythm. Each chapter opens its own self-contained module.</p>
+  <div>
+    <span class="pill pill-cyan">Agentic SDK</span>
+    <span class="pill pill-orange">MCP Tools</span>
+    <span class="pill pill-purple">Claude Code</span>
+    <span class="pill pill-green">Prompt Eng.</span>
+    <span class="pill pill-red">Reliability</span>
+  </div>
+
+  <div class="meta-strip">
+    <div class="cell"><div class="lbl">Format</div><div class="val">Multiple Choice</div></div>
+    <div class="cell"><div class="lbl">Pass Score</div><div class="val">720 / 1000</div></div>
+    <div class="cell"><div class="lbl">Domains</div><div class="val">Five</div></div>
+    <div class="cell"><div class="lbl">Scenarios</div><div class="val">4 of 6</div></div>
+    <div class="cell"><div class="lbl">Audience</div><div class="val">Solution Architect</div></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <div class="toc-grid">
+      <div class="toc-item"><span>01</span>How the Exam Works</div>
+      <div class="toc-item"><span>02</span>The Five Domains</div>
+      <div class="toc-item"><span>03</span>Six Production Scenarios</div>
+      <div class="toc-item"><span>04</span>Preparation Playbook</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ SECTION 01 ═══ -->
+  <div class="section">
+    <div class="section-label">01 — Orientation</div>
+    <h2>How the exam works.</h2>
+    <div class="divider"></div>
+
+    <p>The Foundations exam validates that practitioners can reason about real-world tradeoffs when shipping production systems on Claude. Questions are grounded in actual customer engagements — agentic support systems, multi-agent research pipelines, CI/CD code review, structured extraction. You will be tested less on memorisation and more on architectural judgment.</p>
+
+    <div class="info-box red">
+      <strong>The Core Surface</strong>
+      Four technologies underpin every question on the exam: <strong>Claude Code</strong> (the configured CLI), the <strong>Claude Agent SDK</strong> (loop control, hooks, subagents), the <strong>Claude API</strong> (tool use, structured output), and the <strong>Model Context Protocol (MCP)</strong> (tool and resource interfaces).
+    </div>
+
+    <h3>What the test rewards</h3>
+    <ul class="clean">
+      <li>Practical judgment about when to use deterministic enforcement (hooks, gates) versus prompt-based guidance.</li>
+      <li>Architectural choices: when to fork sessions, when to spawn subagents, when to use plan mode.</li>
+      <li>Clean tool design — naming, descriptions, scoping, structured errors — over clever prompting.</li>
+      <li>Reliability instincts: escalation paths, self-evaluation patterns, error categorisation.</li>
+    </ul>
+
+    <div class="card">
+      <div class="card-title">Logistics at a glance</div>
+      <p>All questions are multiple choice with one correct answer and three distractors. Unanswered questions are scored as incorrect — there is no penalty for guessing. Four of six possible scenarios are drawn at random, so you should feel comfortable across all six. The scaled passing score is <strong>720 of 1000</strong>.</p>
+    </div>
+
+    <div class="checkpoint">
+      <div class="checkpoint-title">Checkpoint</div>
+      <ul>
+        <li>Can you name the four core technologies the exam covers?</li>
+        <li>Do you know which domain carries the heaviest weight?</li>
+        <li>Could you sketch one production scenario end-to-end before reading the chapters?</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ═══════════════════ SECTION 02 ═══ -->
+  <div class="section">
+    <div class="section-label">02 — The Curriculum</div>
+    <h2>The five domains.</h2>
+    <div class="divider"></div>
+
+    <p>Each chapter below opens its own self-contained module. Read in order on a first pass — Domain 1 is the largest weight and the conceptual foundation — then revisit in any order during revision. Weights reflect the share of scored content.</p>
+
+    <!-- Domain 1 -->
+    <div class="chapter">
+      <div class="chapter-meta">
+        <div class="chapter-num">Domain 01</div>
+        <div class="chapter-weight">27<sup>%</sup></div>
+        <div class="chapter-weight-lbl">Heaviest weight</div>
+      </div>
+      <div class="chapter-body">
+        <h3>Agentic <em>Architecture</em> &amp; Orchestration.</h3>
+        <p class="chapter-lede">The conceptual core of the exam. Agentic loops, coordinator-subagent patterns, task decomposition, hooks, session forking — the architectural primitives from which production agents are built.</p>
+        <div class="chapter-tags">
+          <span class="pill pill-cyan">Agentic Loops</span>
+          <span class="pill pill-purple">Subagents</span>
+          <span class="pill pill-orange">Hooks</span>
+          <span class="pill pill-green">Sessions</span>
+        </div>
+        <a class="chapter-link" href="domain1_study_guide.html">Open module 01</a>
+      </div>
+    </div>
+
+    <!-- Domain 2 -->
+    <div class="chapter">
+      <div class="chapter-meta">
+        <div class="chapter-num">Domain 02</div>
+        <div class="chapter-weight">18<sup>%</sup></div>
+        <div class="chapter-weight-lbl">Tooling discipline</div>
+      </div>
+      <div class="chapter-body">
+        <h3>Tool Design &amp; <em>MCP</em> Integration.</h3>
+        <p class="chapter-lede">How agents discover, choose, and recover from tools. Designing crisp interfaces with clear boundaries, returning structured errors, distributing tools across roles, and integrating MCP servers cleanly into Claude Code workflows.</p>
+        <div class="chapter-tags">
+          <span class="pill pill-orange">Tool Interfaces</span>
+          <span class="pill pill-red">Error Schemas</span>
+          <span class="pill pill-purple">MCP Servers</span>
+          <span class="pill">Built-in Tools</span>
+        </div>
+        <a class="chapter-link" href="domain2_study_guide.html">Open module 02</a>
+      </div>
+    </div>
+
+    <!-- Domain 3 -->
+    <div class="chapter">
+      <div class="chapter-meta">
+        <div class="chapter-num">Domain 03</div>
+        <div class="chapter-weight">20<sup>%</sup></div>
+        <div class="chapter-weight-lbl">Configured Claude</div>
+      </div>
+      <div class="chapter-body">
+        <h3>Claude Code <em>Configuration</em> &amp; Workflows.</h3>
+        <p class="chapter-lede">Tuning Claude Code for real teams. CLAUDE.md hierarchy and modular rules, custom slash commands and skills, path-scoped conventions, plan-mode versus direct execution, and iterative refinement loops.</p>
+        <div class="chapter-tags">
+          <span class="pill pill-purple">CLAUDE.md</span>
+          <span class="pill pill-cyan">Slash Commands</span>
+          <span class="pill pill-green">Plan Mode</span>
+          <span class="pill pill-orange">Path Rules</span>
+        </div>
+        <a class="chapter-link" href="domain3_study_guide.html">Open module 03</a>
+      </div>
+    </div>
+
+    <!-- Domain 4 -->
+    <div class="chapter">
+      <div class="chapter-meta">
+        <div class="chapter-num">Domain 04</div>
+        <div class="chapter-weight">20<sup>%</sup></div>
+        <div class="chapter-weight-lbl">Output reliability</div>
+      </div>
+      <div class="chapter-body">
+        <h3>Prompt Engineering &amp; <em>Structured Output</em>.</h3>
+        <p class="chapter-lede">Making Claude predictable. JSON schema design, few-shot patterns, validation strategies, and the prompting techniques that turn unstructured documents into auditable, downstream-safe data.</p>
+        <div class="chapter-tags">
+          <span class="pill pill-green">JSON Schemas</span>
+          <span class="pill pill-cyan">Few-shot</span>
+          <span class="pill pill-orange">Extraction</span>
+          <span class="pill pill-red">Validation</span>
+        </div>
+        <a class="chapter-link" href="domain4_study_guide.html">Open module 04</a>
+      </div>
+    </div>
+
+    <!-- Domain 5 -->
+    <div class="chapter">
+      <div class="chapter-meta">
+        <div class="chapter-num">Domain 05</div>
+        <div class="chapter-weight">15<sup>%</sup></div>
+        <div class="chapter-weight-lbl">Safety net</div>
+      </div>
+      <div class="chapter-body">
+        <h3>Context Management &amp; <em>Reliability</em>.</h3>
+        <p class="chapter-lede">Where systems fail in production. Context window strategy across long documents and multi-turn conversations, escalation patterns, human-in-the-loop workflows, and self-evaluation discipline.</p>
+        <div class="chapter-tags">
+          <span class="pill pill-red">Context Windows</span>
+          <span class="pill pill-purple">Escalation</span>
+          <span class="pill pill-orange">HITL</span>
+          <span class="pill pill-green">Self-Eval</span>
+        </div>
+        <a class="chapter-link" href="domain5_study_guide.html">Open module 05</a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ═══════════════════ SECTION 03 ═══ -->
+  <div class="section">
+    <div class="section-label">03 — The Frame</div>
+    <h2>Six production scenarios.</h2>
+    <div class="divider"></div>
+
+    <p>Every question is anchored to a realistic production context. The exam draws four of these six scenarios at random. Treat each one as a small case study you should be able to reason about end-to-end before sitting the test.</p>
+
+    <div class="scenario-grid">
+      <div class="scenario-card s1">
+        <div class="num">Scenario 01</div>
+        <h4>Customer Support Resolution</h4>
+        <p>An Agent SDK system handling returns, billing disputes, and account issues via custom MCP tools, targeting 80%+ first-contact resolution while knowing when to escalate.</p>
+        <div class="domains">Primary · 1 · 2 · 5</div>
+      </div>
+      <div class="scenario-card s2">
+        <div class="num">Scenario 02</div>
+        <h4>Code Generation with Claude Code</h4>
+        <p>Accelerating software development through custom slash commands, CLAUDE.md configurations, and a clear-eyed view of plan mode versus direct execution.</p>
+        <div class="domains">Primary · 3 · 5</div>
+      </div>
+      <div class="scenario-card s3">
+        <div class="num">Scenario 03</div>
+        <h4>Multi-Agent Research System</h4>
+        <p>A coordinator delegating to specialised subagents — web search, document analysis, synthesis, report generation — to produce comprehensive cited reports.</p>
+        <div class="domains">Primary · 1 · 2 · 5</div>
+      </div>
+      <div class="scenario-card s4">
+        <div class="num">Scenario 04</div>
+        <h4>Developer Productivity Tools</h4>
+        <p>An Agent SDK system that explores unfamiliar codebases, understands legacy systems, and automates repetitive tasks using built-in tools and MCP servers.</p>
+        <div class="domains">Primary · 2 · 3 · 1</div>
+      </div>
+      <div class="scenario-card s5">
+        <div class="num">Scenario 05</div>
+        <h4>Claude Code for CI/CD</h4>
+        <p>Automated code review, test generation, and pull-request feedback. Designing prompts that yield actionable feedback while minimising false positives.</p>
+        <div class="domains">Primary · 3 · 4</div>
+      </div>
+      <div class="scenario-card s6">
+        <div class="num">Scenario 06</div>
+        <h4>Structured Data Extraction</h4>
+        <p>Extracting information from unstructured documents, validating output against JSON schemas, and handling edge cases without breaking downstream systems.</p>
+        <div class="domains">Primary · 4 · 5</div>
+      </div>
+    </div>
+
+    <div class="info-box orange">
+      <strong>How to read the scenarios</strong>
+      Don't memorise them. Use them as scaffolding for your own mental simulations — sketch the agent graph, the tool surface, the failure modes, and the escalation paths for each one before opening the modules.
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ═══════════════════ SECTION 04 ═══ -->
+  <div class="section">
+    <div class="section-label">04 — Method</div>
+    <h2>A preparation playbook.</h2>
+    <div class="divider"></div>
+
+    <p>The ideal candidate has six months or more of hands-on production work with Claude — APIs, Agent SDK, Claude Code, MCP. If that's you, treat the chapters as revision. If not, treat them as a syllabus and pair each module with a small build of your own.</p>
+
+    <h3>What experienced architects already know</h3>
+    <ul class="clean">
+      <li>How to inspect <code>stop_reason</code> to drive an agentic loop without arbitrary iteration caps.</li>
+      <li>Why coordinator agents must explicitly pass context to subagents — they don't inherit it.</li>
+      <li>When deterministic hooks beat well-written prompts: any time a guarantee is required.</li>
+      <li>How tool descriptions determine routing far more than system-prompt instructions.</li>
+      <li>The difference between resuming a session and starting fresh with a structured summary.</li>
+    </ul>
+
+    <h3>A reading rhythm that works</h3>
+    <div class="card">
+      <div class="card-title">Three-pass discipline</div>
+      <p><strong>Pass 1 — Survey.</strong> Read each module hero and section labels only. Build a map of the territory. <strong>Pass 2 — Depth.</strong> Read sequentially, pausing at every checkpoint. Sketch the agent graph or tool surface in your own notebook. <strong>Pass 3 — Recall.</strong> Close the module. From memory, re-derive the key idea, the anti-pattern, and the production tradeoff for each task statement.</p>
+    </div>
+
+    <div class="info-box green">
+      <strong>The weight heuristic</strong>
+      Domain 1 alone is 27% of the exam — more than any single other domain. If you have limited preparation time, give it disproportionate attention. Domains 3 and 4 each carry 20%. Domain 2 (18%) and Domain 5 (15%) reward depth over breadth.
+    </div>
+
+    <h3>What the modules contain</h3>
+    <ul class="clean">
+      <li><strong>Knowledge of</strong> — the conceptual claims you should be able to state cold.</li>
+      <li><strong>Skills in</strong> — the production decisions you should be able to make under pressure.</li>
+      <li><strong>Anti-patterns</strong> — the specific failure modes the exam tests against.</li>
+      <li><strong>Worked examples</strong> — code, prompts, and architectural sketches grounded in real scenarios.</li>
+    </ul>
+
+    <div class="checkpoint">
+      <div class="checkpoint-title">Final checkpoint — Are you ready?</div>
+      <ul>
+        <li>Could you build a coordinator-subagent system end-to-end without consulting docs?</li>
+        <li>Can you articulate, in one sentence each, the tradeoff in every task statement of Domain 1?</li>
+        <li>Have you actually shipped at least one feature on Claude Code with a custom CLAUDE.md?</li>
+        <li>Could you draw the four error categories from Domain 2 from memory, with one example each?</li>
+        <li>Do you know — without checking — what the Foundations passing score is and why scaling matters?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="colophon">
+    Anthropic <span>·</span> Foundations <span>·</span> Edition 2026 <span>·</span> Confidential — Need to Know
+  </div>
+
+</div>
+
+<script src="assets/js/course.js"></script>
+</body>
+</html>
