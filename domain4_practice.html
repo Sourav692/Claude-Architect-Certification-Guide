@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice Questions &mdash; Domain 4 &middot; Prompt Engineering & Structured Output</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17; --card: #111827; --border: #1e2d45;
+    --accent: #3b82f6; --green: #10b981; --red: #ef4444;
+    --text: #e2e8f0; --muted: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); line-height: 1.65; font-size: 15px; }
+  .container { max-width: 880px; margin: 0 auto; padding: 0 32px; }
+  code { font-family: "JetBrains Mono", monospace; font-size: 0.88em; }
+</style>
+<link rel="stylesheet" href="assets/css/course.css">
+<style>
+  .masthead-rule {
+    max-width: 880px; margin: 0 auto; padding: 1.6rem 32px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 0.7rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);
+  }
+  .masthead-rule .crumb { color: var(--ink-soft); }
+  .masthead-rule .crumb a { color: var(--ink-soft); text-decoration: none; }
+  .masthead-rule .crumb a:hover { color: var(--lava); }
+  .masthead-rule .crumb .sep { color: var(--ink-mute); margin: 0 0.4rem; }
+  .masthead-rule .crumb .here { color: var(--ink); }
+  .masthead-rule a.home {
+    color: var(--lava); text-decoration: none;
+    border: 1px solid var(--lava); padding: 0.4rem 0.75rem;
+    border-radius: 3px;
+  }
+  .masthead-rule a.home:hover { background: var(--lava); color: var(--paper); }
+
+  .hero h1 em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 360;
+    color: var(--lava);
+  }
+
+  .progress-bar {
+    position: sticky; top: 0; z-index: 30;
+    background: var(--paper-card);
+    border-bottom: 1px solid var(--rule-faint);
+    padding: 0.85rem 0;
+    backdrop-filter: blur(10px) saturate(120%);
+  }
+  .progress-inner {
+    max-width: 880px; margin: 0 auto; padding: 0 32px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 1rem; flex-wrap: wrap;
+  }
+  .progress-stats { display: flex; gap: 2rem; flex-wrap: wrap; }
+  .progress-stat { display: flex; flex-direction: column; gap: 0.15rem; }
+  .progress-stat-lbl {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+  }
+  .progress-stat-val {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 28, "SOFT" 30, "wght" 520;
+    font-size: 1.25rem; line-height: 1; color: var(--ink); letter-spacing: -0.02em;
+  }
+  .progress-actions { display: flex; gap: 0.5rem; }
+  .progress-btn {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    padding: 0.5rem 0.9rem;
+    background: var(--paper); color: var(--ink);
+    border: 1px solid var(--rule-soft, rgba(14,31,38,0.18));
+    border-radius: 3px; cursor: pointer;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .progress-btn:hover { border-color: var(--lava); color: var(--lava); }
+
+  .task-group { margin: 2.4rem 0 1rem; }
+  .task-group:first-of-type { margin-top: 1rem; }
+  .task-group-head {
+    display: flex; align-items: baseline; gap: 1rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule-faint);
+    margin-bottom: 1rem; flex-wrap: wrap;
+  }
+  .task-group-num {
+    font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: 0.14em; color: var(--lava);
+    font-weight: 500;
+  }
+  .task-group-title {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 480;
+    font-size: 1.2rem; color: var(--ink); flex: 1;
+    letter-spacing: -0.012em;
+  }
+  .task-group-count {
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  .qcard {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-left: 3px solid var(--tone-moss);
+    border-radius: 6px;
+    padding: 1.4rem 1.7rem;
+    margin-bottom: 0.85rem;
+  }
+  .qcard-meta {
+    display: flex; align-items: baseline; gap: 1rem;
+    margin-bottom: 0.7rem; flex-wrap: wrap;
+  }
+  .qcard-num {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 540;
+    font-size: 1.05rem; color: var(--lava);
+    letter-spacing: -0.01em;
+  }
+  .qcard-scenario {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    color: var(--ink-soft); letter-spacing: 0.04em;
+  }
+  .qcard-scenario .scenario-tag {
+    display: inline-block; padding: 0.1rem 0.45rem;
+    background: var(--paper); color: var(--ink); border-radius: 2px;
+    font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
+    margin-right: 0.4rem;
+  }
+  .qcard-text {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 18, "SOFT" 25, "wght" 460;
+    font-size: 1.06rem; line-height: 1.55;
+    color: var(--ink); margin-bottom: 1.1rem;
+    letter-spacing: -0.005em;
+  }
+  .qcard .reveal-btn {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    padding: 0.55rem 1rem;
+    background: var(--lava); color: var(--paper);
+    border: 1px solid var(--lava); border-radius: 3px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; font-weight: 500;
+    transition: background 0.18s ease;
+  }
+  .qcard .reveal-btn:hover { background: var(--lava-deep); border-color: var(--lava-deep); }
+  .qcard.revealed .reveal-btn { display: none; }
+
+  .qcard-rationale {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem 1.2rem;
+    background: var(--paper);
+    border-left: 2px solid var(--tone-moss);
+    border-radius: 0 3px 3px 0;
+  }
+  .qcard.revealed .qcard-rationale { display: block; }
+  .qcard-rationale .rationale-tag {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--tone-moss); font-weight: 500; margin-bottom: 0.5rem;
+  }
+  .qcard-rationale .rationale-text {
+    font-size: 0.96rem; line-height: 1.6; color: var(--ink);
+  }
+
+  .module-nav {
+    border-top: 1px solid var(--rule-soft, rgba(14,31,38,0.18));
+    background: var(--paper-card); margin-top: 4rem;
+  }
+  .module-nav-grid {
+    max-width: 880px; margin: 0 auto; padding: 0 32px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  }
+  .module-nav-item {
+    display: flex; flex-direction: column; gap: 0.4rem;
+    padding: 2rem 1.4rem; text-decoration: none; color: var(--ink);
+    border-right: 1px solid var(--rule-faint);
+    transition: background 0.18s ease;
+  }
+  .module-nav-item:last-child { border-right: none; }
+  .module-nav-item:hover { background: var(--paper-deep); }
+  .module-nav-prev { text-align: left; }
+  .module-nav-next { text-align: right; align-items: flex-end; }
+  .module-nav-lbl {
+    font-family: var(--font-mono); font-size: 0.68rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--lava); font-weight: 500;
+  }
+  .module-nav-eyebrow {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);
+  }
+  .module-nav-title {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 480;
+    font-size: 1.15rem; line-height: 1.2; color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+  .colophon {
+    text-align: center; padding: 3rem 0 2rem;
+    font-family: var(--font-mono); font-size: 0.68rem;
+    letter-spacing: 0.18em; color: var(--ink-mute); text-transform: uppercase;
+  }
+  .colophon span { color: var(--lava); }
+
+  @media (max-width: 640px) {
+    .module-nav-grid { grid-template-columns: 1fr; }
+    .module-nav-item { border-right: none; border-bottom: 1px solid var(--rule-faint); padding: 1.4rem 1rem; }
+    .module-nav-item:last-child { border-bottom: none; }
+    .module-nav-next { text-align: left; align-items: flex-start; }
+    .progress-stats { gap: 1.2rem; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead-rule">
+  <span class="crumb"><a href="index.html">Home</a><span class="sep">›</span><a href="domain4_study_guide.html">Domain 4</a><span class="sep">›</span><span class="here">Practice Questions</span></span>
+  <a class="home" href="index.html">Syllabus</a>
+</div>
+
+<div class="hero">
+  <div class="hero-tag">Walk-through quick checks &middot; 12 questions &middot; Domain 4</div>
+  <h1>Practice <em>questions.</em></h1>
+  <p>12 open-ended quick checks for Domain 4 &mdash; Prompt Engineering & Structured Output. Read each question, think through your answer, then reveal the model answer to compare. Designed for self-paced revision before sitting the mock exam.</p>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <div class="progress-stats">
+      <div class="progress-stat">
+        <span class="progress-stat-lbl">Revealed</span>
+        <span class="progress-stat-val" id="revealedCount">0/12</span>
+      </div>
+      <div class="progress-stat">
+        <span class="progress-stat-lbl">Remaining</span>
+        <span class="progress-stat-val" id="remainingCount">12</span>
+      </div>
+    </div>
+    <div class="progress-actions">
+      <button class="progress-btn" onclick="revealAll()">Reveal all</button>
+      <button class="progress-btn" onclick="resetAll()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+      <section class="task-group" data-task="4.1">
+        <header class="task-group-head">
+          <span class="task-group-num">4.1</span>
+          <span class="task-group-title">Check questions</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q1">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q01</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 4.1</span><span>FP trust</span></span>
+          </div>
+          <p class="qcard-text">Your security review agent has 70% precision overall, but the "code style" category has 35% precision and developers complain it's noisy. A teammate suggests adding "only flag style issues you're highly confident about." Will this fix it? What's the right move?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>No.</strong> "High confidence" is vague — the model has no calibrated notion of confidence. Two real fixes: (a) <strong>temporarily disable</strong> the style category to restore developer trust in the accurate categories, then (b) rewrite style criteria as a categorical inclusion/exclusion list (e.g., flag only naming that violates the documented convention; skip everything else).</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q2">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q02</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 4.1</span><span>severity drift</span></span>
+          </div>
+          <p class="qcard-text">You're classifying support tickets as Critical/High/Medium/Low. The same ticket gets different severities on re-runs. What single change fixes this?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>Anchor each severity level to a concrete example ticket.</strong> The model needs reference points, not adjectives. Without anchors, it picks severity by vibes — and the same ticket gets a different label each time. Adjective-only severity scales never produce stable classification.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="4.2">
+        <header class="task-group-head">
+          <span class="task-group-num">4.2</span>
+          <span class="task-group-title">Check questions</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q3">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q03</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 4.2</span><span>format variation</span></span>
+          </div>
+          <p class="qcard-text">Your invoice extractor handles standard PDFs perfectly but drops <code>tax_amount</code> as null when tax appears as <code>"VAT @ 20%"</code> instead of a dollar figure. Schema is already specified. What do you add?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Add <strong>1-2 few-shot examples</strong> showing extraction from VAT-style invoices, with reasoning that explicitly converts the percentage form into a dollar amount. Schema enforces format; few-shot teaches judgment on format variation. The schema alone can't tell the model how to do the conversion.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q4">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q04</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 4.2</span><span>quantity</span></span>
+          </div>
+          <p class="qcard-text">You're choosing between (a) 12 few-shot examples covering every variation you've seen, or (b) 3 examples carefully chosen to illustrate ambiguous cases. Which performs better and why?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>(b).</strong> Three well-chosen examples teach a generalizable judgment pattern. Twelve examples eat the context window, increase cost, and often hurt by overfitting the model to surface patterns in your examples. Past 4, marginal example value drops sharply.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="4.3">
+        <header class="task-group-head">
+          <span class="task-group-num">4.3</span>
+          <span class="task-group-title">Check questions</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q5">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q05</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 4.3</span><span>tool_choice</span></span>
+          </div>
+          <p class="qcard-text">You have three extraction tools (<code>invoice</code>, <code>receipt</code>, <code>contract</code>) and the document type is unknown until Claude reads it. You need guaranteed structured output. Which <code>tool_choice</code>?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><code>tool_choice={"type": "any"}</code>. It forces Claude to call one of the three tools (so output is structured) while letting Claude pick based on the document. <code>"auto"</code> allows text responses; forced selection on a specific tool would lock you to one extractor regardless of doc type.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q6">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q06</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 4.3</span><span>fabrication</span></span>
+          </div>
+          <p class="qcard-text">Your contract extractor returns <code>governing_law: "California"</code> for every contract — including ones where the clause is missing. Schema marks the field as required, type string. What's wrong and how do you fix it?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">The schema forces fabrication. Required + non-nullable means the model must produce <em>some</em> string, so it picks a plausible default. Fix: make <code>governing_law</code> nullable (<code>"type": ["string", "null"]</code>) so the model can return <code>null</code> when the clause is absent. Optionally add an <code>"unclear"</code> enum if you want to distinguish "missing" from "ambiguous."</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="4.4">
+        <header class="task-group-head">
+          <span class="task-group-num">4.4</span>
+          <span class="task-group-title">Check questions</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q7">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q07</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 4.4</span><span>retry boundary</span></span>
+          </div>
+          <p class="qcard-text">Your contract extractor fails validation 8% of the time because <code>effective_date</code> doesn't parse as ISO 8601. Retries succeed on 95% of those. The remaining 5% are contracts where the date is genuinely not stated. What's the right architecture?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Bounded retry with error feedback for the format issues, then route the remaining 5% to human review. Don't keep retrying — the data isn't there. Architecture: try → validate → retry-with-error → after 2-3 retries, mark the field null with a <code>requires_human_review</code> flag.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q8">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q08</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 4.4</span><span>FP debugging</span></span>
+          </div>
+          <p class="qcard-text">Why is a <code>detected_pattern</code> field on findings more valuable than a <code>confidence_score</code> for debugging false positives?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><code>detected_pattern</code> lets you cluster dismissed findings: <em>"all dismissed flags fire on Logger.debug() calls"</em> → concrete prompt fix. <code>confidence_score</code> just tells you the model felt unsure — not what category of input triggered the failure. Pattern names enable systematic debugging; confidence scores don't.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="4.5">
+        <header class="task-group-head">
+          <span class="task-group-num">4.5</span>
+          <span class="task-group-title">Check questions</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q9">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q09</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 4.5</span><span>API selection</span></span>
+          </div>
+          <p class="qcard-text">You have two workflows: (a) PR-blocking automated code review, (b) overnight tech-debt scan. Manager says: "Switch both to batch for the 50% savings." What do you tell them?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Move only the overnight scan to batch — that's a non-blocking, latency-tolerant workload, perfect fit. Keep PR review on the synchronous API: developers wait for the result, and the 24-hour batch window destroys the workflow. Match each workflow to its appropriate API.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q10">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q10</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 4.5</span><span>failure handling</span></span>
+          </div>
+          <p class="qcard-text">Your nightly batch of 5,000 invoices had 47 failures, all due to documents over the context limit. Fix it before tomorrow night.</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Identify the 47 failures by <code>custom_id</code>, chunk those documents (split into sections that fit context, extract each, merge), resubmit only those 47 as a fresh batch. Don't re-run all 5,000. Optionally add a pre-flight token-count check so oversized docs auto-chunk before the next nightly run.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="4.6">
+        <header class="task-group-head">
+          <span class="task-group-num">4.6</span>
+          <span class="task-group-title">Check questions</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q11">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q11</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 4.6</span><span>self-review</span></span>
+          </div>
+          <p class="qcard-text">Your code-generation agent produces a function. You add an instruction at the end of the same prompt: "Now review your work for bugs." Why does this rarely catch real issues?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">The model retains its reasoning context from generation. It already has a committed mental model of what the code does and why — it's biased toward confirming, not challenging, that model. An <strong>independent instance</strong> with no prior context evaluates the artifact fresh and is far more likely to surface subtle issues.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q12">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q12</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 4.6</span><span>attention dilution</span></span>
+          </div>
+          <p class="qcard-text">A 14-file PR review gives detailed feedback on 4 files, superficial on 10, and contradicts itself across files. Two suggestions: (a) upgrade to 1M-token context, (b) split into per-file passes plus an integration pass. Which fixes it?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>(b).</strong> Root cause = attention dilution across files in a single pass — a structural problem with how attention allocates, not a context-size problem. A bigger context window still gives every file diluted attention. Per-file passes give each file focused attention; the integration pass handles cross-file concerns separately.</p>
+            </div></div>
+        </article>
+      </section>
+</div>
+
+<nav class="module-nav" aria-label="Module navigation">
+  <div class="module-nav-grid">
+    <a class="module-nav-item module-nav-prev" href="domain4_study_guide.html">
+      <span class="module-nav-lbl">&larr; Module</span>
+      <span class="module-nav-eyebrow">Domain 04 &middot; Prompt Engineering</span>
+      <span class="module-nav-title">Back to study guide</span>
+    </a>
+    <a class="module-nav-item module-nav-next" href="mock_exam.html">
+      <span class="module-nav-lbl">Mock exam &rarr;</span>
+      <span class="module-nav-eyebrow">All domains &middot; 45 questions</span>
+      <span class="module-nav-title">Sit the test</span>
+    </a>
+  </div>
+</nav>
+
+<div class="colophon">
+  Anthropic <span>&middot;</span> Foundations <span>&middot;</span> Edition 2026 <span>&middot;</span> Practice &middot; Domain 4
+</div>
+
+<script>
+const TOTAL = 12;
+function reveal(btn) {
+  const card = btn.closest('.qcard');
+  if (!card || card.classList.contains('revealed')) return;
+  card.classList.add('revealed');
+  updateCounts();
+}
+function revealAll() {
+  document.querySelectorAll('.qcard:not(.revealed)').forEach(c => c.classList.add('revealed'));
+  updateCounts();
+}
+function resetAll() {
+  document.querySelectorAll('.qcard.revealed').forEach(c => c.classList.remove('revealed'));
+  updateCounts();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function updateCounts() {
+  const revealed = document.querySelectorAll('.qcard.revealed').length;
+  document.getElementById('revealedCount').textContent = revealed + '/' + TOTAL;
+  document.getElementById('remainingCount').textContent = (TOTAL - revealed);
+}
+</script>
+</body>
+</html>

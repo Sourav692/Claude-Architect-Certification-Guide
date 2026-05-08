@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice Questions &mdash; Domain 1 &middot; Agentic Architecture & Orchestration</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17; --card: #111827; --border: #1e2d45;
+    --accent: #3b82f6; --green: #10b981; --red: #ef4444;
+    --text: #e2e8f0; --muted: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); line-height: 1.65; font-size: 15px; }
+  .container { max-width: 880px; margin: 0 auto; padding: 0 32px; }
+  code { font-family: "JetBrains Mono", monospace; font-size: 0.88em; }
+</style>
+<link rel="stylesheet" href="assets/css/course.css">
+<style>
+  .masthead-rule {
+    max-width: 880px; margin: 0 auto; padding: 1.6rem 32px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 0.7rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);
+  }
+  .masthead-rule .crumb { color: var(--ink-soft); }
+  .masthead-rule .crumb a { color: var(--ink-soft); text-decoration: none; }
+  .masthead-rule .crumb a:hover { color: var(--lava); }
+  .masthead-rule .crumb .sep { color: var(--ink-mute); margin: 0 0.4rem; }
+  .masthead-rule .crumb .here { color: var(--ink); }
+  .masthead-rule a.home {
+    color: var(--lava); text-decoration: none;
+    border: 1px solid var(--lava); padding: 0.4rem 0.75rem;
+    border-radius: 3px;
+  }
+  .masthead-rule a.home:hover { background: var(--lava); color: var(--paper); }
+
+  .hero h1 em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 360;
+    color: var(--lava);
+  }
+
+  .progress-bar {
+    position: sticky; top: 0; z-index: 30;
+    background: var(--paper-card);
+    border-bottom: 1px solid var(--rule-faint);
+    padding: 0.85rem 0;
+    backdrop-filter: blur(10px) saturate(120%);
+  }
+  .progress-inner {
+    max-width: 880px; margin: 0 auto; padding: 0 32px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 1rem; flex-wrap: wrap;
+  }
+  .progress-stats { display: flex; gap: 2rem; flex-wrap: wrap; }
+  .progress-stat { display: flex; flex-direction: column; gap: 0.15rem; }
+  .progress-stat-lbl {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+  }
+  .progress-stat-val {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 28, "SOFT" 30, "wght" 520;
+    font-size: 1.25rem; line-height: 1; color: var(--ink); letter-spacing: -0.02em;
+  }
+  .progress-actions { display: flex; gap: 0.5rem; }
+  .progress-btn {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    padding: 0.5rem 0.9rem;
+    background: var(--paper); color: var(--ink);
+    border: 1px solid var(--rule-soft, rgba(14,31,38,0.18));
+    border-radius: 3px; cursor: pointer;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .progress-btn:hover { border-color: var(--lava); color: var(--lava); }
+
+  .task-group { margin: 2.4rem 0 1rem; }
+  .task-group:first-of-type { margin-top: 1rem; }
+  .task-group-head {
+    display: flex; align-items: baseline; gap: 1rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule-faint);
+    margin-bottom: 1rem; flex-wrap: wrap;
+  }
+  .task-group-num {
+    font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: 0.14em; color: var(--lava);
+    font-weight: 500;
+  }
+  .task-group-title {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 480;
+    font-size: 1.2rem; color: var(--ink); flex: 1;
+    letter-spacing: -0.012em;
+  }
+  .task-group-count {
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  .qcard {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-left: 3px solid var(--tone-moss);
+    border-radius: 6px;
+    padding: 1.4rem 1.7rem;
+    margin-bottom: 0.85rem;
+  }
+  .qcard-meta {
+    display: flex; align-items: baseline; gap: 1rem;
+    margin-bottom: 0.7rem; flex-wrap: wrap;
+  }
+  .qcard-num {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 540;
+    font-size: 1.05rem; color: var(--lava);
+    letter-spacing: -0.01em;
+  }
+  .qcard-scenario {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    color: var(--ink-soft); letter-spacing: 0.04em;
+  }
+  .qcard-scenario .scenario-tag {
+    display: inline-block; padding: 0.1rem 0.45rem;
+    background: var(--paper); color: var(--ink); border-radius: 2px;
+    font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
+    margin-right: 0.4rem;
+  }
+  .qcard-text {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 18, "SOFT" 25, "wght" 460;
+    font-size: 1.06rem; line-height: 1.55;
+    color: var(--ink); margin-bottom: 1.1rem;
+    letter-spacing: -0.005em;
+  }
+  .qcard .reveal-btn {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    padding: 0.55rem 1rem;
+    background: var(--lava); color: var(--paper);
+    border: 1px solid var(--lava); border-radius: 3px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; font-weight: 500;
+    transition: background 0.18s ease;
+  }
+  .qcard .reveal-btn:hover { background: var(--lava-deep); border-color: var(--lava-deep); }
+  .qcard.revealed .reveal-btn { display: none; }
+
+  .qcard-rationale {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem 1.2rem;
+    background: var(--paper);
+    border-left: 2px solid var(--tone-moss);
+    border-radius: 0 3px 3px 0;
+  }
+  .qcard.revealed .qcard-rationale { display: block; }
+  .qcard-rationale .rationale-tag {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--tone-moss); font-weight: 500; margin-bottom: 0.5rem;
+  }
+  .qcard-rationale .rationale-text {
+    font-size: 0.96rem; line-height: 1.6; color: var(--ink);
+  }
+
+  .module-nav {
+    border-top: 1px solid var(--rule-soft, rgba(14,31,38,0.18));
+    background: var(--paper-card); margin-top: 4rem;
+  }
+  .module-nav-grid {
+    max-width: 880px; margin: 0 auto; padding: 0 32px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  }
+  .module-nav-item {
+    display: flex; flex-direction: column; gap: 0.4rem;
+    padding: 2rem 1.4rem; text-decoration: none; color: var(--ink);
+    border-right: 1px solid var(--rule-faint);
+    transition: background 0.18s ease;
+  }
+  .module-nav-item:last-child { border-right: none; }
+  .module-nav-item:hover { background: var(--paper-deep); }
+  .module-nav-prev { text-align: left; }
+  .module-nav-next { text-align: right; align-items: flex-end; }
+  .module-nav-lbl {
+    font-family: var(--font-mono); font-size: 0.68rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--lava); font-weight: 500;
+  }
+  .module-nav-eyebrow {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);
+  }
+  .module-nav-title {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 480;
+    font-size: 1.15rem; line-height: 1.2; color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+  .colophon {
+    text-align: center; padding: 3rem 0 2rem;
+    font-family: var(--font-mono); font-size: 0.68rem;
+    letter-spacing: 0.18em; color: var(--ink-mute); text-transform: uppercase;
+  }
+  .colophon span { color: var(--lava); }
+
+  @media (max-width: 640px) {
+    .module-nav-grid { grid-template-columns: 1fr; }
+    .module-nav-item { border-right: none; border-bottom: 1px solid var(--rule-faint); padding: 1.4rem 1rem; }
+    .module-nav-item:last-child { border-bottom: none; }
+    .module-nav-next { text-align: left; align-items: flex-start; }
+    .progress-stats { gap: 1.2rem; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead-rule">
+  <span class="crumb"><a href="index.html">Home</a><span class="sep">›</span><a href="domain1_study_guide.html">Domain 1</a><span class="sep">›</span><span class="here">Practice Questions</span></span>
+  <a class="home" href="index.html">Syllabus</a>
+</div>
+
+<div class="hero">
+  <div class="hero-tag">Walk-through quick checks &middot; 14 questions &middot; Domain 1</div>
+  <h1>Practice <em>questions.</em></h1>
+  <p>14 open-ended quick checks for Domain 1 &mdash; Agentic Architecture & Orchestration. Read each question, think through your answer, then reveal the model answer to compare. Designed for self-paced revision before sitting the mock exam.</p>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <div class="progress-stats">
+      <div class="progress-stat">
+        <span class="progress-stat-lbl">Revealed</span>
+        <span class="progress-stat-val" id="revealedCount">0/14</span>
+      </div>
+      <div class="progress-stat">
+        <span class="progress-stat-lbl">Remaining</span>
+        <span class="progress-stat-val" id="remainingCount">14</span>
+      </div>
+    </div>
+    <div class="progress-actions">
+      <button class="progress-btn" onclick="revealAll()">Reveal all</button>
+      <button class="progress-btn" onclick="resetAll()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+      <section class="task-group" data-task="1.1">
+        <header class="task-group-head">
+          <span class="task-group-num">1.1</span>
+          <span class="task-group-title">Agentic loops</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q1">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q01</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 1.1</span><span>Loop control</span></span>
+          </div>
+          <p class="qcard-text">Your agent calls <code>lookup_order</code>, gets the result, and then your code sends the next request to Claude. What MUST you include in that request for the model to reason correctly about the next step?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">The <strong>tool result, appended to conversation history</strong> as a <code>tool_result</code> block. Without that appended result, Claude has no idea what <code>lookup_order</code> returned and will either re-call the tool or hallucinate a response. <code>stop_reason</code> drives <em>your code's</em> control flow; the appended <code>tool_result</code> is what tells <em>Claude</em> what happened.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q2">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q02</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 1.1</span><span>Termination signal</span></span>
+          </div>
+          <p class="qcard-text">A teammate proposes: "Let's terminate the loop when Claude's response text contains 'Is there anything else I can help with?'" Why is this wrong, and what's the correct signal?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Wrong because (1) Claude can return text <strong>alongside</strong> a tool call in the same response — your code would terminate while the agent is mid-task; and (2) phrasing varies non-deterministically, so you'd be writing regex against probabilistic surface output. The correct signal is <code>stop_reason</code> — structured metadata the API guarantees. <code>"end_turn"</code> means done; <code>"tool_use"</code> means continue.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="1.2">
+        <header class="task-group-head">
+          <span class="task-group-num">1.2</span>
+          <span class="task-group-title">Multi-agent orchestration</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q3">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q03</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 1.2</span><span>Context passing</span></span>
+          </div>
+          <p class="qcard-text">A coordinator delegates a research task to a web search subagent and gets back 8 articles. Next, the coordinator wants the synthesis subagent to write a summary based on those articles. What MUST the coordinator do for synthesis to work?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Include the article details and URLs <strong>directly in the synthesis subagent's <code>Task</code> prompt</strong> as structured metadata, not just raw content. Subagents have no shared memory; if it's not in the prompt, it doesn't exist for them. Pass content separated from metadata (URLs, titles, dates) so the synthesis agent can preserve attribution through the synthesis step.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q4">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q04</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 1.2</span><span>Output gaps</span></span>
+          </div>
+          <p class="qcard-text">Your multi-agent system produces final reports that are missing entire topic areas, even though every subagent's individual logs show clean execution. Where do you investigate first, and why?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Investigate the <strong>coordinator's task decomposition first</strong>. Subagents are constrained by the assignments they receive — if those assignments are too narrow, no downstream agent can recover from that. Mental shortcut: <em>gaps in output = decomposition problem = coordinator problem</em>. Subagent-level fixes don't address the root cause.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="1.3">
+        <header class="task-group-head">
+          <span class="task-group-num">1.3</span>
+          <span class="task-group-title">Spawning &amp; context passing</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q5">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q05</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 1.3</span><span>Missing context</span></span>
+          </div>
+          <p class="qcard-text">Your coordinator successfully runs the web search subagent and gets back results. It then emits a <code>Task</code> call for the synthesis subagent — but the synthesis subagent's output references "no available sources" even though the search succeeded. What's the most likely cause, and how do you fix it?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">The coordinator passed the synthesis subagent a <code>Task</code> call <strong>without including the web search results in its prompt</strong>. Subagents have no shared memory; the synthesis agent has no idea the search even happened. Fix: include the search results — content plus metadata (URLs, titles, dates) — directly in the synthesis subagent's prompt.</p>
+              <div class="rationale-distractors"><strong>Common wrong instinct:</strong> "increase the context window" — capacity isn't the issue, nothing was passed. "Have synthesis call web_search itself" — re-runs the search, defeats specialization.</div>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q6">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q06</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 1.3</span><span>Latency</span></span>
+          </div>
+          <p class="qcard-text">Your research pipeline runs three independent subagents (web search, internal docs, statistics database) and total latency is 90 seconds. All three are independent — none depends on another's output. How do you cut this to ~30 seconds without changing the subagents themselves?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Have the coordinator <strong>emit all three <code>Task</code> tool calls in a single response</strong> so they execute in parallel. The phrase that matters is <em>single response</em>: sequential calls across separate turns won't parallelize, even if you intend them to. Three 30-second subagents running concurrently = ~30 seconds total.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="1.4">
+        <header class="task-group-head">
+          <span class="task-group-num">1.4</span>
+          <span class="task-group-title">Workflow enforcement &amp; handoff</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q7">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q07</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 1.4</span><span>Compliance threshold</span></span>
+          </div>
+          <p class="qcard-text">Your customer support agent has a policy: no individual refund may exceed $500 without manager approval. Logs show that in 3% of cases, the agent processes refunds of $600–$800 anyway. What's the right fix, and why are prompt-based approaches insufficient here?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Add a <strong>pre-tool-use (tool call interception) hook</strong> that blocks any <code>process_refund</code> call where amount exceeds $500 and redirects the agent to <code>escalate_to_human</code>. Prompts have a non-zero failure rate; when business rules require <em>guaranteed</em> compliance — anything financial, security, or compliance-related — only programmatic enforcement provides the deterministic guarantee. The 3% failure rate translates directly into financial exposure.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q8">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q08</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 1.4</span><span>Human handoff</span></span>
+          </div>
+          <p class="qcard-text">An AI agent escalates a billing dispute to a human. The human picks up the ticket and immediately asks the customer, "Can you tell me what's going on?" — frustrating the customer who already explained everything. What went wrong, and what specific information should the AI have included?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">The AI didn't compile a structured handoff for the human. <strong>The human reviewer has no access to the conversation transcript</strong> — they see only what the AI compiles. The handoff must include all six required fields: <em>customer_id</em>, <em>conversation_summary</em>, <em>investigation_results</em>, <em>root_cause</em>, <em>recommended_action</em>, <em>reason_for_escalation</em>. Without these, the human starts blind and the customer re-explains.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="1.5">
+        <header class="task-group-head">
+          <span class="task-group-num">1.5</span>
+          <span class="task-group-title">Agent SDK hooks</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q9">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q09</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 1.5</span><span>Heterogeneous data</span></span>
+          </div>
+          <p class="qcard-text">Your agent integrates three MCP servers from different teams. Each returns customer status as a different type: integer <code>1</code>, string <code>"active"</code>, boolean <code>true</code>. The agent occasionally produces wrong conclusions when comparing customer states across these tools. What's the right fix?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Implement a <strong>PostToolUse hook that normalizes the heterogeneous customer status formats</strong> — integer, string, boolean — into a single canonical representation before the agent processes them. Pick a format (probably string: <code>"active"</code>/<code>"inactive"</code>) and have the hook convert all three sources to it. The agent then reasons over uniform data and never sees the inconsistency.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q10">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q10</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 1.5</span><span>GDPR enforcement</span></span>
+          </div>
+          <p class="qcard-text">You have a rule: the agent must never call <code>delete_user_data</code> if the conversation is from a region governed by GDPR without an additional consent verification step. A teammate proposes adding a strongly worded prompt instruction. Why is this insufficient, and what specific hook pattern do you use?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Use a <strong>pre-tool-use (tool call interception) hook</strong>. Prompts are probabilistic and have a non-zero failure rate; GDPR compliance requires <em>guaranteed</em> enforcement because a non-zero failure rate exposes the company to regulatory risk. The hook intercepts every <code>delete_user_data</code> call, checks the conversation context for the region, verifies consent has been explicitly obtained when GDPR applies, and blocks the call otherwise.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="1.6">
+        <header class="task-group-head">
+          <span class="task-group-num">1.6</span>
+          <span class="task-group-title">Task decomposition</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q11">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q11</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 1.6</span><span>Attention dilution</span></span>
+          </div>
+          <p class="qcard-text">For PRs touching 3–4 files the reviews are excellent. For PRs touching 12+ files, reviews become inconsistent — same code pattern flagged in one file, approved in another, obvious bugs missed. The team proposes upgrading to a model with a larger context window. Will this fix the problem?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">No. <strong>Attention dilution is independent of context window capacity.</strong> A bigger window is about <em>how much can fit</em>; attention is about <em>how deeply the model focuses on each piece</em>. Cramming more in often makes dilution worse. The fix is decomposition into focused passes — per-file local passes plus a separate cross-file integration pass.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q12">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q12</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 1.6</span><span>Decomposition strategy</span></span>
+          </div>
+          <p class="qcard-text">You're tasked with refactoring a legacy authentication module to use a modern token-based system. You don't know the module's structure or dependencies. Should you use a fixed pipeline (analyze → design → implement → test) or a dynamic adaptive approach? Why?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>Dynamic adaptive.</strong> The task is open-ended, the structure of the legacy module is unknown, and the right next step depends on what's discovered at each stage. A fixed pipeline assumes the design phase can be planned without knowing what's in the code. Dynamic adaptive lets the plan emerge: map structure → identify dependencies → prioritize → adapt as new dependencies surface during refactoring. Trigger words for dynamic adaptive: <em>legacy</em>, <em>unfamiliar</em>, <em>unknown structure</em>, <em>open-ended</em>.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="1.7">
+        <header class="task-group-head">
+          <span class="task-group-num">1.7</span>
+          <span class="task-group-title">Session state</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q13">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q13</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 1.7</span><span>Stale context</span></span>
+          </div>
+          <p class="qcard-text">Yesterday you spent two hours investigating a payment processing bug. The agent read 25 files and identified three suspicious functions. Overnight, the team merged a major refactor that renamed several modules and restructured the payment flow. You want to continue today. Should you resume, fork, or start fresh? Why?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>Start fresh with an injected summary.</strong> The prior tool results — file contents, function signatures, dependency traces — are now stale because the codebase was refactored overnight. Resuming would carry those stale results forward, and the agent would reason over outdated data without any signal that it's wrong. The injected summary should contain <em>conclusions</em> from yesterday (suspected functions, hypotheses ruled out) — not raw tool results. The fresh session re-reads files as needed, getting current data.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q14">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q14</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 1.7</span><span>Divergent exploration</span></span>
+          </div>
+          <p class="qcard-text">You've spent 45 minutes analyzing a complex algorithm. Now you want to evaluate two different optimization strategies in parallel — one focused on memory efficiency, the other on CPU efficiency. The codebase hasn't changed. What mechanism do you use, and why?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong><code>fork_session</code></strong>. You have a shared analysis baseline you don't want to redo, and you want to explore divergent approaches without one contaminating the other. Fork from the analysis baseline; one branch explores memory optimization, the other explores CPU optimization. Compare results. Running them sequentially in the same session would let the first strategy's reasoning bias the evaluation of the second.</p>
+            </div></div>
+        </article>
+      </section>
+</div>
+
+<nav class="module-nav" aria-label="Module navigation">
+  <div class="module-nav-grid">
+    <a class="module-nav-item module-nav-prev" href="domain1_study_guide.html">
+      <span class="module-nav-lbl">&larr; Module</span>
+      <span class="module-nav-eyebrow">Domain 01 &middot; Agentic Architecture</span>
+      <span class="module-nav-title">Back to study guide</span>
+    </a>
+    <a class="module-nav-item module-nav-next" href="mock_exam.html">
+      <span class="module-nav-lbl">Mock exam &rarr;</span>
+      <span class="module-nav-eyebrow">All domains &middot; 45 questions</span>
+      <span class="module-nav-title">Sit the test</span>
+    </a>
+  </div>
+</nav>
+
+<div class="colophon">
+  Anthropic <span>&middot;</span> Foundations <span>&middot;</span> Edition 2026 <span>&middot;</span> Practice &middot; Domain 1
+</div>
+
+<script>
+const TOTAL = 14;
+function reveal(btn) {
+  const card = btn.closest('.qcard');
+  if (!card || card.classList.contains('revealed')) return;
+  card.classList.add('revealed');
+  updateCounts();
+}
+function revealAll() {
+  document.querySelectorAll('.qcard:not(.revealed)').forEach(c => c.classList.add('revealed'));
+  updateCounts();
+}
+function resetAll() {
+  document.querySelectorAll('.qcard.revealed').forEach(c => c.classList.remove('revealed'));
+  updateCounts();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function updateCounts() {
+  const revealed = document.querySelectorAll('.qcard.revealed').length;
+  document.getElementById('revealedCount').textContent = revealed + '/' + TOTAL;
+  document.getElementById('remainingCount').textContent = (TOTAL - revealed);
+}
+</script>
+</body>
+</html>

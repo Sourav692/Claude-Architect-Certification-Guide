@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Domain 2 — Build Exercise &amp; Solution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0d0b;
+  --bg-elevated: #16140f;
+  --bg-card: #1a1812;
+  --ink: #f4ede0;
+  --ink-muted: #a89e8b;
+  --ink-faint: #6b6354;
+  --rule: #2a2620;
+  --rule-strong: #3a3429;
+  --accent: #e8b04e;
+  --accent-soft: #c98f3f;
+  --teal: #5fb7a5;
+  --coral: #e07b5a;
+  --rose: #c66a7a;
+  --sage: #8aa978;
+  --serif: 'Fraunces', Georgia, serif;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --sans: 'Inter', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(232,176,78,0.015) 1px, transparent 0);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 32px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== HEADER ===== */
+header.masthead {
+  border-bottom: 1px solid var(--rule);
+  padding: 32px 0;
+  position: sticky;
+  top: 0;
+  background: rgba(14, 13, 11, 0.92);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+}
+
+.masthead-inner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.brand {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  font-style: italic;
+}
+
+.brand .ampersand {
+  color: var(--accent);
+  font-style: italic;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+nav.toc {
+  display: flex;
+  gap: 24px;
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+nav.toc a {
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+}
+
+nav.toc a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ===== HERO ===== */
+.hero {
+  padding: 100px 0 60px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.hero-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.hero-meta::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule-strong);
+}
+
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(44px, 6.5vw, 80px);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  margin-bottom: 32px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.hero-lede {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 680px;
+  font-style: italic;
+}
+
+.parts-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--rule-strong);
+}
+
+.part-chip {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: 3px;
+  padding: 18px 20px;
+}
+
+.part-chip-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.part-chip-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+/* ===== SECTIONS ===== */
+section.exercise-section {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.section-header {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+  align-items: start;
+}
+
+.section-num {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 80px;
+  line-height: 1;
+  color: var(--accent);
+  letter-spacing: -0.04em;
+}
+
+.section-header-text { padding-top: 12px; }
+
+.section-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 14px;
+}
+
+h2.section-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin-bottom: 18px;
+}
+
+.section-meaning {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 720px;
+  padding: 14px 22px;
+  border-left: 3px solid var(--accent);
+  background: linear-gradient(90deg, rgba(232,176,78,0.04) 0%, transparent 100%);
+}
+
+h3.subhead {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  color: var(--ink);
+  margin-top: 36px;
+}
+
+h4.minor {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+p {
+  margin-bottom: 14px;
+  color: var(--ink-muted);
+  font-size: 15.5px;
+  line-height: 1.7;
+  max-width: 780px;
+}
+
+p strong { color: var(--ink); font-weight: 600; }
+
+p code, li code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--bg-elevated);
+  padding: 2px 7px;
+  border-radius: 3px;
+  color: var(--accent);
+  border: 1px solid var(--rule);
+}
+
+ul.bullets {
+  list-style: none;
+  margin-bottom: 20px;
+  max-width: 820px;
+}
+
+ul.bullets li {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 12px;
+  color: var(--ink-muted);
+  line-height: 1.65;
+}
+
+ul.bullets li::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent);
+  font-size: 10px;
+  line-height: 28px;
+}
+
+ol.numbered {
+  list-style: none;
+  counter-reset: step;
+  margin-bottom: 24px;
+  max-width: 820px;
+}
+
+ol.numbered li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 44px;
+  margin-bottom: 16px;
+  color: var(--ink-muted);
+  line-height: 1.65;
+}
+
+ol.numbered li::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  background: var(--bg-elevated);
+  border: 1px solid var(--rule);
+  padding: 3px 8px;
+  border-radius: 2px;
+  font-weight: 600;
+}
+
+/* ===== PROMPT BLOCK ===== */
+.prompt-block {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--teal);
+  border-radius: 4px;
+  padding: 28px 32px;
+  margin: 28px 0;
+}
+
+.prompt-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--teal);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.prompt-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 20px;
+  color: var(--ink);
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+}
+
+.prompt-block p {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.prompt-block ul.bullets li,
+.prompt-block ol.numbered li {
+  font-size: 14.5px;
+}
+
+/* ===== SOLUTION TOGGLE ===== */
+.solution-block {
+  margin: 24px 0 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.solution-block.open {
+  border-color: var(--sage);
+}
+
+.solution-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 28px;
+  background: linear-gradient(90deg, rgba(138,169,120,0.04) 0%, transparent 100%);
+  border: none;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.solution-block.open .solution-toggle {
+  border-bottom-color: var(--rule);
+  background: linear-gradient(90deg, rgba(138,169,120,0.08) 0%, transparent 60%);
+}
+
+.solution-toggle:hover {
+  background: rgba(138,169,120,0.07);
+}
+
+.solution-toggle-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.solution-icon {
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--sage);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sage);
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.solution-toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.solution-toggle-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--sage);
+  font-weight: 600;
+}
+
+.solution-toggle-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 18px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.solution-state {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--ink-muted);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.expand-arrow {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--sage);
+  transition: transform 0.3s;
+}
+
+.solution-block.open .expand-arrow {
+  transform: rotate(45deg);
+}
+
+.solution-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.6s ease;
+}
+
+.solution-block.open .solution-body {
+  max-height: 5000px;
+}
+
+.solution-content {
+  padding: 28px 32px 32px;
+}
+
+.solution-content h4.minor {
+  margin-top: 24px;
+}
+
+.solution-content h4.minor:first-child { margin-top: 0; }
+
+/* ===== CODE BLOCKS ===== */
+.code-block {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  padding: 18px 20px;
+  border-radius: 3px;
+  margin: 14px 0;
+  color: var(--ink);
+  line-height: 1.65;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.code-block .keyword { color: var(--coral); }
+.code-block .string { color: var(--sage); }
+.code-block .comment { color: var(--ink-faint); font-style: italic; }
+.code-block .accent { color: var(--accent); }
+.code-block .label {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  padding: 2px 8px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 2px;
+}
+
+/* ===== DUAL CARDS ===== */
+.dual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 24px 0;
+}
+
+.dual-card {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 24px;
+}
+
+.dual-card.wrong { border-left: 3px solid var(--coral); }
+.dual-card.right { border-left: 3px solid var(--sage); }
+
+.dual-card-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.dual-card.wrong .dual-card-tag { color: var(--coral); }
+.dual-card.right .dual-card-tag { color: var(--sage); }
+
+.dual-card h5 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 17px;
+  margin-bottom: 10px;
+  color: var(--ink);
+}
+
+.dual-card p {
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+/* ===== ERROR CATEGORY GRID ===== */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 20px 0 8px;
+}
+
+.cat-card {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 16px 18px;
+}
+
+.cat-card.transient { border-left: 3px solid var(--teal); }
+.cat-card.validation { border-left: 3px solid var(--accent); }
+.cat-card.business { border-left: 3px solid var(--rose); }
+.cat-card.permission { border-left: 3px solid var(--coral); }
+
+.cat-name {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.cat-card.transient .cat-name { color: var(--teal); }
+.cat-card.validation .cat-name { color: var(--accent); }
+.cat-card.business .cat-name { color: var(--rose); }
+.cat-card.permission .cat-name { color: var(--coral); }
+
+.cat-trigger {
+  font-family: var(--serif);
+  font-size: 14px;
+  color: var(--ink);
+  margin-bottom: 6px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.cat-action {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+
+/* ===== TAKEAWAY BOX ===== */
+.takeaway {
+  margin: 32px 0 8px;
+  padding: 20px 24px;
+  background: linear-gradient(90deg, rgba(232,176,78,0.06) 0%, transparent 100%);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 3px 3px 0;
+}
+
+.takeaway-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.takeaway p {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.55;
+}
+
+.takeaway p strong { font-style: normal; color: var(--accent); }
+
+/* ===== CONTROLS BAR ===== */
+.controls-bar {
+  position: sticky;
+  top: 88px;
+  z-index: 50;
+  background: rgba(14,13,11,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rule);
+  padding: 14px 0;
+  margin-bottom: 0;
+}
+
+.controls-inner {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.controls-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-right: auto;
+}
+
+.control-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background: var(--bg-card);
+  color: var(--ink-muted);
+  border: 1px solid var(--rule-strong);
+  padding: 8px 16px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.control-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.control-btn.primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.control-btn.primary:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-soft);
+  color: var(--bg);
+}
+
+/* ===== FOOTER ===== */
+footer {
+  padding: 64px 0 48px;
+  border-top: 1px solid var(--rule-strong);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 48px;
+}
+
+.footer-brand {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 28px;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+  line-height: 1.2;
+}
+
+.footer-brand em {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.footer-text {
+  font-family: var(--serif);
+  font-size: 15px;
+  color: var(--ink-muted);
+  font-style: italic;
+  max-width: 480px;
+  line-height: 1.6;
+}
+
+.footer-meta {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 880px) {
+  .section-header { grid-template-columns: 1fr; gap: 12px; }
+  .section-num { font-size: 56px; }
+  .dual { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+  .parts-strip { grid-template-columns: 1fr; gap: 12px; margin-top: 40px; padding-top: 24px; }
+  nav.toc { display: none; }
+  .controls-bar { top: 82px; }
+}
+
+@keyframes solution-glow {
+  0%, 100% { box-shadow: 0 0 0 transparent; }
+  50% { box-shadow: 0 0 20px rgba(138,169,120,0.18); }
+}
+
+.solution-block.just-opened {
+  animation: solution-glow 1.4s ease-out;
+}
+</style>
+<link rel="stylesheet" href="assets/css/domain-override.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="container masthead-inner">
+    <div>
+      <div class="eyebrow">Claude Certified Architect — Foundations</div>
+      <div class="brand">Domain <em class="ampersand">II</em> · Build Exercise</div>
+    </div>
+    <nav class="toc">
+      <a class="home-btn" href="index.html">Syllabus</a>
+      <a href="#part-a">Part A</a>
+      <a href="#part-b">Part B</a>
+      <a href="#part-c">Part C</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-meta">A practical workshop · Volume Two</div>
+    <h1>Design <em>three</em> tools.<br>Then break them.<br>Then fix them.</h1>
+    <p class="hero-lede">A hands-on exercise that exercises every concept from Domain II in one connected scenario: ambiguous tool descriptions, structured error responses across all four categories, and project-scoped MCP configuration with proper credential handling.</p>
+
+    <div class="parts-strip">
+      <div class="part-chip">
+        <div class="part-chip-num">Part A</div>
+        <div class="part-chip-title">Design 3 tools, one ambiguous pair</div>
+      </div>
+      <div class="part-chip">
+        <div class="part-chip-num">Part B</div>
+        <div class="part-chip-title">Error responses · 4 categories</div>
+      </div>
+      <div class="part-chip">
+        <div class="part-chip-num">Part C</div>
+        <div class="part-chip-title">Configure in <code>.mcp.json</code></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="controls-bar">
+  <div class="container controls-inner">
+    <span class="controls-label">Solution controls</span>
+    <button class="control-btn" onclick="hideAllSolutions()">Hide all</button>
+    <button class="control-btn primary" onclick="showAllSolutions()">Reveal all</button>
+  </div>
+</div>
+
+<!-- ============ PART A ============ -->
+<section class="exercise-section" id="part-a">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">A</div>
+      <div class="section-header-text">
+        <div class="section-tag">Part A · Tool interface design (Task 2.1)</div>
+        <h2 class="section-title">Three tools, one ambiguous pair.</h2>
+        <div class="section-meaning">
+          You're building a customer-support agent. Design three MCP tools where two have similar enough descriptions to cause misrouting in production. Then rewrite both descriptions to fix the ambiguity.
+        </div>
+      </div>
+    </div>
+
+    <h3 class="subhead">Scenario</h3>
+    <p>You're configuring MCP tools for a customer support agent that handles inquiries about customers and their orders. Three tools are needed:</p>
+    <ul class="bullets">
+      <li>One that retrieves a <strong>customer profile</strong> by customer ID.</li>
+      <li>One that retrieves an <strong>order</strong> by order ID.</li>
+      <li>One that processes a <strong>refund</strong> for a specific order.</li>
+    </ul>
+
+    <div class="prompt-block">
+      <div class="prompt-tag">Your task</div>
+      <div class="prompt-title">Design the three tools — and bake in the ambiguity</div>
+      <ol class="numbered">
+        <li>Write a thin, minimal description for each tool — exactly the kind a junior engineer would commit on a Friday afternoon.</li>
+        <li>Make the customer-lookup tool and the order-lookup tool sound nearly identical, so production logs would show misrouting on queries like <em>"check #12345"</em> where the ID shape is ambiguous.</li>
+        <li>Then rewrite all three descriptions to production grade — purpose, input format, example queries, edge cases, and an explicit boundary statement that says when to use each tool versus the others.</li>
+      </ol>
+      <p style="margin-bottom: 0; font-style: italic; color: var(--ink-faint); font-size: 14px;">Format each tool as a JSON object with <code>name</code>, <code>description</code>, and <code>input_schema</code> fields. The before-and-after is what the exam will test.</p>
+    </div>
+
+    <div class="solution-block" id="sol-a">
+      <button class="solution-toggle" onclick="toggleSolution('sol-a')">
+        <div class="solution-toggle-left">
+          <span class="solution-icon">✓</span>
+          <div class="solution-toggle-text">
+            <div class="solution-toggle-tag">Solution · Part A</div>
+            <div class="solution-toggle-title">Three tools — minimal and production grade</div>
+          </div>
+        </div>
+        <div class="solution-state">
+          <span class="state-text">Click to reveal</span>
+          <span class="expand-arrow">+</span>
+        </div>
+      </button>
+      <div class="solution-body">
+        <div class="solution-content">
+
+          <h4 class="minor">Anti-pattern · the ambiguous pair</h4>
+          <p>The descriptions below look reasonable in isolation, but side by side they're a coin flip. <code>get_customer</code> retrieves "customer information" and <code>lookup_order</code> retrieves "order details" — both accept ID-shaped strings, both return generic information. Production logs will show 10–15% misrouting on ambiguous queries.</p>
+
+          <pre class="code-block"><span class="label">tools/v0_thin.json</span>[
+  {
+    <span class="string">"name"</span>: <span class="string">"get_customer"</span>,
+    <span class="string">"description"</span>: <span class="string">"Retrieves customer information."</span>,
+    <span class="string">"input_schema"</span>: {
+      <span class="string">"type"</span>: <span class="string">"object"</span>,
+      <span class="string">"properties"</span>: {
+        <span class="string">"id"</span>: { <span class="string">"type"</span>: <span class="string">"string"</span> }
+      },
+      <span class="string">"required"</span>: [<span class="string">"id"</span>]
+    }
+  },
+  {
+    <span class="string">"name"</span>: <span class="string">"lookup_order"</span>,
+    <span class="string">"description"</span>: <span class="string">"Retrieves order details."</span>,
+    <span class="string">"input_schema"</span>: {
+      <span class="string">"type"</span>: <span class="string">"object"</span>,
+      <span class="string">"properties"</span>: {
+        <span class="string">"id"</span>: { <span class="string">"type"</span>: <span class="string">"string"</span> }
+      },
+      <span class="string">"required"</span>: [<span class="string">"id"</span>]
+    }
+  },
+  {
+    <span class="string">"name"</span>: <span class="string">"process_refund"</span>,
+    <span class="string">"description"</span>: <span class="string">"Refunds an order."</span>,
+    <span class="string">"input_schema"</span>: {
+      <span class="string">"type"</span>: <span class="string">"object"</span>,
+      <span class="string">"properties"</span>: {
+        <span class="string">"order_id"</span>: { <span class="string">"type"</span>: <span class="string">"string"</span> },
+        <span class="string">"amount"</span>: { <span class="string">"type"</span>: <span class="string">"number"</span> }
+      },
+      <span class="string">"required"</span>: [<span class="string">"order_id"</span>, <span class="string">"amount"</span>]
+    }
+  }
+]</pre>
+
+          <div class="dual" style="margin-top: 24px;">
+            <div class="dual-card wrong">
+              <div class="dual-card-tag">Why it fails</div>
+              <h5>Symmetric descriptions</h5>
+              <p>"Retrieves customer information" and "Retrieves order details" share the same verb and shape. When the user says "check #12345," neither description tells Claude which tool to pick.</p>
+            </div>
+            <div class="dual-card wrong">
+              <div class="dual-card-tag">Why it fails</div>
+              <h5>No input format hints</h5>
+              <p>Both schemas accept any string. Claude has nothing to use as a discriminator — no regex, no example shape, no boundary that says "use this when the input looks like CUST-, that one when it looks like ORD-."</p>
+            </div>
+          </div>
+
+          <h4 class="minor" style="margin-top: 32px;">Production grade · five-component descriptions</h4>
+          <p>Each description below has the five components: <strong>purpose, input format, example queries, edge cases, and boundary</strong>. Names are tightened (<code>get_customer_profile</code> beats <code>get_customer</code>) and the input schemas now describe ID shapes so Claude has structural cues alongside the prose.</p>
+
+          <pre class="code-block"><span class="label">tools/v1_production.json</span>[
+  {
+    <span class="string">"name"</span>: <span class="string">"get_customer_profile"</span>,
+    <span class="string">"description"</span>: (
+      <span class="string">"Retrieves a customer's profile (name, email, "</span>
+      <span class="string">"phone, addresses, lifetime value, account status) "</span>
+      <span class="string">"by customer ID. "</span>
+      <span class="string">"Input: CUST-XXXXX or 6-digit numeric "</span>
+      <span class="string">"(e.g., 'CUST-48201', '482015'). "</span>
+      <span class="string">"Use for queries about a person's account, "</span>
+      <span class="string">"contact details, or order HISTORY summary. "</span>
+      <span class="string">"NOT for individual order details — "</span>
+      <span class="string">"use lookup_order with the order ID instead. "</span>
+      <span class="string">"Returns null profile (not error) on miss."</span>
+    ),
+    <span class="string">"input_schema"</span>: {
+      <span class="string">"type"</span>: <span class="string">"object"</span>,
+      <span class="string">"properties"</span>: {
+        <span class="string">"customer_id"</span>: {
+          <span class="string">"type"</span>: <span class="string">"string"</span>,
+          <span class="string">"pattern"</span>: <span class="string">"^(CUST-)?\\d{6}$"</span>,
+          <span class="string">"description"</span>: <span class="string">"6-digit ID, optional CUST- prefix"</span>
+        }
+      },
+      <span class="string">"required"</span>: [<span class="string">"customer_id"</span>]
+    }
+  },
+  {
+    <span class="string">"name"</span>: <span class="string">"lookup_order"</span>,
+    <span class="string">"description"</span>: (
+      <span class="string">"Retrieves a single order by order ID. Returns "</span>
+      <span class="string">"items, quantities, ship status, tracking, and "</span>
+      <span class="string">"refund eligibility. "</span>
+      <span class="string">"Input: ORD-XXXXX or 5-digit numeric "</span>
+      <span class="string">"(e.g., 'ORD-12345', '12345'). "</span>
+      <span class="string">"Use for any query about a SPECIFIC order — "</span>
+      <span class="string">"shipment status, contents, delivery date. "</span>
+      <span class="string">"NOT for customer-level data (lifetime value, "</span>
+      <span class="string">"saved addresses) — use get_customer_profile. "</span>
+      <span class="string">"Returns null order (not error) on miss."</span>
+    ),
+    <span class="string">"input_schema"</span>: {
+      <span class="string">"type"</span>: <span class="string">"object"</span>,
+      <span class="string">"properties"</span>: {
+        <span class="string">"order_id"</span>: {
+          <span class="string">"type"</span>: <span class="string">"string"</span>,
+          <span class="string">"pattern"</span>: <span class="string">"^(ORD-)?\\d{5}$"</span>,
+          <span class="string">"description"</span>: <span class="string">"5-digit ID, optional ORD- prefix"</span>
+        }
+      },
+      <span class="string">"required"</span>: [<span class="string">"order_id"</span>]
+    }
+  },
+  {
+    <span class="string">"name"</span>: <span class="string">"process_refund"</span>,
+    <span class="string">"description"</span>: (
+      <span class="string">"Issues a refund against a specific order. "</span>
+      <span class="string">"Input: order_id (ORD-XXXXX) and amount in USD. "</span>
+      <span class="string">"Use only after lookup_order confirms the order "</span>
+      <span class="string">"exists and refund eligibility is verified. "</span>
+      <span class="string">"Refunds over $500 require manager approval — "</span>
+      <span class="string">"the tool returns a business error in that case. "</span>
+      <span class="string">"NOT a tool for store credit or partial returns "</span>
+      <span class="string">"of multi-item orders — those have separate tools."</span>
+    ),
+    <span class="string">"input_schema"</span>: {
+      <span class="string">"type"</span>: <span class="string">"object"</span>,
+      <span class="string">"properties"</span>: {
+        <span class="string">"order_id"</span>: {
+          <span class="string">"type"</span>: <span class="string">"string"</span>,
+          <span class="string">"pattern"</span>: <span class="string">"^ORD-\\d{5}$"</span>
+        },
+        <span class="string">"amount"</span>: {
+          <span class="string">"type"</span>: <span class="string">"number"</span>,
+          <span class="string">"minimum"</span>: 0.01,
+          <span class="string">"maximum"</span>: 500
+        }
+      },
+      <span class="string">"required"</span>: [<span class="string">"order_id"</span>, <span class="string">"amount"</span>]
+    }
+  }
+]</pre>
+
+          <div class="dual">
+            <div class="dual-card right">
+              <div class="dual-card-tag">Why it works</div>
+              <h5>Differentiated purposes</h5>
+              <p>Customer profile vs single-order details vs refund issuance. Each description names the SPECIFIC information returned, not generic "details."</p>
+            </div>
+            <div class="dual-card right">
+              <div class="dual-card-tag">Why it works</div>
+              <h5>Explicit boundaries</h5>
+              <p>"NOT for X — use Y instead" appears in every description. Claude reads these as routing hints. ID-shape patterns reinforce structurally.</p>
+            </div>
+          </div>
+
+          <div class="takeaway">
+            <div class="takeaway-tag">Key point</div>
+            <p>The fix isn't more tools or fewer tools — it's <strong>better descriptions</strong>. Five components: purpose, input format, example queries, edge cases, and boundary. Boundary lines (<em>"NOT for X — use Y instead"</em>) are the single highest-leverage addition.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART B ============ -->
+<section class="exercise-section" id="part-b">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">B</div>
+      <div class="section-header-text">
+        <div class="section-tag">Part B · Structured error responses (Task 2.2)</div>
+        <h2 class="section-title">One tool, four failure modes.</h2>
+        <div class="section-meaning">
+          Implement the <code>process_refund</code> tool's error handling so the agent can choose the right recovery action for every category — transient, validation, business, and permission. The error metadata is the contract.
+        </div>
+      </div>
+    </div>
+
+    <h3 class="subhead">The four categories — recap</h3>
+    <div class="cat-grid">
+      <div class="cat-card transient">
+        <div class="cat-name">Transient</div>
+        <div class="cat-trigger">Timeout, 503, network blip</div>
+        <div class="cat-action">isRetryable: true → retry with backoff</div>
+      </div>
+      <div class="cat-card validation">
+        <div class="cat-name">Validation</div>
+        <div class="cat-trigger">Bad input format or missing field</div>
+        <div class="cat-action">isRetryable: true → fix input, retry</div>
+      </div>
+      <div class="cat-card business">
+        <div class="cat-name">Business</div>
+        <div class="cat-trigger">Policy violation</div>
+        <div class="cat-action">isRetryable: false → explain or escalate</div>
+      </div>
+      <div class="cat-card permission">
+        <div class="cat-name">Permission</div>
+        <div class="cat-trigger">Caller not authorized</div>
+        <div class="cat-action">isRetryable: false → surface auth issue</div>
+      </div>
+    </div>
+
+    <div class="prompt-block">
+      <div class="prompt-tag">Your task</div>
+      <div class="prompt-title">Implement <code>process_refund</code> with structured error responses</div>
+      <ol class="numbered">
+        <li>Write the <code>process_refund(order_id, amount)</code> handler in Python.</li>
+        <li>Return structured error responses for all four categories. Each must include <code>isError</code>, <code>errorCategory</code>, <code>isRetryable</code>, a customer-friendly <code>message</code>, and a <code>details</code> object with category-specific context.</li>
+        <li>Make sure a "no order found" result is returned as <strong>success with an empty payload</strong> — not as an error. That distinction is the trap.</li>
+      </ol>
+      <p style="margin-bottom: 0; font-style: italic; color: var(--ink-faint); font-size: 14px;">Concrete failures to handle: payment service timeout (transient), malformed order ID (validation), refund exceeds $500 cap (business), agent lacks refund role (permission), order ID not in database (success with empty result).</p>
+    </div>
+
+    <div class="solution-block" id="sol-b">
+      <button class="solution-toggle" onclick="toggleSolution('sol-b')">
+        <div class="solution-toggle-left">
+          <span class="solution-icon">✓</span>
+          <div class="solution-toggle-text">
+            <div class="solution-toggle-tag">Solution · Part B</div>
+            <div class="solution-toggle-title">Per-category structured error metadata</div>
+          </div>
+        </div>
+        <div class="solution-state">
+          <span class="state-text">Click to reveal</span>
+          <span class="expand-arrow">+</span>
+        </div>
+      </button>
+      <div class="solution-body">
+        <div class="solution-content">
+
+          <h4 class="minor">Helper functions</h4>
+          <p>Centralize the response shape in two helpers — <code>err()</code> and <code>ok()</code> — so every code path produces consistent metadata. The agent reads <code>errorCategory</code> first, then <code>isRetryable</code>, then <code>details</code>.</p>
+
+          <pre class="code-block"><span class="label">refund_tool/responses.py</span><span class="keyword">def</span> err(category, retryable, message, details=<span class="keyword">None</span>):
+    <span class="keyword">return</span> {
+        <span class="string">"isError"</span>: <span class="keyword">True</span>,
+        <span class="string">"errorCategory"</span>: category,
+        <span class="string">"isRetryable"</span>: retryable,
+        <span class="string">"content"</span>: [{
+            <span class="string">"type"</span>: <span class="string">"text"</span>,
+            <span class="string">"text"</span>: message,
+        }],
+        <span class="string">"details"</span>: details <span class="keyword">or</span> {},
+    }
+
+<span class="keyword">def</span> ok(payload):
+    <span class="keyword">return</span> {
+        <span class="string">"isError"</span>: <span class="keyword">False</span>,
+        <span class="string">"content"</span>: [{
+            <span class="string">"type"</span>: <span class="string">"text"</span>,
+            <span class="string">"text"</span>: json.dumps(payload),
+        }],
+    }</pre>
+
+          <h4 class="minor" style="margin-top: 28px;">The handler — with all four categories plus the empty-result trap</h4>
+          <p>Each branch tags the failure with the right category, sets <code>isRetryable</code> correctly for that category, and includes <code>details</code> the agent can show the user or use to plan the next step. The "no order found" branch returns <code>ok</code> — a successful query with an empty result is <strong>not</strong> an error.</p>
+
+          <pre class="code-block"><span class="label">refund_tool/handler.py</span><span class="keyword">import</span> re
+<span class="keyword">import</span> json
+<span class="keyword">from</span> .responses <span class="keyword">import</span> err, ok
+<span class="keyword">from</span> .auth <span class="keyword">import</span> caller_has_role
+<span class="keyword">from</span> .db <span class="keyword">import</span> order_db
+<span class="keyword">from</span> .payments <span class="keyword">import</span> PaymentTimeout, payments_api
+
+REFUND_CAP_USD = 500
+ID_PATTERN = re.compile(<span class="string">r"^ORD-\d{5}$"</span>)
+
+<span class="keyword">def</span> process_refund(order_id, amount, *, caller):
+    <span class="comment"># 1. PERMISSION — caller can't refund at all</span>
+    <span class="keyword">if not</span> caller_has_role(caller, <span class="string">"refund_agent"</span>):
+        <span class="keyword">return</span> err(
+            category=<span class="string">"permission"</span>,
+            retryable=<span class="keyword">False</span>,
+            message=<span class="string">"You don't have permission to issue refunds."</span>,
+            details={
+                <span class="string">"required_role"</span>: <span class="string">"refund_agent"</span>,
+                <span class="string">"caller"</span>: caller.id,
+                <span class="string">"escalation_path"</span>: <span class="string">"contact your manager"</span>,
+            },
+        )
+
+    <span class="comment"># 2. VALIDATION — input format is wrong</span>
+    <span class="keyword">if not</span> ID_PATTERN.match(order_id):
+        <span class="keyword">return</span> err(
+            category=<span class="string">"validation"</span>,
+            retryable=<span class="keyword">True</span>,
+            message=<span class="string">"Order ID must look like ORD-12345."</span>,
+            details={
+                <span class="string">"received"</span>: order_id,
+                <span class="string">"expected_pattern"</span>: <span class="string">"ORD-\\d{5}"</span>,
+                <span class="string">"hint"</span>: <span class="string">"Strip whitespace, prefix ORD- if missing."</span>,
+            },
+        )
+
+    <span class="keyword">if</span> amount &lt;= 0:
+        <span class="keyword">return</span> err(
+            category=<span class="string">"validation"</span>,
+            retryable=<span class="keyword">True</span>,
+            message=<span class="string">"Refund amount must be greater than zero."</span>,
+            details={<span class="string">"received"</span>: amount},
+        )
+
+    <span class="comment"># 3. BUSINESS — request violates policy</span>
+    <span class="keyword">if</span> amount &gt; REFUND_CAP_USD:
+        <span class="keyword">return</span> err(
+            category=<span class="string">"business"</span>,
+            retryable=<span class="keyword">False</span>,
+            message=(
+                f<span class="string">"Refunds over ${REFUND_CAP_USD} require "</span>
+                <span class="string">"manager approval. I can't process this myself."</span>
+            ),
+            details={
+                <span class="string">"requested_amount"</span>: amount,
+                <span class="string">"policy_limit"</span>: REFUND_CAP_USD,
+                <span class="string">"escalation_path"</span>: <span class="string">"escalate_to_manager_queue"</span>,
+                <span class="string">"customer_message"</span>: (
+                    <span class="string">"This refund exceeds my limit — I'm "</span>
+                    <span class="string">"escalating to a manager who'll respond "</span>
+                    <span class="string">"within one business day."</span>
+                ),
+            },
+        )
+
+    <span class="comment"># Lookup order — and HANDLE EMPTY VS ACCESS FAILURE</span>
+    <span class="keyword">try</span>:
+        order = order_db.fetch(order_id, timeout=5)
+    <span class="keyword">except</span> TimeoutError:
+        <span class="comment"># 4. TRANSIENT — service is unavailable</span>
+        <span class="keyword">return</span> err(
+            category=<span class="string">"transient"</span>,
+            retryable=<span class="keyword">True</span>,
+            message=<span class="string">"Order lookup timed out. Please retry."</span>,
+            details={
+                <span class="string">"service"</span>: <span class="string">"order_db"</span>,
+                <span class="string">"timeout_seconds"</span>: 5,
+                <span class="string">"suggested_backoff_ms"</span>: 250,
+            },
+        )
+
+    <span class="keyword">if</span> order <span class="keyword">is None</span>:
+        <span class="comment"># EMPTY RESULT — query succeeded, answer is "no match"</span>
+        <span class="comment"># NOT an error: agent should tell user "no order found"</span>
+        <span class="keyword">return</span> ok({
+            <span class="string">"refunded"</span>: <span class="keyword">False</span>,
+            <span class="string">"order_found"</span>: <span class="keyword">False</span>,
+            <span class="string">"message"</span>: f<span class="string">"No order matching {order_id}."</span>,
+        })
+
+    <span class="comment"># Issue the refund — payment service may also fail</span>
+    <span class="keyword">try</span>:
+        receipt = payments_api.refund(
+            order=order, amount=amount, timeout=8
+        )
+    <span class="keyword">except</span> PaymentTimeout:
+        <span class="keyword">return</span> err(
+            category=<span class="string">"transient"</span>,
+            retryable=<span class="keyword">True</span>,
+            message=<span class="string">"Payment service timed out. Please retry."</span>,
+            details={
+                <span class="string">"service"</span>: <span class="string">"payments_api"</span>,
+                <span class="string">"order_id"</span>: order_id,
+                <span class="string">"amount"</span>: amount,
+                <span class="string">"suggested_backoff_ms"</span>: 500,
+            },
+        )
+
+    <span class="keyword">return</span> ok({
+        <span class="string">"refunded"</span>: <span class="keyword">True</span>,
+        <span class="string">"order_id"</span>: order_id,
+        <span class="string">"amount"</span>: amount,
+        <span class="string">"receipt_id"</span>: receipt.id,
+    })</pre>
+
+          <h4 class="minor" style="margin-top: 28px;">Sample agent-facing payloads</h4>
+          <p>What the agent actually receives, by category. Each shape gives the agent everything it needs to choose recovery — and to phrase a customer message without making something up.</p>
+
+          <pre class="code-block"><span class="label">transient · timeout</span>{
+  <span class="string">"isError"</span>: <span class="keyword">true</span>,
+  <span class="string">"errorCategory"</span>: <span class="string">"transient"</span>,
+  <span class="string">"isRetryable"</span>: <span class="keyword">true</span>,
+  <span class="string">"content"</span>: [{<span class="string">"type"</span>: <span class="string">"text"</span>,
+              <span class="string">"text"</span>: <span class="string">"Order lookup timed out. Please retry."</span>}],
+  <span class="string">"details"</span>: {
+    <span class="string">"service"</span>: <span class="string">"order_db"</span>,
+    <span class="string">"timeout_seconds"</span>: 5,
+    <span class="string">"suggested_backoff_ms"</span>: 250
+  }
+}</pre>
+
+          <pre class="code-block"><span class="label">validation · bad ID format</span>{
+  <span class="string">"isError"</span>: <span class="keyword">true</span>,
+  <span class="string">"errorCategory"</span>: <span class="string">"validation"</span>,
+  <span class="string">"isRetryable"</span>: <span class="keyword">true</span>,
+  <span class="string">"content"</span>: [{<span class="string">"type"</span>: <span class="string">"text"</span>,
+              <span class="string">"text"</span>: <span class="string">"Order ID must look like ORD-12345."</span>}],
+  <span class="string">"details"</span>: {
+    <span class="string">"received"</span>: <span class="string">"order #12345"</span>,
+    <span class="string">"expected_pattern"</span>: <span class="string">"ORD-\\d{5}"</span>,
+    <span class="string">"hint"</span>: <span class="string">"Strip whitespace, prefix ORD- if missing."</span>
+  }
+}</pre>
+
+          <pre class="code-block"><span class="label">business · over policy cap</span>{
+  <span class="string">"isError"</span>: <span class="keyword">true</span>,
+  <span class="string">"errorCategory"</span>: <span class="string">"business"</span>,
+  <span class="string">"isRetryable"</span>: <span class="keyword">false</span>,
+  <span class="string">"content"</span>: [{<span class="string">"type"</span>: <span class="string">"text"</span>,
+              <span class="string">"text"</span>: <span class="string">"Refunds over $500 require manager approval. I can't process this myself."</span>}],
+  <span class="string">"details"</span>: {
+    <span class="string">"requested_amount"</span>: 750,
+    <span class="string">"policy_limit"</span>: 500,
+    <span class="string">"escalation_path"</span>: <span class="string">"escalate_to_manager_queue"</span>,
+    <span class="string">"customer_message"</span>: <span class="string">"This refund exceeds my limit ..."</span>
+  }
+}</pre>
+
+          <pre class="code-block"><span class="label">permission · missing role</span>{
+  <span class="string">"isError"</span>: <span class="keyword">true</span>,
+  <span class="string">"errorCategory"</span>: <span class="string">"permission"</span>,
+  <span class="string">"isRetryable"</span>: <span class="keyword">false</span>,
+  <span class="string">"content"</span>: [{<span class="string">"type"</span>: <span class="string">"text"</span>,
+              <span class="string">"text"</span>: <span class="string">"You don't have permission to issue refunds."</span>}],
+  <span class="string">"details"</span>: {
+    <span class="string">"required_role"</span>: <span class="string">"refund_agent"</span>,
+    <span class="string">"caller"</span>: <span class="string">"agent_42"</span>,
+    <span class="string">"escalation_path"</span>: <span class="string">"contact your manager"</span>
+  }
+}</pre>
+
+          <pre class="code-block"><span class="label">success · order not found</span>{
+  <span class="string">"isError"</span>: <span class="keyword">false</span>,
+  <span class="string">"content"</span>: [{<span class="string">"type"</span>: <span class="string">"text"</span>,
+              <span class="string">"text"</span>: <span class="string">"{\"refunded\": false, \"order_found\": false, ...}"</span>}]
+}</pre>
+
+          <div class="takeaway">
+            <div class="takeaway-tag">Key point</div>
+            <p>The "no order found" branch returns <strong>isError: false</strong> — successful query, empty result. If you flag this as an error, the agent retries a deterministic miss, escalates a normal answer, or hides the truth from the customer. Reserve <strong>isError: true</strong> for actual failures.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART C ============ -->
+<section class="exercise-section" id="part-c">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">C</div>
+      <div class="section-header-text">
+        <div class="section-tag">Part C · MCP server integration (Task 2.4)</div>
+        <h2 class="section-title">Configure with environment expansion.</h2>
+        <div class="section-meaning">
+          Configure the three tools as an MCP server in <code>.mcp.json</code> at the project root. Use environment variable expansion for credentials so secrets stay out of git, and pair it with a community server so a teammate gets both on clone.
+        </div>
+      </div>
+    </div>
+
+    <h3 class="subhead">Scenario</h3>
+    <p>The three tools you designed in Part A live in an internal MCP server called <code>customer-ops</code> that authenticates against your billing platform. You also want every teammate to have the official GitHub MCP server so they can review related issues without setting it up themselves.</p>
+
+    <div class="prompt-block">
+      <div class="prompt-tag">Your task</div>
+      <div class="prompt-title">Write the configuration file and document the setup</div>
+      <ol class="numbered">
+        <li>Choose the right scope: <code>.mcp.json</code> at the project root (committed) or <code>~/.claude.json</code> (personal). Justify the choice.</li>
+        <li>Configure both servers: the internal <code>customer-ops</code> server and the official GitHub server. Each needs its own credentials.</li>
+        <li>Use environment variable expansion (<code>${VAR}</code>) for every secret. Nothing sensitive in the committed file.</li>
+        <li>Add a short setup note that tells a new teammate which environment variables to set before running Claude Code.</li>
+      </ol>
+      <p style="margin-bottom: 0; font-style: italic; color: var(--ink-faint); font-size: 14px;">The credentials are: a <code>BILLING_API_KEY</code> for the internal server, and a <code>GITHUB_TOKEN</code> for GitHub.</p>
+    </div>
+
+    <div class="solution-block" id="sol-c">
+      <button class="solution-toggle" onclick="toggleSolution('sol-c')">
+        <div class="solution-toggle-left">
+          <span class="solution-icon">✓</span>
+          <div class="solution-toggle-text">
+            <div class="solution-toggle-tag">Solution · Part C</div>
+            <div class="solution-toggle-title">Project-scoped <code>.mcp.json</code> with env expansion</div>
+          </div>
+        </div>
+        <div class="solution-state">
+          <span class="state-text">Click to reveal</span>
+          <span class="expand-arrow">+</span>
+        </div>
+      </button>
+      <div class="solution-body">
+        <div class="solution-content">
+
+          <h4 class="minor">Why project scope, not user scope</h4>
+          <p>Both servers are <strong>shared with the team</strong>. They belong to the project, not to your home directory. Project-level <code>.mcp.json</code> is version-controlled and ships with every clone — exactly the property we want. User-level <code>~/.claude.json</code> would mean every teammate has to discover and replicate the setup themselves.</p>
+          <p>The credentials problem is solved separately, by environment variable expansion. The committed file references <code>${BILLING_API_KEY}</code> and <code>${GITHUB_TOKEN}</code>; each developer sets the variables in their own shell. The configuration ships; the secrets don't.</p>
+
+          <h4 class="minor" style="margin-top: 28px;">.mcp.json (project root, committed)</h4>
+
+          <pre class="code-block"><span class="label">.mcp.json</span>{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"customer-ops"</span>: {
+      <span class="string">"command"</span>: <span class="string">"node"</span>,
+      <span class="string">"args"</span>: [<span class="string">"./mcp-servers/customer-ops/dist/index.js"</span>],
+      <span class="string">"env"</span>: {
+        <span class="string">"BILLING_API_KEY"</span>: <span class="string">"${BILLING_API_KEY}"</span>,
+        <span class="string">"BILLING_API_BASE"</span>: <span class="string">"https://billing.internal/api/v2"</span>,
+        <span class="string">"REFUND_CAP_USD"</span>: <span class="string">"500"</span>
+      }
+    },
+    <span class="string">"github"</span>: {
+      <span class="string">"command"</span>: <span class="string">"npx"</span>,
+      <span class="string">"args"</span>: [
+        <span class="string">"-y"</span>,
+        <span class="string">"@modelcontextprotocol/server-github"</span>
+      ],
+      <span class="string">"env"</span>: {
+        <span class="string">"GITHUB_PERSONAL_ACCESS_TOKEN"</span>: <span class="string">"${GITHUB_TOKEN}"</span>
+      }
+    }
+  }
+}</pre>
+
+          <div class="dual">
+            <div class="dual-card right">
+              <div class="dual-card-tag">customer-ops</div>
+              <h5>Internal server, custom build</h5>
+              <p>Lives in the repo at <code>mcp-servers/customer-ops/</code>. Custom is the right call here — billing platform integration is team-specific and no community server matches your data model.</p>
+            </div>
+            <div class="dual-card right">
+              <div class="dual-card-tag">github</div>
+              <h5>Community server, npx</h5>
+              <p>Use the official MCP server for standard SaaS. Don't build a custom GitHub integration when one already exists, is maintained, and is widely tested.</p>
+            </div>
+          </div>
+
+          <h4 class="minor" style="margin-top: 28px;">.gitignore — defense in depth</h4>
+          <p>Even with env expansion, add a guard against accidental personal config commits.</p>
+
+          <pre class="code-block"><span class="label">.gitignore</span><span class="comment"># personal MCP overrides — never commit</span>
+.claude/
+~/.claude.json
+
+<span class="comment"># dotenv files (keep these out of git)</span>
+.env
+.env.local</pre>
+
+          <h4 class="minor" style="margin-top: 28px;">README excerpt — onboarding note for new teammates</h4>
+          <p>The setup note belongs near the top of the README so a new clone doesn't hit cryptic errors on first run.</p>
+
+          <pre class="code-block"><span class="label">README.md (excerpt)</span>## MCP setup (one-time, per developer)
+
+This repo configures two MCP servers in `.mcp.json`:
+
+- **customer-ops** — internal billing tools (lookup, refund)
+- **github** — official GitHub MCP server
+
+Both read credentials from environment variables. Before
+running Claude Code:
+
+```bash
+# customer-ops — request from #platform-access
+export BILLING_API_KEY=&quot;...&quot;
+
+# github — create at github.com/settings/tokens
+# scopes needed: repo, read:org
+export GITHUB_TOKEN=&quot;ghp_...&quot;
+```
+
+Add the exports to your shell profile (`~/.zshrc`,
+`~/.bashrc`) so they persist across terminals.
+
+If `claude` reports a server failed to start, check
+that both variables are set:
+
+```bash
+env | grep -E &quot;BILLING_API_KEY|GITHUB_TOKEN&quot;
+```</pre>
+
+          <h4 class="minor" style="margin-top: 28px;">What NOT to do</h4>
+          <p>Two anti-patterns the exam tests directly. Both look "convenient" and both leak secrets.</p>
+
+          <div class="dual">
+            <div class="dual-card wrong">
+              <div class="dual-card-tag">Anti-pattern</div>
+              <h5>Hardcoded token in <code>.mcp.json</code></h5>
+              <p>Committing <code>"GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_AbCd..."</code> ships your token to every contributor with repo access. Rotation requires updating every checkout. A leaked repo means a leaked token.</p>
+            </div>
+            <div class="dual-card wrong">
+              <div class="dual-card-tag">Anti-pattern</div>
+              <h5>Configuring in <code>~/.claude.json</code></h5>
+              <p>User scope is invisible to teammates. The setup works for you, fails silently for everyone else. The exam tests this exact failure mode — "new teammate can't see the servers."</p>
+            </div>
+          </div>
+
+          <div class="takeaway">
+            <div class="takeaway-tag">Key point</div>
+            <p>Project scope (<code>.mcp.json</code>) <strong>shares</strong>; user scope (<code>~/.claude.json</code>) <strong>isolates</strong>. Environment variable expansion is what lets you commit shared configuration without committing shared secrets.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">The <em>Architect's</em><br>Companion.</div>
+        <p class="footer-text">A practical workshop for Domain II. Three connected exercises — tool descriptions, structured error responses, MCP integration — that exercise every Task 2.1 through 2.5 concept in one realistic refund-tool scenario.</p>
+      </div>
+      <div>
+        <p style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--ink-faint); margin-bottom: 14px;">Pair with</p>
+        <p style="font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-muted); margin: 0; line-height: 1.6;">Open <code>domain2_study_guide.html</code> alongside this exercise. Each part references its source task statement; the study guide has the diagrams, traps, and mock exam questions that complete the picture.</p>
+      </div>
+    </div>
+    <div class="footer-meta">
+      <span>Volume Two · Build Exercise</span>
+      <span>3 parts · ~90 minutes hands-on</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleSolution(id) {
+  const block = document.getElementById(id);
+  if (!block) return;
+  const wasOpen = block.classList.contains('open');
+  block.classList.toggle('open');
+  const stateText = block.querySelector('.state-text');
+  if (stateText) {
+    stateText.textContent = block.classList.contains('open') ? 'Hide solution' : 'Click to reveal';
+  }
+  if (!wasOpen) {
+    block.classList.add('just-opened');
+    setTimeout(() => block.classList.remove('just-opened'), 1500);
+  }
+}
+
+function showAllSolutions() {
+  document.querySelectorAll('.solution-block').forEach(block => {
+    if (!block.classList.contains('open')) {
+      block.classList.add('open');
+      const stateText = block.querySelector('.state-text');
+      if (stateText) stateText.textContent = 'Hide solution';
+    }
+  });
+}
+
+function hideAllSolutions() {
+  document.querySelectorAll('.solution-block').forEach(block => {
+    block.classList.remove('open');
+    const stateText = block.querySelector('.state-text');
+    if (stateText) stateText.textContent = 'Click to reveal';
+  });
+}
+
+// Smooth scroll TOC
+document.querySelectorAll('nav.toc a').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      window.scrollTo({ top: target.offsetTop - 130, behavior: 'smooth' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

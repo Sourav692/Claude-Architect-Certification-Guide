@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build Exercise — Onboarding Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0d0b;
+  --bg-elevated: #16140f;
+  --bg-card: #1a1812;
+  --ink: #f4ede0;
+  --ink-muted: #a89e8b;
+  --ink-faint: #6b6354;
+  --rule: #2a2620;
+  --rule-strong: #3a3429;
+  --accent: #e8b04e;
+  --accent-soft: #c98f3f;
+  --teal: #5fb7a5;
+  --coral: #e07b5a;
+  --rose: #c66a7a;
+  --sage: #8aa978;
+  --serif: 'Fraunces', Georgia, serif;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --sans: 'Inter', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(232,176,78,0.015) 1px, transparent 0);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 32px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== HEADER ===== */
+header.masthead {
+  border-bottom: 1px solid var(--rule);
+  padding: 28px 0;
+  position: sticky;
+  top: 0;
+  background: rgba(14, 13, 11, 0.92);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+}
+
+.masthead-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.brand-block .eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+}
+
+.brand {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  font-style: italic;
+}
+
+.brand .ampersand {
+  color: var(--accent);
+  font-style: italic;
+}
+
+.toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.tool-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background: transparent;
+  color: var(--ink-muted);
+  border: 1px solid var(--rule-strong);
+  padding: 9px 18px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tool-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.tool-btn.primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.tool-btn.primary:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-soft);
+  color: var(--bg);
+}
+
+/* ===== HERO ===== */
+.hero {
+  padding: 100px 0 60px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.hero-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.hero-meta::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule-strong);
+}
+
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(44px, 6.5vw, 84px);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  margin-bottom: 28px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.hero-lede {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 760px;
+  font-style: italic;
+}
+
+/* ===== SCENARIO BLOCK ===== */
+.scenario-block {
+  margin: 64px 0;
+  padding: 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--teal);
+  border-radius: 4px;
+  position: relative;
+}
+
+.scenario-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--teal);
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+
+.scenario-block h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 32px;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  color: var(--ink);
+}
+
+.scenario-block p {
+  font-size: 16px;
+  color: var(--ink-muted);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.scenario-block p:last-child { margin-bottom: 0; }
+
+.scenario-block strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.scenario-block code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--bg);
+  padding: 2px 7px;
+  border-radius: 3px;
+  color: var(--accent);
+  border: 1px solid var(--rule);
+}
+
+.scenario-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.scenario-card {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  padding: 20px;
+  border-radius: 3px;
+}
+
+.scenario-card h5 {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.scenario-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.scenario-card li {
+  position: relative;
+  padding-left: 22px;
+  margin-bottom: 10px;
+  font-size: 14.5px;
+  color: var(--ink-muted);
+  line-height: 1.55;
+}
+
+.scenario-card li:last-child { margin-bottom: 0; }
+
+.scenario-card li::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent);
+  font-size: 9px;
+  line-height: 22px;
+}
+
+/* ===== TASK BLOCK ===== */
+.task-block {
+  margin: 64px 0;
+  padding: 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+}
+
+.task-block .scenario-tag { color: var(--accent); }
+
+.task-block h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 32px;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  color: var(--ink);
+}
+
+.task-block p {
+  font-size: 16px;
+  color: var(--ink-muted);
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+
+.task-block strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.task-block code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--bg);
+  padding: 2px 7px;
+  border-radius: 3px;
+  color: var(--accent);
+  border: 1px solid var(--rule);
+}
+
+.requirements-list {
+  list-style: none;
+  margin: 24px 0;
+  padding: 0;
+}
+
+.requirement {
+  display: flex;
+  gap: 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: flex-start;
+}
+
+.requirement:last-child { border-bottom: none; }
+
+.req-num {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 22px;
+  color: var(--accent);
+  min-width: 40px;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+
+.req-content h5 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 17px;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.req-content p {
+  font-size: 14.5px;
+  color: var(--ink-muted);
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
+/* ===== DELIVERABLES SECTION ===== */
+.deliverables {
+  margin: 48px 0 0;
+}
+
+.deliverables h3 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.deliverables-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-muted);
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.deliverable-list {
+  list-style: none;
+  padding: 0;
+}
+
+.deliverable-item {
+  display: flex;
+  gap: 16px;
+  padding: 14px 18px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  margin-bottom: 10px;
+  align-items: flex-start;
+}
+
+.deliverable-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(232,176,78,0.1);
+  color: var(--accent);
+  padding: 4px 10px;
+  border-radius: 2px;
+  border: 1px solid rgba(232,176,78,0.2);
+  min-width: 36px;
+  text-align: center;
+}
+
+.deliverable-text {
+  font-size: 14.5px;
+  color: var(--ink-muted);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.deliverable-text strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* ===== TRAPS WARNING ===== */
+.traps-warn {
+  margin: 48px 0;
+  padding: 28px 32px;
+  background: linear-gradient(90deg, rgba(224,123,90,0.06) 0%, transparent 70%);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--coral);
+  border-radius: 4px;
+}
+
+.traps-warn h4 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 20px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.traps-warn .warn-icon {
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--coral);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--coral);
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.traps-warn ul {
+  list-style: none;
+  padding: 0;
+}
+
+.traps-warn li {
+  position: relative;
+  padding-left: 22px;
+  margin-bottom: 10px;
+  font-size: 14.5px;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+.traps-warn li:last-child { margin-bottom: 0; }
+
+.traps-warn li::before {
+  content: '×';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--coral);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 22px;
+}
+
+/* ===== REVEAL TRIGGER ===== */
+.reveal-section {
+  margin: 80px 0;
+  text-align: center;
+  padding: 48px 24px;
+  border: 1px dashed var(--rule-strong);
+  border-radius: 4px;
+  background: var(--bg-card);
+  position: relative;
+}
+
+.reveal-prompt {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink-muted);
+  margin-bottom: 24px;
+}
+
+.reveal-trigger {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  padding: 16px 36px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+}
+
+.reveal-trigger:hover {
+  background: var(--accent-soft);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(232,176,78,0.2);
+}
+
+.reveal-trigger.hidden {
+  display: none;
+}
+
+.reveal-section.solved {
+  border-style: solid;
+  border-color: var(--sage);
+  background: linear-gradient(180deg, rgba(138,169,120,0.04) 0%, transparent 100%);
+}
+
+.reveal-section.solved .reveal-prompt {
+  color: var(--sage);
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 600;
+}
+
+/* ===== SOLUTION CONTAINER ===== */
+.solution-container {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.6s ease;
+}
+
+.solution-container.visible {
+  max-height: 50000px;
+}
+
+.solution-intro {
+  margin: 80px 0 48px;
+  text-align: center;
+  border-top: 1px solid var(--rule-strong);
+  padding-top: 80px;
+}
+
+.solution-intro .label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--sage);
+  margin-bottom: 16px;
+}
+
+.solution-intro h2 {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+
+.solution-intro h2 em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--sage);
+}
+
+.solution-intro p {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink-muted);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ===== ARCHITECTURE OVERVIEW ===== */
+.arch-overview {
+  margin: 56px 0;
+  padding: 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+
+.arch-overview h3 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 26px;
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.arch-overview p {
+  font-size: 15.5px;
+  color: var(--ink-muted);
+  margin-bottom: 28px;
+  line-height: 1.7;
+}
+
+.arch-diagram {
+  display: flex;
+  justify-content: center;
+  margin: 32px 0 0;
+}
+
+/* SVG node styling */
+.node-rect {
+  fill: var(--bg-elevated);
+  stroke: var(--rule-strong);
+  stroke-width: 1.5;
+  rx: 4;
+  transition: all 0.3s;
+}
+
+.node-rect.accent { stroke: var(--accent); }
+.node-rect.teal { stroke: var(--teal); }
+.node-rect.coral { stroke: var(--coral); }
+.node-rect.sage { stroke: var(--sage); }
+
+.node-title {
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 500;
+  fill: var(--ink);
+  text-anchor: middle;
+}
+
+.node-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  fill: var(--ink-muted);
+  text-anchor: middle;
+}
+
+.flow-line {
+  stroke: var(--rule-strong);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.flow-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  fill: var(--ink-faint);
+  text-anchor: middle;
+}
+
+/* ===== SOLUTION PARTS ===== */
+.solution-part {
+  margin: 56px 0;
+  padding: 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--sage);
+  border-radius: 4px;
+}
+
+.part-header {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.part-letter {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 48px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--sage);
+}
+
+.part-meta {
+  flex: 1;
+}
+
+.part-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 6px;
+}
+
+.part-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.solution-part p {
+  font-size: 15.5px;
+  color: var(--ink-muted);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.solution-part p:last-child { margin-bottom: 0; }
+
+.solution-part strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.solution-part code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--bg);
+  padding: 2px 7px;
+  border-radius: 3px;
+  color: var(--accent);
+  border: 1px solid var(--rule);
+}
+
+.solution-part h5 {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin: 24px 0 12px;
+  font-weight: 600;
+}
+
+.solution-part h5:first-child { margin-top: 0; }
+
+.solution-part ul {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+
+.solution-part ul li {
+  position: relative;
+  padding-left: 22px;
+  margin-bottom: 10px;
+  font-size: 15px;
+  color: var(--ink-muted);
+  line-height: 1.65;
+}
+
+.solution-part ul li::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--sage);
+  font-size: 9px;
+  line-height: 24px;
+}
+
+/* ===== CODE BLOCK ===== */
+.code-block {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  padding: 20px 24px;
+  border-radius: 3px;
+  margin: 20px 0;
+  color: var(--ink);
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.code-block .keyword { color: var(--coral); }
+.code-block .string { color: var(--sage); }
+.code-block .comment { color: var(--ink-faint); font-style: italic; }
+.code-block .accent { color: var(--accent); }
+.code-block .fname { color: var(--teal); }
+
+.code-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+/* ===== JSON HANDOFF DISPLAY ===== */
+.handoff-payload {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  padding: 24px 28px;
+  border-radius: 3px;
+  margin: 20px 0;
+  color: var(--ink);
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.handoff-payload .key { color: var(--accent); }
+.handoff-payload .str { color: var(--sage); }
+.handoff-payload .num { color: var(--teal); }
+.handoff-payload .punct { color: var(--ink-muted); }
+.handoff-payload .comment { color: var(--ink-faint); font-style: italic; }
+
+/* ===== KEY INSIGHT ===== */
+.insight {
+  margin: 24px 0;
+  padding: 20px 24px;
+  background: rgba(232,176,78,0.04);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 3px 3px 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.insight strong {
+  color: var(--accent);
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* ===== TRAP CALLOUT ===== */
+.trap-callout {
+  margin: 24px 0;
+  padding: 18px 22px;
+  background: rgba(224,123,90,0.05);
+  border-left: 2px solid var(--coral);
+  border-radius: 0 3px 3px 0;
+}
+
+.trap-callout .trap-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--coral);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.trap-callout p {
+  font-size: 14.5px;
+  margin-bottom: 0 !important;
+  color: var(--ink-muted);
+}
+
+/* ===== TABLE ===== */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 14px;
+}
+
+.compare-table th {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--rule-strong);
+  font-weight: 600;
+}
+
+.compare-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-muted);
+  vertical-align: top;
+}
+
+.compare-table td:first-child {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+}
+
+/* ===== SUMMARY CARD AT END ===== */
+.wrap-card {
+  margin: 80px 0 64px;
+  padding: 48px;
+  background: linear-gradient(135deg, rgba(138,169,120,0.06) 0%, rgba(232,176,78,0.04) 100%);
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.wrap-card .label {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--sage);
+  margin-bottom: 16px;
+}
+
+.wrap-card h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 32px;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.wrap-card h3 em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.wrap-card p {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink-muted);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  padding: 60px 0 40px;
+  border-top: 1px solid var(--rule);
+  text-align: center;
+}
+
+footer .meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 760px) {
+  .scenario-grid { grid-template-columns: 1fr; }
+  .part-header { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .part-letter { font-size: 36px; }
+  .scenario-block, .task-block, .solution-part, .arch-overview { padding: 24px; }
+  .reveal-section { padding: 32px 16px; }
+  .toolbar { width: 100%; }
+  .tool-btn { flex: 1; justify-content: center; }
+}
+</style>
+<link rel="stylesheet" href="assets/css/domain-override.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="container masthead-inner">
+    <div class="brand-block">
+      <div class="eyebrow">Domain I · Build Exercise</div>
+      <div class="brand">The Architect's <em class="ampersand">Workshop</em></div>
+    </div>
+    <div class="toolbar">
+      <a class="home-btn" href="index.html">Syllabus</a>
+      <button class="tool-btn" id="reset-btn" onclick="resetSolution()" style="display:none;">Hide solution</button>
+      <button class="tool-btn primary" id="reveal-top-btn" onclick="revealSolution()">Show solution</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-meta">A capstone exercise · Domain one</div>
+    <h1>Build a coordinator,<br>two subagents,<br>and the <em>safety net</em>.</h1>
+    <p class="hero-lede">A fintech onboarding system that touches everything from Domain 1 — agentic loops, hub-and-spoke orchestration, explicit context passing, programmatic prerequisite gates, PostToolUse hooks, and structured human handoff. Try it before you reveal the solution.</p>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ============ THE SCENARIO ============ -->
+  <div class="scenario-block">
+    <div class="scenario-tag">The scenario</div>
+    <h2>A fintech onboarding system.</h2>
+    <p>You're building a customer onboarding agent for a fintech company. New customers can <strong>open an account</strong>, <strong>link external bank accounts</strong> via a third-party provider, and <strong>make their first deposit</strong>. Two backend systems are involved, and they don't agree on how to format their data.</p>
+
+    <div class="scenario-grid">
+      <div class="scenario-card">
+        <h5>Backend systems</h5>
+        <ul>
+          <li><strong>Identity service</strong> — internal API (KYC/AML verification)</li>
+          <li><strong>Bank linking service</strong> — third-party (returns timestamps as Unix epochs)</li>
+        </ul>
+      </div>
+      <div class="scenario-card">
+        <h5>Compliance rules</h5>
+        <ul>
+          <li>Identity must be verified before any account creation</li>
+          <li>First deposits over $10,000 require human compliance review</li>
+          <li>Subagents should run efficiently — parallel where possible</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ THE TASK ============ -->
+  <div class="task-block">
+    <div class="scenario-tag">Your task</div>
+    <h2>Design the architecture.</h2>
+    <p>Provide your design in <strong>pseudocode plus a brief architecture description</strong>. You don't need to write production-ready code — what's being evaluated is the architectural decision-making, not syntax.</p>
+
+    <ul class="requirements-list">
+      <li class="requirement">
+        <div class="req-num">01</div>
+        <div class="req-content">
+          <h5>A coordinator with two subagents</h5>
+          <p>An identity agent and a bank-linking agent. Hub-and-spoke pattern.</p>
+        </div>
+      </li>
+      <li class="requirement">
+        <div class="req-num">02</div>
+        <div class="req-content">
+          <h5>Proper context passing</h5>
+          <p>Explicit, structured prompts for each subagent — no inheritance assumed.</p>
+        </div>
+      </li>
+      <li class="requirement">
+        <div class="req-num">03</div>
+        <div class="req-content">
+          <h5>A programmatic prerequisite gate</h5>
+          <p>Preventing account creation before identity verification, and blocking high-value deposits.</p>
+        </div>
+      </li>
+      <li class="requirement">
+        <div class="req-num">04</div>
+        <div class="req-content">
+          <h5>A PostToolUse hook</h5>
+          <p>For data normalization across the heterogeneous timestamp formats.</p>
+        </div>
+      </li>
+    </ul>
+
+    <div class="deliverables">
+      <h3>Deliverables</h3>
+      <p class="deliverables-sub">Cover these six points specifically in your answer:</p>
+
+      <ul class="deliverable-list">
+        <li class="deliverable-item">
+          <span class="deliverable-tag">A</span>
+          <span class="deliverable-text"><strong>Coordinator's <code>allowedTools</code>.</strong> What goes in it, and why.</span>
+        </li>
+        <li class="deliverable-item">
+          <span class="deliverable-tag">B</span>
+          <span class="deliverable-text"><strong>Identity agent's <code>Task</code> prompt.</strong> What does the coordinator put in it — content and metadata.</span>
+        </li>
+        <li class="deliverable-item">
+          <span class="deliverable-tag">C</span>
+          <span class="deliverable-text"><strong>Sequential or parallel?</strong> Whether the two subagents run in sequence or in parallel, and why.</span>
+        </li>
+        <li class="deliverable-item">
+          <span class="deliverable-tag">D</span>
+          <span class="deliverable-text"><strong>Prerequisite gate pseudocode.</strong> What tool calls does it intercept, what condition does it check.</span>
+        </li>
+        <li class="deliverable-item">
+          <span class="deliverable-tag">E</span>
+          <span class="deliverable-text"><strong>PostToolUse hook pseudocode.</strong> Which tool's output, what transformation.</span>
+        </li>
+        <li class="deliverable-item">
+          <span class="deliverable-tag">F</span>
+          <span class="deliverable-text"><strong>Escalation handoff for $15,000 deposit.</strong> What does the handoff to the human compliance reviewer contain.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ TRAPS WARNING ============ -->
+  <div class="traps-warn">
+    <h4><span class="warn-icon">!</span>Traps a strong design avoids</h4>
+    <ul>
+      <li>Letting the bank-linking agent run before identity is verified</li>
+      <li>Passing context implicitly (assuming subagents inherit it)</li>
+      <li>Using prompts instead of hooks for the $10,000 threshold</li>
+      <li>Forgetting that the human compliance reviewer doesn't see the conversation</li>
+      <li>Treating the bank service's Unix epoch timestamps as the agent's problem to handle</li>
+    </ul>
+  </div>
+
+  <!-- ============ REVEAL TRIGGER ============ -->
+  <div class="reveal-section" id="reveal-section">
+    <p class="reveal-prompt">Take a moment to design your answer first.<br>When you're ready, reveal the reference solution.</p>
+    <button class="reveal-trigger" id="reveal-trigger" onclick="revealSolution()">Reveal solution →</button>
+  </div>
+
+  <!-- ============ SOLUTION CONTAINER ============ -->
+  <div class="solution-container" id="solution-container">
+
+    <div class="solution-intro">
+      <div class="label">Reference solution</div>
+      <h2>One <em>working</em> design.</h2>
+      <p>This isn't the only valid answer — but it hits every Domain 1 concept the exercise tests. Compare it against your own and note where your reasoning differs.</p>
+    </div>
+
+    <!-- ARCHITECTURE OVERVIEW -->
+    <div class="arch-overview">
+      <h3>Architecture at a glance</h3>
+      <p>A coordinator orchestrates two specialized subagents — identity verification first, then banking operations. Two safety mechanisms layer in: a pre-tool-use hook for compliance enforcement, and a PostToolUse hook for data normalization. The compliance threshold for first deposits is enforced programmatically, not by prompt.</p>
+
+      <div class="arch-diagram">
+        <svg viewBox="0 0 700 460" width="700" height="460" style="max-width:100%;height:auto;">
+          <defs>
+            <marker id="arr1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0 0 L10 5 L0 10 z" fill="#3a3429"/>
+            </marker>
+          </defs>
+          <g>
+            <rect class="node-rect accent" x="260" y="30" width="180" height="60"/>
+            <text class="node-title" x="350" y="56">Coordinator</text>
+            <text class="node-sub" x="350" y="76">Task, escalate_to_human</text>
+          </g>
+          <g>
+            <rect class="node-rect teal" x="40" y="160" width="180" height="70"/>
+            <text class="node-title" x="130" y="186">Identity agent</text>
+            <text class="node-sub" x="130" y="206">verify_identity</text>
+            <text class="node-sub" x="130" y="220">run_kyc_check</text>
+          </g>
+          <g>
+            <rect class="node-rect teal" x="480" y="160" width="180" height="70"/>
+            <text class="node-title" x="570" y="186">Bank link agent</text>
+            <text class="node-sub" x="570" y="206">link_bank · deposit</text>
+            <text class="node-sub" x="570" y="220">create_account</text>
+          </g>
+          <line class="flow-line" x1="320" y1="90" x2="220" y2="158" marker-end="url(#arr1)"/>
+          <line class="flow-line" x1="380" y1="90" x2="480" y2="158" marker-end="url(#arr1)"/>
+          <line class="flow-line" x1="220" y1="190" x2="320" y2="100" marker-end="url(#arr1)" stroke-dasharray="3 3"/>
+          <line class="flow-line" x1="480" y1="190" x2="380" y2="100" marker-end="url(#arr1)" stroke-dasharray="3 3"/>
+          <text class="flow-label" x="155" y="135">1 · first</text>
+          <text class="flow-label" x="540" y="135">2 · after verified</text>
+
+          <g>
+            <rect class="node-rect coral" x="40" y="280" width="280" height="80"/>
+            <text class="node-title" x="180" y="308">Pre-tool-use hook</text>
+            <text class="node-sub" x="180" y="328">prerequisite gate</text>
+            <text class="node-sub" x="180" y="344">+ deposit threshold</text>
+          </g>
+          <g>
+            <rect class="node-rect coral" x="380" y="280" width="280" height="80"/>
+            <text class="node-title" x="520" y="308">PostToolUse hook</text>
+            <text class="node-sub" x="520" y="328">normalize Unix epoch</text>
+            <text class="node-sub" x="520" y="344">to ISO 8601</text>
+          </g>
+
+          <g>
+            <rect class="node-rect" x="220" y="400" width="260" height="50"/>
+            <text class="node-title" x="350" y="422">Compliance reviewer</text>
+            <text class="node-sub" x="350" y="438">receives structured handoff</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ===== PART A ===== -->
+    <div class="solution-part">
+      <div class="part-header">
+        <div class="part-letter">A</div>
+        <div class="part-meta">
+          <div class="part-tag">Deliverable A</div>
+          <div class="part-title">Coordinator's <code>allowedTools</code></div>
+        </div>
+      </div>
+
+      <div class="code-tag">PSEUDOCODE</div>
+      <div class="code-block"><span class="accent">coordinator_allowed_tools</span> = [<span class="string">"Task"</span>, <span class="string">"escalate_to_human"</span>]</div>
+
+      <h5>Reasoning</h5>
+      <ul>
+        <li><code>"Task"</code> is <strong>mandatory</strong> — without it the coordinator literally cannot spawn subagents</li>
+        <li><code>"escalate_to_human"</code> is needed for handing off compliance cases that exceed agent authority</li>
+        <li><strong>Notably excluded:</strong> the actual backend tools (<code>verify_identity</code>, <code>link_bank_account</code>, etc.) — those belong to the subagents. The coordinator orchestrates; it doesn't execute backend operations directly.</li>
+      </ul>
+
+      <div class="insight"><strong>Note:</strong> the subagents have their own restricted toolsets and notably do <em>not</em> have <code>"Task"</code>. Preventing recursive subagent spawning is a deliberate architectural choice — it keeps budgets bounded and observability intact.</div>
+    </div>
+
+    <!-- ===== PART B ===== -->
+    <div class="solution-part">
+      <div class="part-header">
+        <div class="part-letter">B</div>
+        <div class="part-meta">
+          <div class="part-tag">Deliverable B</div>
+          <div class="part-title">Identity agent's <code>Task</code> prompt</div>
+        </div>
+      </div>
+
+      <p>Three slots: content, metadata, goal. Each one earns its place. Subagents have zero memory of the coordinator's conversation — every field that matters must be explicit.</p>
+
+      <div class="code-tag">PROMPT STRUCTURE</div>
+      <div class="handoff-payload"><span class="punct">{</span>
+  <span class="key">"goal"</span><span class="punct">:</span> <span class="str">"Verify customer identity per KYC/AML.</span>
+<span class="str">           Return verification status and verified_customer_id."</span><span class="punct">,</span>
+
+  <span class="key">"content"</span><span class="punct">: {</span>
+    <span class="key">"customer_provided_data"</span><span class="punct">: {</span>
+      <span class="key">"full_name"</span><span class="punct">:</span> <span class="str">"Jane Smith"</span><span class="punct">,</span>
+      <span class="key">"date_of_birth"</span><span class="punct">:</span> <span class="str">"1985-03-12"</span><span class="punct">,</span>
+      <span class="key">"ssn_last_4"</span><span class="punct">:</span> <span class="str">"4421"</span><span class="punct">,</span>
+      <span class="key">"address"</span><span class="punct">:</span> <span class="str">"123 Main St, Boston, MA"</span>
+    <span class="punct">}</span>
+  <span class="punct">},</span>
+
+  <span class="key">"metadata"</span><span class="punct">: {</span>
+    <span class="key">"session_id"</span><span class="punct">:</span> <span class="str">"onb-2025-04471"</span><span class="punct">,</span>
+    <span class="key">"request_timestamp"</span><span class="punct">:</span> <span class="str">"2026-05-06T14:32:00Z"</span><span class="punct">,</span>
+    <span class="key">"regulatory_region"</span><span class="punct">:</span> <span class="str">"US"</span>
+  <span class="punct">},</span>
+
+  <span class="key">"quality_criteria"</span><span class="punct">:</span> <span class="str">"Return verification_status,</span>
+<span class="str">     verified_customer_id (if verified), confidence_score,</span>
+<span class="str">     failure_reason (if failed)."</span>
+<span class="punct">}</span></div>
+
+      <h5>Why structured this way</h5>
+      <ul>
+        <li><strong>Subagent has zero memory.</strong> Every field must be explicit.</li>
+        <li><strong>Goal-based, not procedural.</strong> "Verify identity per KYC requirements" rather than "step 1: call verify_identity, step 2..." — lets the subagent adapt.</li>
+        <li><strong>Metadata separated from content</strong> so the subagent can preserve provenance in its return.</li>
+        <li><strong>Quality criteria specified</strong> so the coordinator gets back a structured response it can route on.</li>
+      </ul>
+
+      <div class="trap-callout">
+        <div class="trap-label">Trap avoided</div>
+        <p>Procedural prompts ("step 1: do X, step 2: do Y") lock subagents into fixed sequences that can't recover from edge cases. Goal-based prompts let the subagent figure out <em>how</em>; the coordinator just specifies <em>what good output looks like</em>.</p>
+      </div>
+    </div>
+
+    <!-- ===== PART C ===== -->
+    <div class="solution-part">
+      <div class="part-header">
+        <div class="part-letter">C</div>
+        <div class="part-meta">
+          <div class="part-tag">Deliverable C</div>
+          <div class="part-title">Sequential, not parallel</div>
+        </div>
+      </div>
+
+      <p>The two subagents run <strong>sequentially</strong> — identity first, banking second. This isn't a performance preference; it's a regulatory requirement.</p>
+
+      <div class="code-tag">EXECUTION FLOW</div>
+      <div class="code-block"><span class="comment"># Coordinator turn 1</span>
+<span class="keyword">emit</span> [tool_use: Task(<span class="fname">identity_agent</span>, ...)]
+<span class="comment"># wait for verified_customer_id</span>
+
+<span class="comment"># Coordinator turn 2</span>
+<span class="keyword">emit</span> [tool_use: Task(<span class="fname">banking_agent</span>,
+                customer_id=<span class="accent">verified_id</span>, ...)]</div>
+
+      <h5>Why not parallel</h5>
+      <p>Parallel execution requires <strong>independent</strong> subagents. Here, banking has a hard dependency: you cannot link bank accounts to an unverified customer. Running them in parallel would either fail (no <code>customer_id</code> available yet) or, worse, succeed in linking accounts that were never verified.</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr><th>Pattern</th><th>When to use</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Parallel</td>
+            <td>Genuinely independent subagents (e.g., web search + internal docs + statistics — none depends on the others)</td>
+          </tr>
+          <tr>
+            <td>Sequential</td>
+            <td>Dependencies between subagent outputs (e.g., banking depends on identity verification)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="trap-callout">
+        <div class="trap-label">Trap avoided</div>
+        <p>Using parallel spawning just because the SDK supports it. Parallel is for genuinely independent work, not for performance optimization at any cost.</p>
+      </div>
+    </div>
+
+    <!-- ===== PART D ===== -->
+    <div class="solution-part">
+      <div class="part-header">
+        <div class="part-letter">D</div>
+        <div class="part-meta">
+          <div class="part-tag">Deliverable D</div>
+          <div class="part-title">Pre-tool-use hook · the prerequisite gate</div>
+        </div>
+      </div>
+
+      <p>Two gates in one hook: identity prerequisite, and deposit threshold. Both deterministic. No prompt instruction can override them.</p>
+
+      <div class="code-tag">PSEUDOCODE</div>
+      <div class="code-block"><span class="keyword">def</span> <span class="fname">pre_tool_use_hook</span>(tool_name, tool_args, conversation_history):
+
+    <span class="comment"># Gate 1: Account ops require verified identity</span>
+    <span class="keyword">if</span> tool_name <span class="keyword">in</span> [<span class="string">"create_account"</span>,
+                     <span class="string">"link_bank_account"</span>,
+                     <span class="string">"make_first_deposit"</span>]:
+
+        verified_id = <span class="fname">extract_verified_customer_id</span>(
+            conversation_history
+        )
+
+        <span class="keyword">if</span> <span class="keyword">not</span> verified_id:
+            <span class="keyword">return</span> <span class="accent">BLOCK</span>(
+                message=<span class="string">"Customer must be verified first. </span>
+<span class="string">                         Call verify_identity."</span>
+            )
+
+    <span class="comment"># Gate 2: First deposits over $10K need review</span>
+    <span class="keyword">if</span> tool_name == <span class="string">"make_first_deposit"</span>:
+        amount = tool_args.<span class="fname">get</span>(<span class="string">"amount"</span>, <span class="num">0</span>)
+
+        <span class="keyword">if</span> amount &gt; <span class="num">10000</span>:
+            <span class="keyword">return</span> <span class="accent">BLOCK</span>(
+                message=<span class="string">"Refunds over $10,000 require</span>
+<span class="string">                         compliance review.</span>
+<span class="string">                         Use escalate_to_human instead."</span>
+            )
+
+    <span class="keyword">return</span> <span class="accent">ALLOW</span></div>
+
+      <h5>What it intercepts</h5>
+      <ul>
+        <li><code>create_account</code>, <code>link_bank_account</code>, <code>make_first_deposit</code> — all checked against the prerequisite</li>
+        <li><code>make_first_deposit</code> additionally checked against the $10,000 threshold</li>
+      </ul>
+
+      <h5>What it checks</h5>
+      <ul>
+        <li><strong>Conversation state</strong> for a verified customer ID returned by an earlier <code>verify_identity</code> call. Not just any string the agent provides — the actual conversation history.</li>
+        <li><strong>Tool arguments</strong> for the deposit amount.</li>
+      </ul>
+
+      <div class="insight"><strong>The deterministic guarantee.</strong> The hook runs in your application code, not in the model. It cannot be talked out of — no prompt instruction can convince it to allow a violation. The block message guides the agent toward the correct workflow ("use <code>escalate_to_human</code>" instead).</div>
+    </div>
+
+    <!-- ===== PART E ===== -->
+    <div class="solution-part">
+      <div class="part-header">
+        <div class="part-letter">E</div>
+        <div class="part-meta">
+          <div class="part-tag">Deliverable E</div>
+          <div class="part-title">PostToolUse hook · timestamp normalization</div>
+        </div>
+      </div>
+
+      <p>The bank linking service returns Unix epochs. Internal services return ISO 8601. Without normalization, the agent compares <code>1730764800</code> against <code>"2026-05-05T10:30:00Z"</code> and produces wrong conclusions about event ordering.</p>
+
+      <div class="code-tag">PSEUDOCODE</div>
+      <div class="code-block"><span class="keyword">def</span> <span class="fname">post_tool_use_hook</span>(tool_name, raw_result):
+    <span class="comment"># Normalize timestamps from the bank service</span>
+    <span class="comment"># to ISO 8601 before the agent sees them.</span>
+
+    <span class="keyword">if</span> tool_name <span class="keyword">in</span> [<span class="string">"link_bank_account"</span>,
+                     <span class="string">"get_linked_accounts"</span>,
+                     <span class="string">"fetch_account_balance"</span>]:
+
+        <span class="keyword">for</span> field <span class="keyword">in</span> [<span class="string">"linked_at"</span>,
+                      <span class="string">"last_updated"</span>,
+                      <span class="string">"verified_at"</span>]:
+
+            <span class="keyword">if</span> field <span class="keyword">in</span> raw_result:
+                <span class="keyword">if</span> <span class="fname">is_unix_epoch</span>(raw_result[field]):
+                    raw_result[field] = <span class="fname">unix_to_iso</span>(
+                        raw_result[field]
+                    )
+
+    <span class="keyword">return</span> raw_result</div>
+
+      <h5>Which tool's output</h5>
+      <p>The bank linking service tools — <code>link_bank_account</code>, <code>get_linked_accounts</code>, <code>fetch_account_balance</code>. Internal services already return ISO 8601 and pass through unchanged.</p>
+
+      <h5>What transformation</h5>
+      <p>Unix epoch integers (e.g. <code>1730764800</code>) → ISO 8601 strings (e.g. <code>"2024-11-05T00:00:00Z"</code>).</p>
+
+      <div class="trap-callout">
+        <div class="trap-label">Trap avoided</div>
+        <p>Putting timestamp conversion instructions in the system prompt. The model would get it right most of the time and fail occasionally. PostToolUse normalization makes it deterministic — the agent never knew there was an inconsistency.</p>
+      </div>
+
+      <div class="insight"><strong>Why hooks, not better tools?</strong> In production, you don't always own the tools. Third-party MCP servers return data in whatever format their backend uses. Backend systems are owned by other teams; coordinating format changes across teams is slow. The hook sits in <em>your</em> agent code — you control it, you can ship it today.</div>
+    </div>
+
+    <!-- ===== PART F ===== -->
+    <div class="solution-part">
+      <div class="part-header">
+        <div class="part-letter">F</div>
+        <div class="part-meta">
+          <div class="part-tag">Deliverable F</div>
+          <div class="part-title">Escalation handoff for the $15,000 deposit</div>
+        </div>
+      </div>
+
+      <p>The threshold gate blocks the deposit. The block message redirects the agent to <code>escalate_to_human</code>. The handoff payload looks like this:</p>
+
+      <div class="code-tag">HANDOFF PAYLOAD</div>
+      <div class="handoff-payload"><span class="punct">{</span>
+  <span class="key">"handoff_type"</span><span class="punct">:</span> <span class="str">"compliance_review_required"</span><span class="punct">,</span>
+  <span class="key">"customer_id"</span><span class="punct">:</span> <span class="str">"cust-verified-9924-A"</span><span class="punct">,</span>
+  <span class="key">"session_id"</span><span class="punct">:</span> <span class="str">"onb-2025-04471"</span><span class="punct">,</span>
+
+  <span class="key">"conversation_summary"</span><span class="punct">:</span> <span class="str">"New customer Jane Smith</span>
+<span class="str">    completed KYC verification successfully. Linked</span>
+<span class="str">    external bank account at Chase (ending 4471).</span>
+<span class="str">    Requested first deposit of $15,000."</span><span class="punct">,</span>
+
+  <span class="key">"investigation_results"</span><span class="punct">: {</span>
+    <span class="key">"identity_verification"</span><span class="punct">:</span> <span class="str">"verified | conf 0.97"</span><span class="punct">,</span>
+    <span class="key">"kyc_check"</span><span class="punct">:</span> <span class="str">"passed | no flags"</span><span class="punct">,</span>
+    <span class="key">"linked_bank"</span><span class="punct">:</span> <span class="str">"Chase ****4471"</span><span class="punct">,</span>
+    <span class="key">"deposit_amount_requested"</span><span class="punct">:</span> <span class="num">15000</span><span class="punct">,</span>
+    <span class="key">"deposit_source"</span><span class="punct">:</span> <span class="str">"verified linked account"</span>
+  <span class="punct">},</span>
+
+  <span class="key">"root_cause"</span><span class="punct">:</span> <span class="str">"Deposit exceeds $10,000 threshold</span>
+<span class="str">    for automated processing of first deposits.</span>
+<span class="str">    Compliance review required per company policy."</span><span class="punct">,</span>
+
+  <span class="key">"recommended_action"</span><span class="punct">:</span> <span class="str">"Review source-of-funds</span>
+<span class="str">    documentation. If standard documentation can be</span>
+<span class="str">    provided, approve; otherwise request additional</span>
+<span class="str">    verification."</span><span class="punct">,</span>
+
+  <span class="key">"reason_for_escalation"</span><span class="punct">:</span> <span class="str">"Threshold exceeded —</span>
+<span class="str">    programmatic policy gate triggered. Not customer</span>
+<span class="str">    request, not agent capability limit."</span><span class="punct">,</span>
+
+  <span class="key">"agent_actions_taken"</span><span class="punct">: [</span>
+    <span class="str">"Verified identity via identity_agent"</span><span class="punct">,</span>
+    <span class="str">"Linked external bank via bank_link_agent"</span><span class="punct">,</span>
+    <span class="str">"Attempted first deposit | blocked by gate"</span>
+  <span class="punct">]</span>
+<span class="punct">}</span></div>
+
+      <h5>Why every field earns its place</h5>
+      <p>The compliance reviewer has <strong>no access to the conversation transcript</strong>. They cannot see the customer's messages, the agent's reasoning, or the tool calls that ran. Without this structured payload they would have to either contact the customer (frustrating them) or guess at the situation.</p>
+
+      <h5>The six required fields, present</h5>
+      <ul>
+        <li><strong>customer_id</strong> — verified ID for account lookup</li>
+        <li><strong>conversation_summary</strong> — replaces the transcript the human can't see</li>
+        <li><strong>investigation_results</strong> — what the agent found</li>
+        <li><strong>root_cause</strong> — best understanding of why this is happening</li>
+        <li><strong>recommended_action</strong> — what the agent thinks should be done</li>
+        <li><strong>reason_for_escalation</strong> — policy gap, customer demand, or agent's capability limit</li>
+      </ul>
+
+      <p>Plus an <code>agent_actions_taken</code> log so the reviewer knows what's already been done and doesn't repeat steps.</p>
+
+      <div class="insight"><strong>The handoff principle holds across boundaries.</strong> Whether the receiver is another Claude instance (subagent) or a human reviewer, the rule is identical: <em>assume zero shared context</em>. Compile and pass everything explicitly.</div>
+    </div>
+
+    <!-- ===== WRAP UP ===== -->
+    <div class="wrap-card">
+      <div class="label">Concepts touched</div>
+      <h3>Every Domain 1 task <em>statement</em>, in one design.</h3>
+      <p>Agentic loops drive the coordinator and each subagent. Hub-and-spoke orchestration with explicit context passing. Sequential execution where dependencies require it. Programmatic gates for compliance, PostToolUse for normalization. Structured handoff for human escalation. If your design hit all six deliverables cleanly, you've internalized the domain.</p>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div class="meta">Domain I · Build Exercise · The Architect's Workshop</div>
+  </div>
+</footer>
+
+<script>
+function revealSolution() {
+  const container = document.getElementById('solution-container');
+  const revealSection = document.getElementById('reveal-section');
+  const revealTrigger = document.getElementById('reveal-trigger');
+  const resetBtn = document.getElementById('reset-btn');
+  const revealTopBtn = document.getElementById('reveal-top-btn');
+
+  container.classList.add('visible');
+  revealSection.classList.add('solved');
+  revealTrigger.classList.add('hidden');
+  revealSection.querySelector('.reveal-prompt').textContent = 'Solution revealed below';
+  resetBtn.style.display = 'inline-flex';
+  revealTopBtn.style.display = 'none';
+
+  // Smooth scroll to the solution intro after a short delay
+  setTimeout(() => {
+    const target = document.querySelector('.solution-intro');
+    if (target) {
+      window.scrollTo({
+        top: target.offsetTop - 100,
+        behavior: 'smooth'
+      });
+    }
+  }, 300);
+}
+
+function resetSolution() {
+  const container = document.getElementById('solution-container');
+  const revealSection = document.getElementById('reveal-section');
+  const revealTrigger = document.getElementById('reveal-trigger');
+  const resetBtn = document.getElementById('reset-btn');
+  const revealTopBtn = document.getElementById('reveal-top-btn');
+
+  container.classList.remove('visible');
+  revealSection.classList.remove('solved');
+  revealTrigger.classList.remove('hidden');
+  revealSection.querySelector('.reveal-prompt').innerHTML = 'Take a moment to design your answer first.<br>When you\'re ready, reveal the reference solution.';
+  resetBtn.style.display = 'none';
+  revealTopBtn.style.display = 'inline-flex';
+
+  // Scroll back to top
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}
+</script>
+
+</body>
+</html>

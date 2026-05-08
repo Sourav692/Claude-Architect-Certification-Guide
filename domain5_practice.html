@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice Questions &mdash; Domain 5 &middot; Context Management & Reliability</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17; --card: #111827; --border: #1e2d45;
+    --accent: #3b82f6; --green: #10b981; --red: #ef4444;
+    --text: #e2e8f0; --muted: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); line-height: 1.65; font-size: 15px; }
+  .container { max-width: 880px; margin: 0 auto; padding: 0 32px; }
+  code { font-family: "JetBrains Mono", monospace; font-size: 0.88em; }
+</style>
+<link rel="stylesheet" href="assets/css/course.css">
+<style>
+  .masthead-rule {
+    max-width: 880px; margin: 0 auto; padding: 1.6rem 32px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 0.7rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);
+  }
+  .masthead-rule .crumb { color: var(--ink-soft); }
+  .masthead-rule .crumb a { color: var(--ink-soft); text-decoration: none; }
+  .masthead-rule .crumb a:hover { color: var(--lava); }
+  .masthead-rule .crumb .sep { color: var(--ink-mute); margin: 0 0.4rem; }
+  .masthead-rule .crumb .here { color: var(--ink); }
+  .masthead-rule a.home {
+    color: var(--lava); text-decoration: none;
+    border: 1px solid var(--lava); padding: 0.4rem 0.75rem;
+    border-radius: 3px;
+  }
+  .masthead-rule a.home:hover { background: var(--lava); color: var(--paper); }
+
+  .hero h1 em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 360;
+    color: var(--lava);
+  }
+
+  .progress-bar {
+    position: sticky; top: 0; z-index: 30;
+    background: var(--paper-card);
+    border-bottom: 1px solid var(--rule-faint);
+    padding: 0.85rem 0;
+    backdrop-filter: blur(10px) saturate(120%);
+  }
+  .progress-inner {
+    max-width: 880px; margin: 0 auto; padding: 0 32px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 1rem; flex-wrap: wrap;
+  }
+  .progress-stats { display: flex; gap: 2rem; flex-wrap: wrap; }
+  .progress-stat { display: flex; flex-direction: column; gap: 0.15rem; }
+  .progress-stat-lbl {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+  }
+  .progress-stat-val {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 28, "SOFT" 30, "wght" 520;
+    font-size: 1.25rem; line-height: 1; color: var(--ink); letter-spacing: -0.02em;
+  }
+  .progress-actions { display: flex; gap: 0.5rem; }
+  .progress-btn {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    padding: 0.5rem 0.9rem;
+    background: var(--paper); color: var(--ink);
+    border: 1px solid var(--rule-soft, rgba(14,31,38,0.18));
+    border-radius: 3px; cursor: pointer;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .progress-btn:hover { border-color: var(--lava); color: var(--lava); }
+
+  .task-group { margin: 2.4rem 0 1rem; }
+  .task-group:first-of-type { margin-top: 1rem; }
+  .task-group-head {
+    display: flex; align-items: baseline; gap: 1rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule-faint);
+    margin-bottom: 1rem; flex-wrap: wrap;
+  }
+  .task-group-num {
+    font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: 0.14em; color: var(--lava);
+    font-weight: 500;
+  }
+  .task-group-title {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 480;
+    font-size: 1.2rem; color: var(--ink); flex: 1;
+    letter-spacing: -0.012em;
+  }
+  .task-group-count {
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  .qcard {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-left: 3px solid var(--tone-moss);
+    border-radius: 6px;
+    padding: 1.4rem 1.7rem;
+    margin-bottom: 0.85rem;
+  }
+  .qcard-meta {
+    display: flex; align-items: baseline; gap: 1rem;
+    margin-bottom: 0.7rem; flex-wrap: wrap;
+  }
+  .qcard-num {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 540;
+    font-size: 1.05rem; color: var(--lava);
+    letter-spacing: -0.01em;
+  }
+  .qcard-scenario {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    color: var(--ink-soft); letter-spacing: 0.04em;
+  }
+  .qcard-scenario .scenario-tag {
+    display: inline-block; padding: 0.1rem 0.45rem;
+    background: var(--paper); color: var(--ink); border-radius: 2px;
+    font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
+    margin-right: 0.4rem;
+  }
+  .qcard-text {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 18, "SOFT" 25, "wght" 460;
+    font-size: 1.06rem; line-height: 1.55;
+    color: var(--ink); margin-bottom: 1.1rem;
+    letter-spacing: -0.005em;
+  }
+  .qcard .reveal-btn {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    padding: 0.55rem 1rem;
+    background: var(--lava); color: var(--paper);
+    border: 1px solid var(--lava); border-radius: 3px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; font-weight: 500;
+    transition: background 0.18s ease;
+  }
+  .qcard .reveal-btn:hover { background: var(--lava-deep); border-color: var(--lava-deep); }
+  .qcard.revealed .reveal-btn { display: none; }
+
+  .qcard-rationale {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem 1.2rem;
+    background: var(--paper);
+    border-left: 2px solid var(--tone-moss);
+    border-radius: 0 3px 3px 0;
+  }
+  .qcard.revealed .qcard-rationale { display: block; }
+  .qcard-rationale .rationale-tag {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--tone-moss); font-weight: 500; margin-bottom: 0.5rem;
+  }
+  .qcard-rationale .rationale-text {
+    font-size: 0.96rem; line-height: 1.6; color: var(--ink);
+  }
+
+  .module-nav {
+    border-top: 1px solid var(--rule-soft, rgba(14,31,38,0.18));
+    background: var(--paper-card); margin-top: 4rem;
+  }
+  .module-nav-grid {
+    max-width: 880px; margin: 0 auto; padding: 0 32px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  }
+  .module-nav-item {
+    display: flex; flex-direction: column; gap: 0.4rem;
+    padding: 2rem 1.4rem; text-decoration: none; color: var(--ink);
+    border-right: 1px solid var(--rule-faint);
+    transition: background 0.18s ease;
+  }
+  .module-nav-item:last-child { border-right: none; }
+  .module-nav-item:hover { background: var(--paper-deep); }
+  .module-nav-prev { text-align: left; }
+  .module-nav-next { text-align: right; align-items: flex-end; }
+  .module-nav-lbl {
+    font-family: var(--font-mono); font-size: 0.68rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--lava); font-weight: 500;
+  }
+  .module-nav-eyebrow {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);
+  }
+  .module-nav-title {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 480;
+    font-size: 1.15rem; line-height: 1.2; color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+  .colophon {
+    text-align: center; padding: 3rem 0 2rem;
+    font-family: var(--font-mono); font-size: 0.68rem;
+    letter-spacing: 0.18em; color: var(--ink-mute); text-transform: uppercase;
+  }
+  .colophon span { color: var(--lava); }
+
+  @media (max-width: 640px) {
+    .module-nav-grid { grid-template-columns: 1fr; }
+    .module-nav-item { border-right: none; border-bottom: 1px solid var(--rule-faint); padding: 1.4rem 1rem; }
+    .module-nav-item:last-child { border-bottom: none; }
+    .module-nav-next { text-align: left; align-items: flex-start; }
+    .progress-stats { gap: 1.2rem; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead-rule">
+  <span class="crumb"><a href="index.html">Home</a><span class="sep">›</span><a href="domain5_study_guide.html">Domain 5</a><span class="sep">›</span><span class="here">Practice Questions</span></span>
+  <a class="home" href="index.html">Syllabus</a>
+</div>
+
+<div class="hero">
+  <div class="hero-tag">Walk-through quick checks &middot; 6 questions &middot; Domain 5</div>
+  <h1>Practice <em>questions.</em></h1>
+  <p>6 open-ended quick checks for Domain 5 &mdash; Context Management & Reliability. Read each question, think through your answer, then reveal the model answer to compare. Designed for self-paced revision before sitting the mock exam.</p>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <div class="progress-stats">
+      <div class="progress-stat">
+        <span class="progress-stat-lbl">Revealed</span>
+        <span class="progress-stat-val" id="revealedCount">0/6</span>
+      </div>
+      <div class="progress-stat">
+        <span class="progress-stat-lbl">Remaining</span>
+        <span class="progress-stat-val" id="remainingCount">6</span>
+      </div>
+    </div>
+    <div class="progress-actions">
+      <button class="progress-btn" onclick="revealAll()">Reveal all</button>
+      <button class="progress-btn" onclick="resetAll()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+      <section class="task-group" data-task="5.1">
+        <header class="task-group-head">
+          <span class="task-group-num">5.1</span>
+          <span class="task-group-title">Context preservation</span>
+          <span class="task-group-count">1 q</span>
+        </header>
+        <article class="qcard" id="q1">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q01</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 5.1</span><span>Forgotten facts</span></span>
+          </div>
+          <p class="qcard-text">A returns agent's first-contact resolution drops sharply after turn 12. Logs show the summarized history reads "<em>customer wants refund for defective item</em>" — but the original message specified <code>$249.99</code>, <code>order #77302</code>, <code>Feb 8</code>. The agent now repeatedly asks the customer to re-state these. What's the underlying cause and the right fix?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Progressive summarization compressed transactional facts into vague language. The fix is a <strong>persistent case facts block</strong>: extract <code>order_id</code>, <code>refund_amount</code>, <code>purchase_date</code>, <code>issue_type</code> into a structured durable layer that's re-injected into every prompt outside the summarized history. Numbers can't drift if they live outside the lossy layer.</p>
+              <div class="rationale-distractors"><strong>Wrong instinct:</strong> "increase context window" — capacity isn't the issue, the facts are getting summarized away. "Disable summarization" — loses tone/intent coherence, blows tokens. The fix is layering, not capacity.</div>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="5.2">
+        <header class="task-group-head">
+          <span class="task-group-num">5.2</span>
+          <span class="task-group-title">Escalation &amp; ambiguity</span>
+          <span class="task-group-count">1 q</span>
+        </header>
+        <article class="qcard" id="q2">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q02</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 5.2</span><span>Multiple matches</span></span>
+          </div>
+          <p class="qcard-text">Your agent calls <code>get_customer(name="John Smith")</code> and the tool returns three records. The agent picks the one with the most recent order and proceeds with a refund. Two days later, the wrong customer's account got refunded. What pattern should the agent have followed?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">When tool results return multiple matches, the agent must <strong>ask the customer for an additional identifier</strong> — email, phone, order number — rather than selecting based on heuristics. Heuristic selection on identity is dangerous: the wrong account gets the action, and the customer never sees the ambiguity. Add explicit instructions in the system prompt: "When multiple matches are returned, request clarification."</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="5.3">
+        <header class="task-group-head">
+          <span class="task-group-num">5.3</span>
+          <span class="task-group-title">Error propagation</span>
+          <span class="task-group-count">1 q</span>
+        </header>
+        <article class="qcard" id="q3">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q03</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 5.3</span><span>Silent failure</span></span>
+          </div>
+          <p class="qcard-text">A research coordinator delegates to a <code>web_search</code> subagent. The subagent's API call times out after 30s. Current behavior: catch exception, log it, return <code>{"results": []}</code>. The coordinator then synthesizes a report stating "<em>no relevant sources were found</em>." What's the most accurate critique?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Silent suppression conflates <strong>access failure</strong> with a <strong>valid empty result</strong>. The coordinator can't tell "search broke" from "search ran but found nothing" — and the report misleads users by stating no sources exist when in reality the source was unreachable. Fix: subagent returns structured error context (<code>error_type</code>, <code>is_retryable</code>, <code>attempted_query</code>, <code>partial_results</code>, <code>alternatives</code>) so the coordinator can decide retry, alternative source, or annotate the gap in the report.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="5.4">
+        <header class="task-group-head">
+          <span class="task-group-num">5.4</span>
+          <span class="task-group-title">Codebase exploration</span>
+          <span class="task-group-count">1 q</span>
+        </header>
+        <article class="qcard" id="q4">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q04</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 5.4</span><span>Context degradation</span></span>
+          </div>
+          <p class="qcard-text">A 4-hour codebase exploration session starts producing answers like "<em>this codebase typically uses a service layer</em>" and "<em>the RefundService class probably calls...</em>" — even though earlier in the session, Claude examined those exact classes specifically. What's happening?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>Context degradation.</strong> The model has read so much verbose discovery output that earlier specific findings are buried — it's pattern-matching to generic software knowledge instead of citing the actual classes it examined. Fix: spawn subagents for verbose discovery (return summaries only), persist key findings to scratchpad files, inject summaries when starting new investigation phases, and use <code>/compact</code> when the running context fills up.</p>
+              <div class="rationale-distractors"><strong>Wrong instinct:</strong> "increase context window" — degradation is about attention quality, not capacity. "Restart from scratch" — discards hours of valuable work.</div>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="5.5">
+        <header class="task-group-head">
+          <span class="task-group-num">5.5</span>
+          <span class="task-group-title">Human review &amp; confidence</span>
+          <span class="task-group-count">1 q</span>
+        </header>
+        <article class="qcard" id="q5">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q05</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 5.5</span><span>Aggregate trap</span></span>
+          </div>
+          <p class="qcard-text">An extraction pipeline reports 97% aggregate accuracy on a labeled validation set. Leadership wants to reduce human review by 80%. What's the right preflight check before doing this?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Break down accuracy <strong>per document type AND per field</strong> — verify no segment has materially lower accuracy. Aggregate metrics can mask 70% accuracy on a critical field within a specific document type (e.g., tax fields on EU invoices). Only after segment-level validation, plus stratified sampling thresholds in production, is it safe to reduce review.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="5.6">
+        <header class="task-group-head">
+          <span class="task-group-num">5.6</span>
+          <span class="task-group-title">Information provenance</span>
+          <span class="task-group-count">1 q</span>
+        </header>
+        <article class="qcard" id="q6">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q06</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 5.6</span><span>Trend or conflict</span></span>
+          </div>
+          <p class="qcard-text">A multi-agent research system synthesizes findings from three sources on EV battery prices. Source A (Mar 2024) reports <code>$139/kWh</code>. Source B (Dec 2024) reports <code>$115/kWh</code>. Source C (Sep 2025) reports <code>$108/kWh</code>. The synthesis subagent currently outputs: "<em>EV battery prices are around $120/kWh.</em>" Critique this output.</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">The output <strong>loses source attribution and temporal context</strong>. Synthesis should preserve all three values with source names and publication dates, and present them as a <strong>declining trend</strong> — not a single averaged number. Conflict-resolution rules apply only when sources are contemporaneous; different dates plus different numbers means the metric moved over time, not that sources disagree.</p>
+              <div class="rationale-distractors"><strong>Wrong instinct:</strong> "average them" fabricates a number no source reported. "Pick the most recent" discards trajectory information stakeholders need.</div>
+            </div></div>
+        </article>
+      </section>
+</div>
+
+<nav class="module-nav" aria-label="Module navigation">
+  <div class="module-nav-grid">
+    <a class="module-nav-item module-nav-prev" href="domain5_study_guide.html">
+      <span class="module-nav-lbl">&larr; Module</span>
+      <span class="module-nav-eyebrow">Domain 05 &middot; Context & Reliability</span>
+      <span class="module-nav-title">Back to study guide</span>
+    </a>
+    <a class="module-nav-item module-nav-next" href="mock_exam.html">
+      <span class="module-nav-lbl">Mock exam &rarr;</span>
+      <span class="module-nav-eyebrow">All domains &middot; 45 questions</span>
+      <span class="module-nav-title">Sit the test</span>
+    </a>
+  </div>
+</nav>
+
+<div class="colophon">
+  Anthropic <span>&middot;</span> Foundations <span>&middot;</span> Edition 2026 <span>&middot;</span> Practice &middot; Domain 5
+</div>
+
+<script>
+const TOTAL = 6;
+function reveal(btn) {
+  const card = btn.closest('.qcard');
+  if (!card || card.classList.contains('revealed')) return;
+  card.classList.add('revealed');
+  updateCounts();
+}
+function revealAll() {
+  document.querySelectorAll('.qcard:not(.revealed)').forEach(c => c.classList.add('revealed'));
+  updateCounts();
+}
+function resetAll() {
+  document.querySelectorAll('.qcard.revealed').forEach(c => c.classList.remove('revealed'));
+  updateCounts();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function updateCounts() {
+  const revealed = document.querySelectorAll('.qcard.revealed').length;
+  document.getElementById('revealedCount').textContent = revealed + '/' + TOTAL;
+  document.getElementById('remainingCount').textContent = (TOTAL - revealed);
+}
+</script>
+</body>
+</html>

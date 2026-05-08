@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice Questions &mdash; Domain 2 &middot; Tool Design & MCP Integration</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17; --card: #111827; --border: #1e2d45;
+    --accent: #3b82f6; --green: #10b981; --red: #ef4444;
+    --text: #e2e8f0; --muted: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); line-height: 1.65; font-size: 15px; }
+  .container { max-width: 880px; margin: 0 auto; padding: 0 32px; }
+  code { font-family: "JetBrains Mono", monospace; font-size: 0.88em; }
+</style>
+<link rel="stylesheet" href="assets/css/course.css">
+<style>
+  .masthead-rule {
+    max-width: 880px; margin: 0 auto; padding: 1.6rem 32px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 0.7rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);
+  }
+  .masthead-rule .crumb { color: var(--ink-soft); }
+  .masthead-rule .crumb a { color: var(--ink-soft); text-decoration: none; }
+  .masthead-rule .crumb a:hover { color: var(--lava); }
+  .masthead-rule .crumb .sep { color: var(--ink-mute); margin: 0 0.4rem; }
+  .masthead-rule .crumb .here { color: var(--ink); }
+  .masthead-rule a.home {
+    color: var(--lava); text-decoration: none;
+    border: 1px solid var(--lava); padding: 0.4rem 0.75rem;
+    border-radius: 3px;
+  }
+  .masthead-rule a.home:hover { background: var(--lava); color: var(--paper); }
+
+  .hero h1 em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 360;
+    color: var(--lava);
+  }
+
+  .progress-bar {
+    position: sticky; top: 0; z-index: 30;
+    background: var(--paper-card);
+    border-bottom: 1px solid var(--rule-faint);
+    padding: 0.85rem 0;
+    backdrop-filter: blur(10px) saturate(120%);
+  }
+  .progress-inner {
+    max-width: 880px; margin: 0 auto; padding: 0 32px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 1rem; flex-wrap: wrap;
+  }
+  .progress-stats { display: flex; gap: 2rem; flex-wrap: wrap; }
+  .progress-stat { display: flex; flex-direction: column; gap: 0.15rem; }
+  .progress-stat-lbl {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+  }
+  .progress-stat-val {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 28, "SOFT" 30, "wght" 520;
+    font-size: 1.25rem; line-height: 1; color: var(--ink); letter-spacing: -0.02em;
+  }
+  .progress-actions { display: flex; gap: 0.5rem; }
+  .progress-btn {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    padding: 0.5rem 0.9rem;
+    background: var(--paper); color: var(--ink);
+    border: 1px solid var(--rule-soft, rgba(14,31,38,0.18));
+    border-radius: 3px; cursor: pointer;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .progress-btn:hover { border-color: var(--lava); color: var(--lava); }
+
+  .task-group { margin: 2.4rem 0 1rem; }
+  .task-group:first-of-type { margin-top: 1rem; }
+  .task-group-head {
+    display: flex; align-items: baseline; gap: 1rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule-faint);
+    margin-bottom: 1rem; flex-wrap: wrap;
+  }
+  .task-group-num {
+    font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: 0.14em; color: var(--lava);
+    font-weight: 500;
+  }
+  .task-group-title {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 480;
+    font-size: 1.2rem; color: var(--ink); flex: 1;
+    letter-spacing: -0.012em;
+  }
+  .task-group-count {
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  .qcard {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-left: 3px solid var(--tone-moss);
+    border-radius: 6px;
+    padding: 1.4rem 1.7rem;
+    margin-bottom: 0.85rem;
+  }
+  .qcard-meta {
+    display: flex; align-items: baseline; gap: 1rem;
+    margin-bottom: 0.7rem; flex-wrap: wrap;
+  }
+  .qcard-num {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 540;
+    font-size: 1.05rem; color: var(--lava);
+    letter-spacing: -0.01em;
+  }
+  .qcard-scenario {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    color: var(--ink-soft); letter-spacing: 0.04em;
+  }
+  .qcard-scenario .scenario-tag {
+    display: inline-block; padding: 0.1rem 0.45rem;
+    background: var(--paper); color: var(--ink); border-radius: 2px;
+    font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
+    margin-right: 0.4rem;
+  }
+  .qcard-text {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 18, "SOFT" 25, "wght" 460;
+    font-size: 1.06rem; line-height: 1.55;
+    color: var(--ink); margin-bottom: 1.1rem;
+    letter-spacing: -0.005em;
+  }
+  .qcard .reveal-btn {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    padding: 0.55rem 1rem;
+    background: var(--lava); color: var(--paper);
+    border: 1px solid var(--lava); border-radius: 3px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; font-weight: 500;
+    transition: background 0.18s ease;
+  }
+  .qcard .reveal-btn:hover { background: var(--lava-deep); border-color: var(--lava-deep); }
+  .qcard.revealed .reveal-btn { display: none; }
+
+  .qcard-rationale {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem 1.2rem;
+    background: var(--paper);
+    border-left: 2px solid var(--tone-moss);
+    border-radius: 0 3px 3px 0;
+  }
+  .qcard.revealed .qcard-rationale { display: block; }
+  .qcard-rationale .rationale-tag {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--tone-moss); font-weight: 500; margin-bottom: 0.5rem;
+  }
+  .qcard-rationale .rationale-text {
+    font-size: 0.96rem; line-height: 1.6; color: var(--ink);
+  }
+
+  .module-nav {
+    border-top: 1px solid var(--rule-soft, rgba(14,31,38,0.18));
+    background: var(--paper-card); margin-top: 4rem;
+  }
+  .module-nav-grid {
+    max-width: 880px; margin: 0 auto; padding: 0 32px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  }
+  .module-nav-item {
+    display: flex; flex-direction: column; gap: 0.4rem;
+    padding: 2rem 1.4rem; text-decoration: none; color: var(--ink);
+    border-right: 1px solid var(--rule-faint);
+    transition: background 0.18s ease;
+  }
+  .module-nav-item:last-child { border-right: none; }
+  .module-nav-item:hover { background: var(--paper-deep); }
+  .module-nav-prev { text-align: left; }
+  .module-nav-next { text-align: right; align-items: flex-end; }
+  .module-nav-lbl {
+    font-family: var(--font-mono); font-size: 0.68rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--lava); font-weight: 500;
+  }
+  .module-nav-eyebrow {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);
+  }
+  .module-nav-title {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 480;
+    font-size: 1.15rem; line-height: 1.2; color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+  .colophon {
+    text-align: center; padding: 3rem 0 2rem;
+    font-family: var(--font-mono); font-size: 0.68rem;
+    letter-spacing: 0.18em; color: var(--ink-mute); text-transform: uppercase;
+  }
+  .colophon span { color: var(--lava); }
+
+  @media (max-width: 640px) {
+    .module-nav-grid { grid-template-columns: 1fr; }
+    .module-nav-item { border-right: none; border-bottom: 1px solid var(--rule-faint); padding: 1.4rem 1rem; }
+    .module-nav-item:last-child { border-bottom: none; }
+    .module-nav-next { text-align: left; align-items: flex-start; }
+    .progress-stats { gap: 1.2rem; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead-rule">
+  <span class="crumb"><a href="index.html">Home</a><span class="sep">›</span><a href="domain2_study_guide.html">Domain 2</a><span class="sep">›</span><span class="here">Practice Questions</span></span>
+  <a class="home" href="index.html">Syllabus</a>
+</div>
+
+<div class="hero">
+  <div class="hero-tag">Walk-through quick checks &middot; 10 questions &middot; Domain 2</div>
+  <h1>Practice <em>questions.</em></h1>
+  <p>10 open-ended quick checks for Domain 2 &mdash; Tool Design & MCP Integration. Read each question, think through your answer, then reveal the model answer to compare. Designed for self-paced revision before sitting the mock exam.</p>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <div class="progress-stats">
+      <div class="progress-stat">
+        <span class="progress-stat-lbl">Revealed</span>
+        <span class="progress-stat-val" id="revealedCount">0/10</span>
+      </div>
+      <div class="progress-stat">
+        <span class="progress-stat-lbl">Remaining</span>
+        <span class="progress-stat-val" id="remainingCount">10</span>
+      </div>
+    </div>
+    <div class="progress-actions">
+      <button class="progress-btn" onclick="revealAll()">Reveal all</button>
+      <button class="progress-btn" onclick="resetAll()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+      <section class="task-group" data-task="2.1">
+        <header class="task-group-head">
+          <span class="task-group-num">2.1</span>
+          <span class="task-group-title">Tool interface design</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q1">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q01</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 2.1</span><span>Description components</span></span>
+          </div>
+          <p class="qcard-text">Two tools, <code>analyze_content</code> and <code>analyze_document</code>, both with the description "Analyzes the input." What's the highest-leverage fix, and why?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Rename one to reflect a distinct contract (e.g., <code>extract_web_results</code> for the web-flavored tool) AND rewrite both descriptions with <strong>purpose, input format, examples, edge cases, and boundary statements</strong>. The rename helps differentiate at the name level, but the descriptions are what Claude actually reads to select. Both changes together; description rewrite is the heavier lift.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q2">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q02</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 2.1</span><span>System prompt trap</span></span>
+          </div>
+          <p class="qcard-text">True or false: if descriptions are perfect, the system prompt cannot cause misrouting. Explain.</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>False.</strong> Keyword-heavy system prompts pull Claude toward similarly-named tools regardless of description quality. A prompt phrase like "always begin by analyzing the content" creates an association that overrides clean descriptions. Audit the prompt for verbs and nouns that match tool names; replace keyword-loaded phrasing with goal-based instructions.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="2.2">
+        <header class="task-group-head">
+          <span class="task-group-num">2.2</span>
+          <span class="task-group-title">Structured error responses</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q3">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q03</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 2.2</span><span>Lost signal</span></span>
+          </div>
+          <p class="qcard-text">A web search subagent times out. The coordinator gets back a generic <code>"search unavailable"</code> status. What information has been lost that the coordinator needs to make an intelligent recovery decision?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">The <strong>error category</strong> (transient vs business vs permission), <strong>retryability</strong>, <strong>what was attempted</strong> (which query, which sources), <strong>partial results</strong> already gathered, and <strong>alternative approaches</strong> the coordinator might try. Without these, the coordinator can only choose between blind retry and giving up — neither of which leverages the recovery options that were available.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q4">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q04</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 2.2</span><span>Business error</span></span>
+          </div>
+          <p class="qcard-text">Your <code>process_refund</code> tool gets a request for $750 when policy caps refunds at $500. What <code>errorCategory</code> should it return, and what <code>isRetryable</code> value? Why?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><code>errorCategory: "business"</code>, <code>isRetryable: false</code>. This is a policy violation, not a transient failure — retrying with the same amount will fail again. The agent needs to either explain to the user (with a customer-friendly message and the policy limit in <code>details</code>) or escalate to a human approver. Marking it retryable wastes calls and obscures the actual situation.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="2.3">
+        <header class="task-group-head">
+          <span class="task-group-num">2.3</span>
+          <span class="task-group-title">Tool distribution &amp; tool_choice</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q5">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q05</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 2.3</span><span>Over-provisioning</span></span>
+          </div>
+          <p class="qcard-text">A synthesis agent has 18 tools available — search, fetch, document analysis, citation formatting, summarization, verification, and more. It produces inconsistent output and frequently uses tools outside its synthesis role. Is the answer "better prompts" or something structural?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>Structural.</strong> Restrict the synthesis agent's toolset to 3-5 tools that match its role: <code>compose_section</code>, <code>format_citations</code>, plus a scoped <code>verify_fact</code> for high-frequency cross-role needs. Selection reliability degrades with tool count; better prompts can't fix a structural over-provisioning problem. The synthesis agent will keep using web search whenever it has access to web search.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q6">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q06</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 2.3</span><span>tool_choice</span></span>
+          </div>
+          <p class="qcard-text">You have three extraction tools (invoice, receipt, contract) and the document type is unknown. You want to guarantee Claude calls one of them and doesn't return conversational text. What <code>tool_choice</code> value?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><code>tool_choice: {"type": "any"}</code>. This forces a tool call but lets Claude pick which extractor based on the document. <code>"auto"</code> would let Claude return conversational text; forced selection on a specific tool would lock you to one extractor regardless of document type. <code>"any"</code> is the right balance — guaranteed structured output, model-driven selection.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="2.4">
+        <header class="task-group-head">
+          <span class="task-group-num">2.4</span>
+          <span class="task-group-title">MCP server integration</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q7">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q07</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 2.4</span><span>Scope diagnosis</span></span>
+          </div>
+          <p class="qcard-text">A new team member clones the repo and runs Claude Code. They report none of the MCP tools you set up are available. You configured them in <code>~/.claude.json</code> on your machine. What's the fix?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text">Move the server configurations from user-level <code>~/.claude.json</code> into <strong>project-level <code>.mcp.json</code></strong> committed to the repo. Use <code>${ENV_VAR}</code> expansion for credentials so secrets stay out of git. The new team member then gets all servers automatically on clone, with each developer providing their own tokens via shell environment.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q8">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q08</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 2.4</span><span>Resources vs tools</span></span>
+          </div>
+          <p class="qcard-text">You want to give the agent visibility into your full Jira issue catalog without making it call <code>list_issues</code> first. Tools or resources? Why?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>Resources.</strong> Expose the issue catalog as an MCP resource. The agent sees the full inventory at connection time without exploratory tool calls. Pattern: tools for actions (creating, updating, transitioning), resources for content catalogs (issue summaries, schema, doc hierarchies). Using <code>list_issues</code> as a tool wastes a round trip every session.</p>
+            </div></div>
+        </article>
+      </section>
+
+      <section class="task-group" data-task="2.5">
+        <header class="task-group-head">
+          <span class="task-group-num">2.5</span>
+          <span class="task-group-title">Built-in tools</span>
+          <span class="task-group-count">2 q</span>
+        </header>
+        <article class="qcard" id="q9">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q09</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 2.5</span><span>Grep vs Glob</span></span>
+          </div>
+          <p class="qcard-text">You need to find every file that imports the <code>lodash</code> library. Grep or Glob? Why does the other one fail?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>Grep</strong>, searching for <code>from 'lodash'</code> or <code>require('lodash')</code> across file contents. Glob fails because it only matches paths — <code>**/*lodash*</code> would only catch files NAMED with "lodash" in their path, missing every file that imports the library by name. Mental rule: contents = Grep, paths = Glob.</p>
+            </div></div>
+        </article>
+
+        <article class="qcard" id="q10">
+          <div class="qcard-meta">
+            <span class="qcard-num">Q10</span>
+            <span class="qcard-scenario"><span class="scenario-tag">Task 2.5</span><span>Edit fallback</span></span>
+          </div>
+          <p class="qcard-text">Edit fails on a config file because the string <code>"port: 3000"</code> appears in five places. What's the correct fix? Why isn't the answer "add more context lines until the snippet becomes unique"?</p>
+          <button class="reveal-btn" type="button" onclick="reveal(this)">Reveal model answer</button>
+          <div class="qcard-rationale"><div class="rationale-inner">
+              <div class="rationale-tag">Model answer</div>
+              <p class="rationale-text"><strong>Read the full file → construct the modified content → Write it back.</strong> Adding more context lines works for a while but breaks on genuinely repetitive files where any reasonable snippet is non-unique. You're fighting the tool. Read+Write is reliable across any file shape; it's the documented fallback for non-unique-match failures.</p>
+            </div></div>
+        </article>
+      </section>
+</div>
+
+<nav class="module-nav" aria-label="Module navigation">
+  <div class="module-nav-grid">
+    <a class="module-nav-item module-nav-prev" href="domain2_study_guide.html">
+      <span class="module-nav-lbl">&larr; Module</span>
+      <span class="module-nav-eyebrow">Domain 02 &middot; Tool Design & MCP</span>
+      <span class="module-nav-title">Back to study guide</span>
+    </a>
+    <a class="module-nav-item module-nav-next" href="mock_exam.html">
+      <span class="module-nav-lbl">Mock exam &rarr;</span>
+      <span class="module-nav-eyebrow">All domains &middot; 45 questions</span>
+      <span class="module-nav-title">Sit the test</span>
+    </a>
+  </div>
+</nav>
+
+<div class="colophon">
+  Anthropic <span>&middot;</span> Foundations <span>&middot;</span> Edition 2026 <span>&middot;</span> Practice &middot; Domain 2
+</div>
+
+<script>
+const TOTAL = 10;
+function reveal(btn) {
+  const card = btn.closest('.qcard');
+  if (!card || card.classList.contains('revealed')) return;
+  card.classList.add('revealed');
+  updateCounts();
+}
+function revealAll() {
+  document.querySelectorAll('.qcard:not(.revealed)').forEach(c => c.classList.add('revealed'));
+  updateCounts();
+}
+function resetAll() {
+  document.querySelectorAll('.qcard.revealed').forEach(c => c.classList.remove('revealed'));
+  updateCounts();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function updateCounts() {
+  const revealed = document.querySelectorAll('.qcard.revealed').length;
+  document.getElementById('revealedCount').textContent = revealed + '/' + TOTAL;
+  document.getElementById('remainingCount').textContent = (TOTAL - revealed);
+}
+</script>
+</body>
+</html>

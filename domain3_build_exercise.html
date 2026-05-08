@@ -1,0 +1,2290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Domain 3 — Build Exercise &amp; Solution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0d0b;
+  --bg-elevated: #16140f;
+  --bg-card: #1a1812;
+  --ink: #f4ede0;
+  --ink-muted: #a89e8b;
+  --ink-faint: #6b6354;
+  --rule: #2a2620;
+  --rule-strong: #3a3429;
+  --accent: #e8b04e;
+  --accent-soft: #c98f3f;
+  --teal: #5fb7a5;
+  --coral: #e07b5a;
+  --rose: #c66a7a;
+  --sage: #8aa978;
+  --serif: 'Fraunces', Georgia, serif;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --sans: 'Inter', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+/* Subtle grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(232,176,78,0.015) 1px, transparent 0);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 32px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== HEADER ===== */
+header.masthead {
+  border-bottom: 1px solid var(--rule);
+  padding: 32px 0;
+  position: sticky;
+  top: 0;
+  background: rgba(14, 13, 11, 0.92);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+}
+
+.masthead-inner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.brand {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  font-style: italic;
+}
+
+.brand .ampersand {
+  color: var(--accent);
+  font-style: italic;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+nav.toc {
+  display: flex;
+  gap: 24px;
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+nav.toc a {
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+}
+
+nav.toc a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ===== HERO ===== */
+.hero {
+  padding: 120px 0 80px;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 80px;
+  align-items: end;
+}
+
+.hero-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.hero-meta::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule-strong);
+}
+
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(48px, 7vw, 96px);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  margin-bottom: 32px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.hero-lede {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 680px;
+  font-style: italic;
+}
+
+.hero-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  border-left: 1px solid var(--rule-strong);
+  padding-left: 32px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-value {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.stat-value .pct {
+  color: var(--accent);
+}
+
+.stat-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+/* ===== SECTIONS ===== */
+section.task-section {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.section-header {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 48px;
+  margin-bottom: 56px;
+  align-items: start;
+}
+
+.section-num {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 88px;
+  line-height: 1;
+  color: var(--accent);
+  letter-spacing: -0.04em;
+}
+
+.section-num .num-suffix {
+  font-size: 24px;
+  vertical-align: super;
+  color: var(--ink-faint);
+  margin-left: 4px;
+}
+
+.section-header-text {
+  padding-top: 16px;
+}
+
+.section-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 16px;
+}
+
+h2.section-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(36px, 4.5vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin-bottom: 20px;
+}
+
+.section-meaning {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 720px;
+  padding: 16px 24px;
+  border-left: 3px solid var(--accent);
+  background: linear-gradient(90deg, rgba(232,176,78,0.04) 0%, transparent 100%);
+}
+
+.section-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+}
+
+h3.subhead {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  color: var(--ink);
+}
+
+h4.minor {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+
+p {
+  margin-bottom: 16px;
+  color: var(--ink-muted);
+  font-size: 15.5px;
+  line-height: 1.7;
+  max-width: 780px;
+}
+
+p strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+p code, li code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--bg-elevated);
+  padding: 2px 7px;
+  border-radius: 3px;
+  color: var(--accent);
+  border: 1px solid var(--rule);
+}
+
+ul.bullets {
+  list-style: none;
+  margin-bottom: 24px;
+  max-width: 820px;
+}
+
+ul.bullets li {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 14px;
+  color: var(--ink-muted);
+  line-height: 1.65;
+}
+
+ul.bullets li::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent);
+  font-size: 10px;
+  line-height: 28px;
+}
+
+/* ===== INTERACTIVE DIAGRAMS ===== */
+.diagram-block {
+  margin: 40px 0;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.diagram-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg-elevated);
+}
+
+.diagram-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-muted);
+}
+
+.diagram-toggle {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  cursor: pointer;
+  background: none;
+  border: 1px solid var(--rule-strong);
+  padding: 6px 14px;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.diagram-toggle:hover {
+  border-color: var(--accent);
+  background: rgba(232,176,78,0.08);
+}
+
+.diagram-svg-wrap {
+  padding: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.diagram-svg-wrap svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* SVG node styling */
+.node-rect {
+  fill: var(--bg-elevated);
+  stroke: var(--rule-strong);
+  stroke-width: 1.5;
+  rx: 4;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.node-rect:hover {
+  stroke: var(--accent);
+  fill: rgba(232,176,78,0.06);
+}
+
+.node-rect.accent { stroke: var(--accent); }
+.node-rect.teal { stroke: var(--teal); }
+.node-rect.coral { stroke: var(--coral); }
+.node-rect.sage { stroke: var(--sage); }
+.node-rect.rose { stroke: var(--rose); }
+
+.node-title {
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 500;
+  fill: var(--ink);
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.node-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  fill: var(--ink-muted);
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.flow-line {
+  stroke: var(--rule-strong);
+  stroke-width: 1.5;
+  fill: none;
+  transition: stroke 0.3s;
+}
+
+.flow-line.active {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.flow-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  fill: var(--ink-faint);
+  text-anchor: middle;
+}
+
+.diagram-controls {
+  padding: 16px 24px;
+  border-top: 1px solid var(--rule);
+  background: var(--bg-elevated);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.diagram-step-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: var(--bg-card);
+  color: var(--ink-muted);
+  border: 1px solid var(--rule-strong);
+  padding: 8px 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.diagram-step-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.diagram-step-btn.active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.diagram-narration {
+  padding: 20px 24px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-muted);
+  line-height: 1.6;
+  min-height: 60px;
+}
+
+/* ===== EXAM TRAPS BLOCK ===== */
+.traps-block {
+  margin-top: 48px;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.traps-header {
+  background: linear-gradient(90deg, rgba(224,123,90,0.08) 0%, transparent 60%);
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.warn-icon {
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--coral);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--coral);
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.traps-header h4 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.traps-header .traps-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--coral);
+  margin-left: auto;
+}
+
+.traps-list {
+  list-style: none;
+  padding: 0;
+}
+
+.trap-item {
+  border-bottom: 1px solid var(--rule);
+  padding: 24px 28px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.trap-item:last-child {
+  border-bottom: none;
+}
+
+.trap-item:hover {
+  background: rgba(224,123,90,0.04);
+}
+
+.trap-item-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.trap-num {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 28px;
+  color: var(--coral);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  min-width: 36px;
+}
+
+.trap-content {
+  flex: 1;
+}
+
+.trap-wrong {
+  font-family: var(--serif);
+  font-size: 17px;
+  color: var(--ink);
+  font-weight: 500;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.trap-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, margin-top 0.3s;
+}
+
+.trap-item.open .trap-detail {
+  max-height: 400px;
+  margin-top: 12px;
+}
+
+.trap-why {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-muted);
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+
+.trap-fix {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--sage);
+  background: rgba(138,169,120,0.06);
+  padding: 10px 14px;
+  border-left: 2px solid var(--sage);
+  border-radius: 0 2px 2px 0;
+}
+
+.trap-fix::before {
+  content: '→ ';
+  color: var(--sage);
+  font-weight: 600;
+}
+
+.expand-indicator {
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--ink-faint);
+  transition: transform 0.3s;
+  margin-left: auto;
+}
+
+.trap-item.open .expand-indicator {
+  transform: rotate(45deg);
+  color: var(--coral);
+}
+
+/* ===== TWO COLUMN LAYOUT ===== */
+.dual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin: 32px 0;
+}
+
+.dual-card {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dual-card.wrong {
+  border-left: 3px solid var(--coral);
+}
+
+.dual-card.right {
+  border-left: 3px solid var(--sage);
+}
+
+.dual-card-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.dual-card.wrong .dual-card-tag { color: var(--coral); }
+.dual-card.right .dual-card-tag { color: var(--sage); }
+
+.dual-card h5 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+
+.dual-card p {
+  font-size: 14.5px;
+  margin-bottom: 0;
+}
+
+.code-block {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  padding: 16px;
+  border-radius: 3px;
+  margin-top: 12px;
+  color: var(--ink);
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+.code-block .keyword { color: var(--coral); }
+.code-block .string { color: var(--sage); }
+.code-block .comment { color: var(--ink-faint); font-style: italic; }
+.code-block .accent { color: var(--accent); }
+
+/* ===== TABLE ===== */
+.elegant-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 14.5px;
+}
+
+.elegant-table th {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rule-strong);
+  font-weight: 600;
+}
+
+.elegant-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-muted);
+  vertical-align: top;
+}
+
+.elegant-table td:first-child {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.elegant-table tbody tr:hover {
+  background: rgba(232,176,78,0.03);
+}
+
+/* ===== PULL QUOTE ===== */
+.pull-quote {
+  margin: 56px 0;
+  padding: 48px 0;
+  border-top: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule-strong);
+  text-align: center;
+}
+
+.pull-quote-text {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(28px, 3.5vw, 40px);
+  line-height: 1.3;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  max-width: 900px;
+  margin: 0 auto 16px;
+}
+
+.pull-quote-text em {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.pull-quote-attr {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--ink-faint);
+}
+
+/* ===== FOOTER ===== */
+footer {
+  padding: 80px 0 60px;
+  border-top: 1px solid var(--rule-strong);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 64px;
+}
+
+.footer-brand {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 32px;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.footer-brand em {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.footer-text {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--ink-muted);
+  font-style: italic;
+  max-width: 380px;
+  line-height: 1.6;
+}
+
+.footer-col h6 {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.footer-col ul {
+  list-style: none;
+}
+
+.footer-col li {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+
+.footer-meta {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 880px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+  .hero-stats { flex-direction: row; flex-wrap: wrap; border-left: none; border-top: 1px solid var(--rule-strong); padding-left: 0; padding-top: 32px; }
+  .section-header { grid-template-columns: 1fr; gap: 16px; }
+  .section-num { font-size: 64px; }
+  .dual { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  nav.toc { display: none; }
+}
+
+/* SVG node hover hint */
+.node-group { cursor: pointer; }
+.node-group:hover .node-rect { stroke-width: 2.5; }
+
+/* Animation for diagram nodes */
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+  50% { filter: drop-shadow(0 0 8px rgba(232,176,78,0.4)); }
+}
+
+.node-group.highlight .node-rect {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  fill: rgba(232,176,78,0.1);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.node-group.dim {
+  opacity: 0.35;
+}
+
+.flow-line.dim {
+  opacity: 0.2;
+}
+
+/* Fade-in on scroll */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== PRACTICE EXAM SECTION ===== */
+.exam-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 56px;
+  align-items: start;
+}
+
+.exam-intro-card {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 32px;
+  position: relative;
+}
+
+.exam-intro-card.checks {
+  border-left: 3px solid var(--teal);
+}
+
+.exam-intro-card.exam {
+  border-left: 3px solid var(--accent);
+}
+
+.exam-intro-card h4 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 24px;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+
+.exam-intro-card .count {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.exam-intro-card.checks .count { color: var(--teal); }
+
+.exam-intro-card p {
+  font-size: 14.5px;
+  margin-bottom: 16px;
+}
+
+.exam-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--ink-muted);
+  cursor: pointer;
+  padding: 10px 18px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 2px;
+  background: var(--bg);
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.exam-mode-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.exam-mode-toggle.active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+/* Question card */
+.qbank {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.qbank-group-header {
+  margin: 32px 0 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.qbank-group-header:first-child {
+  margin-top: 0;
+}
+
+.qbank-group-num {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 36px;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.qbank-group-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 22px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.qbank-group-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-left: auto;
+}
+
+.question-card {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.question-card:hover {
+  border-color: var(--rule-strong);
+}
+
+.question-card.answered.correct {
+  border-color: var(--sage);
+}
+
+.question-card.answered.incorrect {
+  border-color: var(--coral);
+}
+
+.question-header {
+  padding: 24px 28px 16px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.question-num {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  min-width: 56px;
+  padding-top: 4px;
+}
+
+.question-num.check {
+  color: var(--teal);
+  font-size: 24px;
+}
+
+.question-num .q-prefix {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  display: block;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+}
+
+.question-body {
+  flex: 1;
+}
+
+.question-scenario {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 10px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.scenario-tag {
+  background: rgba(232,176,78,0.08);
+  color: var(--accent);
+  padding: 3px 10px;
+  border-radius: 2px;
+  border: 1px solid rgba(232,176,78,0.2);
+}
+
+.question-text {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.question-text code {
+  font-family: var(--mono);
+  font-size: 14px;
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--accent);
+  border: 1px solid var(--rule);
+}
+
+/* Options */
+.options-list {
+  list-style: none;
+  padding: 0 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px 18px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--bg);
+}
+
+.option-item:hover {
+  border-color: var(--rule-strong);
+  background: rgba(232,176,78,0.03);
+}
+
+.option-letter {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  min-width: 24px;
+  padding-top: 1px;
+}
+
+.option-text {
+  font-size: 14.5px;
+  color: var(--ink-muted);
+  line-height: 1.55;
+  flex: 1;
+}
+
+.option-text code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--bg-elevated);
+  padding: 1px 5px;
+  border-radius: 2px;
+  color: var(--accent);
+}
+
+/* Selected state */
+.option-item.selected {
+  border-color: var(--accent);
+  background: rgba(232,176,78,0.06);
+}
+
+.option-item.selected .option-letter {
+  color: var(--accent);
+}
+
+/* Reveal state — showing answer */
+.question-card.revealed .option-item {
+  cursor: default;
+}
+
+.question-card.revealed .option-item:hover {
+  background: var(--bg);
+  border-color: var(--rule);
+}
+
+.question-card.revealed .option-item.correct {
+  border-color: var(--sage);
+  background: rgba(138,169,120,0.08);
+}
+
+.question-card.revealed .option-item.correct .option-letter,
+.question-card.revealed .option-item.correct .option-text {
+  color: var(--ink);
+}
+
+.question-card.revealed .option-item.correct::after {
+  content: '✓';
+  font-family: var(--serif);
+  font-weight: 600;
+  color: var(--sage);
+  font-size: 18px;
+  margin-left: auto;
+}
+
+.question-card.revealed .option-item.selected.incorrect {
+  border-color: var(--coral);
+  background: rgba(224,123,90,0.08);
+}
+
+.question-card.revealed .option-item.selected.incorrect::after {
+  content: '✗';
+  font-family: var(--serif);
+  font-weight: 600;
+  color: var(--coral);
+  font-size: 18px;
+  margin-left: auto;
+}
+
+/* Reveal button */
+.question-actions {
+  padding: 0 28px 20px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.reveal-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background: transparent;
+  color: var(--ink-muted);
+  border: 1px solid var(--rule-strong);
+  padding: 8px 16px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reveal-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.reveal-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Rationale block */
+.rationale {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+  background: var(--bg-elevated);
+}
+
+.question-card.revealed .rationale {
+  max-height: 800px;
+}
+
+.rationale-inner {
+  padding: 24px 28px;
+  border-top: 1px solid var(--rule);
+}
+
+.rationale-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--sage);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.rationale-text {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  margin-bottom: 14px;
+  font-style: italic;
+}
+
+.rationale-text strong {
+  color: var(--ink);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.rationale-distractors {
+  margin-top: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-size: 13.5px;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+.rationale-distractors strong {
+  color: var(--coral);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  margin-right: 6px;
+}
+
+/* Score panel — sticky bottom */
+.score-panel {
+  position: sticky;
+  bottom: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  padding: 20px 28px;
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+.score-panel.hidden {
+  display: none;
+}
+
+.score-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.score-value {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.score-value.good { color: var(--sage); }
+.score-value.bad { color: var(--coral); }
+
+.score-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+.score-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.score-action-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background: transparent;
+  color: var(--ink-muted);
+  border: 1px solid var(--rule-strong);
+  padding: 8px 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.score-action-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.score-action-btn.primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.score-action-btn.primary:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-soft);
+  color: var(--bg);
+}
+
+@media (max-width: 880px) {
+  .exam-intro { grid-template-columns: 1fr; gap: 24px; }
+  .question-header { flex-direction: column; gap: 12px; }
+  .question-num { font-size: 24px; }
+  .options-list { padding: 0 20px 16px; }
+  .option-item { padding: 12px 14px; gap: 10px; }
+  .score-panel { gap: 16px; padding: 16px 20px; }
+  .score-actions { width: 100%; }
+}
+
+/* ===== EXERCISE-SPECIFIC STYLES ===== */
+.exercise-block {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  margin: 32px 0 48px;
+  overflow: hidden;
+}
+
+.exercise-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--rule);
+  background: linear-gradient(90deg, rgba(232,176,78,0.06) 0%, transparent 60%);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.exercise-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.exercise-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  padding: 4px 10px;
+  border: 1px solid rgba(232,176,78,0.3);
+  border-radius: 2px;
+  background: rgba(232,176,78,0.06);
+}
+
+.exercise-body {
+  padding: 28px;
+}
+
+.exercise-prompt {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ink);
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+.exercise-requirements {
+  list-style: none;
+  margin: 16px 0 8px;
+}
+
+.exercise-requirements li {
+  position: relative;
+  padding: 10px 0 10px 36px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-muted);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+.exercise-requirements li:last-child {
+  border-bottom: none;
+}
+
+.exercise-requirements li::before {
+  content: counter(req-counter, decimal-leading-zero);
+  counter-increment: req-counter;
+  position: absolute;
+  left: 0;
+  top: 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+
+.exercise-requirements {
+  counter-reset: req-counter;
+}
+
+.exercise-requirements code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--bg-elevated);
+  padding: 2px 7px;
+  border-radius: 3px;
+  color: var(--accent);
+  border: 1px solid var(--rule);
+}
+
+/* Solution toggle bar */
+.solution-toggle-bar {
+  border-top: 1px solid var(--rule);
+  padding: 24px 28px;
+  background: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.solution-cta {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-muted);
+  flex: 1;
+  min-width: 240px;
+}
+
+.solution-toggle-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background: var(--accent);
+  color: var(--bg);
+  border: 1px solid var(--accent);
+  padding: 12px 24px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+}
+
+.solution-toggle-btn:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-soft);
+}
+
+.solution-toggle-btn.revealed {
+  background: transparent;
+  color: var(--ink-muted);
+  border-color: var(--rule-strong);
+}
+
+.solution-toggle-btn.revealed:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Solution panel — collapsed by default */
+.solution-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.6s ease;
+}
+
+.solution-panel.open {
+  max-height: 20000px;
+}
+
+.solution-inner {
+  padding: 0 28px 32px;
+  border-top: 1px solid var(--rule);
+}
+
+.solution-banner {
+  margin: 24px 0 32px;
+  padding: 18px 24px;
+  background: linear-gradient(90deg, rgba(138,169,120,0.10) 0%, transparent 70%);
+  border-left: 3px solid var(--sage);
+  border-radius: 0 2px 2px 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.solution-banner-icon {
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--sage);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sage);
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.solution-banner-text {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15.5px;
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+
+.solution-step {
+  margin: 32px 0;
+}
+
+.solution-step-header {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.solution-step-num {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.solution-step-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.solution-step-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-left: auto;
+}
+
+.solution-step-prose {
+  font-size: 14.5px;
+  color: var(--ink-muted);
+  line-height: 1.65;
+  margin-bottom: 14px;
+  max-width: 820px;
+}
+
+.solution-step-prose code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--bg-elevated);
+  padding: 2px 7px;
+  border-radius: 3px;
+  color: var(--accent);
+  border: 1px solid var(--rule);
+}
+
+.solution-step-prose strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.code-card {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  margin: 14px 0 8px;
+  overflow: hidden;
+}
+
+.code-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--rule);
+}
+
+.code-card-path {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.code-card-lang {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+.code-card pre {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  padding: 16px 20px;
+  color: var(--ink);
+  line-height: 1.65;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.code-card pre .keyword { color: var(--coral); }
+.code-card pre .string { color: var(--sage); }
+.code-card pre .comment { color: var(--ink-faint); font-style: italic; }
+.code-card pre .accent { color: var(--accent); }
+.code-card pre .muted { color: var(--ink-muted); }
+
+.solution-takeaway {
+  margin-top: 40px;
+  padding: 28px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+
+.solution-takeaway h4 {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.takeaway-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.takeaway-item {
+  padding: 14px 16px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 2px 2px 0;
+}
+
+.takeaway-tag {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.takeaway-text {
+  font-size: 13.5px;
+  color: var(--ink-muted);
+  line-height: 1.55;
+}
+
+@media (max-width: 880px) {
+  .takeaway-grid { grid-template-columns: 1fr; }
+  .solution-step-header { flex-wrap: wrap; }
+  .solution-step-tag { margin-left: 0; width: 100%; }
+}
+</style>
+<link rel="stylesheet" href="assets/css/domain-override.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="container masthead-inner">
+    <div>
+      <div class="eyebrow">Claude Certified Architect — Foundations</div>
+      <div class="brand">Domain <em class="ampersand">III</em> · Build Exercise</div>
+    </div>
+    <nav class="toc">
+      <a class="home-btn" href="index.html">Syllabus</a>
+      <a href="#exercise">Exercise</a>
+      <a href="#solution" style="color: var(--accent);">Solution</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-meta">A field manual · Build Exercise</div>
+        <h1>Put it all <em>together.</em></h1>
+        <p class="hero-lede">One scenario. Six task statements. Configure a real Claude Code project end to end — hierarchy, path rules, a forked skill, a CI pipeline. Read the brief, attempt the structure, then reveal the worked solution.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-value">06</div>
+          <div class="stat-label">task statements covered</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">04</div>
+          <div class="stat-label">configuration artifacts</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value"><span class="pct">20</span>min</div>
+          <div class="stat-label">attempt before revealing</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXERCISE ============ -->
+<section class="task-section" id="exercise">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">∎</div>
+      <div class="section-header-text">
+        <div class="section-tag">The brief</div>
+        <h2 class="section-title">Configure the payments-service.</h2>
+        <div class="section-meaning">
+          You are the architect on a TypeScript payments service. The team has just adopted Claude Code. Your job is to configure the repository so every developer — and the CI pipeline — works against the same standards. Use what you learned across Tasks 3.1 through 3.6.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-body">
+
+      <!-- The exercise prompt -->
+      <div class="exercise-block">
+        <div class="exercise-header">
+          <div class="exercise-title">Exercise · the repository to configure</div>
+          <span class="exercise-tag">Tasks 3.1 → 3.6</span>
+        </div>
+        <div class="exercise-body">
+          <p class="exercise-prompt">Set up <code>payments-service</code> so the team's coding standards, file-type conventions, audit workflows, and PR review pipeline are all configured correctly. Wrong-by-one-directory costs you the question.</p>
+
+          <h3 class="subhead" style="font-size: 18px; margin: 24px 0 10px;">Required artifacts</h3>
+          <ol class="exercise-requirements">
+            <li><strong>A project-level <code>CLAUDE.md</code></strong> at the repo root that holds universal team standards (TypeScript strict, conventional commits, never log card data, money in cents) and severity definitions for review. It should compose smaller rule files via <code>@import</code> rather than become a monolith.</li>
+            <li><strong>Three path-scoped rule files under <code>.claude/rules/</code></strong>: one for tests (Vitest, fixtures), one for API handlers (Zod, ApiError, idempotency), one for migrations (up/down, no data backfill in schema migrations). Each loads only when matching files are being edited.</li>
+            <li><strong>A skill at <code>.claude/skills/audit-deps/SKILL.md</code></strong> that scans <code>package.json</code> files for outdated and vulnerable dependencies. The verbose audit output must <em>not</em> pollute the main session — only the summary returns.</li>
+            <li><strong>A GitHub Actions workflow</strong> that runs Claude as a PR reviewer using the non-interactive flag, emits machine-parseable JSON output, deduplicates findings against prior runs via a cache, and posts inline comments to the PR.</li>
+          </ol>
+
+          <h3 class="subhead" style="font-size: 18px; margin: 28px 0 10px;">Constraints</h3>
+          <ul class="bullets">
+            <li>Tests are co-located with source (<code>handler.ts</code> next to <code>handler.test.ts</code>) — they are spread across many directories.</li>
+            <li>The audit-deps skill must use only <code>Read</code>, <code>Glob</code>, and <code>Bash</code> tools; it should prompt the user for which directories to scan.</li>
+            <li>The CI reviewer must skip Prettier-handled style nits and report only new or still-unaddressed issues across commits.</li>
+            <li>Nothing that should be shared with teammates may live under <code>~/.claude/</code>.</li>
+          </ul>
+        </div>
+
+        <!-- THE TOGGLE -->
+        <div class="solution-toggle-bar">
+          <div class="solution-cta">Try sketching the directory layout and frontmatter on paper first. When you're ready, reveal the worked solution and compare.</div>
+          <button class="solution-toggle-btn" id="solution-btn" onclick="toggleSolution()">Reveal solution</button>
+        </div>
+
+        <!-- THE SOLUTION (hidden until clicked) -->
+        <div class="solution-panel" id="solution-panel">
+          <div class="solution-inner" id="solution">
+
+            <div class="solution-banner">
+              <span class="solution-banner-icon">✓</span>
+              <div class="solution-banner-text">Worked solution. Compare structure first, then read each artifact for the trade-off it encodes.</div>
+            </div>
+
+            <!-- Step 0: Directory layout -->
+            <div class="solution-step">
+              <div class="solution-step-header">
+                <div class="solution-step-num">00</div>
+                <div class="solution-step-title">The directory layout</div>
+                <div class="solution-step-tag">orientation</div>
+              </div>
+              <p class="solution-step-prose">Everything lives under the repo root and gets committed. Nothing under <code>~/.claude/</code> — that's personal scope and would never reach teammates.</p>
+              <div class="code-card">
+                <div class="code-card-header">
+                  <span class="code-card-path">payments-service/</span>
+                  <span class="code-card-lang">tree</span>
+                </div>
+<pre><span class="muted">payments-service/</span>
+├── <span class="accent">CLAUDE.md</span>                       <span class="comment"># project-level, in git</span>
+├── .claude/
+│   ├── rules/
+│   │   ├── <span class="accent">testing.md</span>              <span class="comment"># path-scoped: **/*.test.*</span>
+│   │   ├── <span class="accent">api-handlers.md</span>         <span class="comment"># path-scoped: src/api/**</span>
+│   │   └── <span class="accent">migrations.md</span>           <span class="comment"># path-scoped: src/db/migrations/**</span>
+│   ├── commands/
+│   │   └── review.md
+│   └── skills/
+│       └── audit-deps/
+│           └── <span class="accent">SKILL.md</span>             <span class="comment"># context: fork, allowed-tools restricted</span>
+├── .github/
+│   └── workflows/
+│       └── <span class="accent">claude-review.yml</span>        <span class="comment"># claude -p with json output</span>
+├── .ci/
+│   └── review-schema.json
+└── src/
+    ├── api/
+    ├── db/
+    └── ...</pre>
+              </div>
+            </div>
+
+            <!-- Step 1: CLAUDE.md -->
+            <div class="solution-step">
+              <div class="solution-step-header">
+                <div class="solution-step-num">01</div>
+                <div class="solution-step-title">Project-level CLAUDE.md (universal standards + imports)</div>
+                <div class="solution-step-tag">Task 3.1</div>
+              </div>
+              <p class="solution-step-prose">Universal team standards live at the top. Topic-specific rules are <code>@import</code>-ed from <code>.claude/rules/</code> so the file stays small and reviewable. Severity definitions belong here because both interactive Claude Code sessions <em>and</em> the CI reviewer load this file.</p>
+              <div class="code-card">
+                <div class="code-card-header">
+                  <span class="code-card-path">CLAUDE.md</span>
+                  <span class="code-card-lang">markdown</span>
+                </div>
+<pre><span class="accent"># Payments Service</span>
+
+<span class="accent">## Universal standards</span>
+- TypeScript strict mode. No `any` without a comment justifying it.
+- Conventional commits (feat:, fix:, chore:, docs:).
+- Never log raw card data, full PANs, CVVs, or PII. Use the redactor.
+- All money in cents (integer). Never store as float.
+
+<span class="accent">## Severity definitions for review</span>
+- <span class="keyword">Critical</span>: vulnerability, data leak, regulatory violation, broken core flow
+- <span class="keyword">High</span>: correctness bug, security hardening miss, broken tests
+- <span class="keyword">Medium</span>: maintainability, missing test coverage on new logic
+- <span class="keyword">Low</span>: nits — skip these in CI review (Prettier handles style)
+
+<span class="comment"># topic-specific rules load only when matching files are edited</span>
+@import .claude/rules/testing.md
+@import .claude/rules/api-handlers.md
+@import .claude/rules/migrations.md</pre>
+              </div>
+            </div>
+
+            <!-- Step 2: Path-scoped rules -->
+            <div class="solution-step">
+              <div class="solution-step-header">
+                <div class="solution-step-num">02</div>
+                <div class="solution-step-title">Three path-scoped rules under .claude/rules/</div>
+                <div class="solution-step-tag">Task 3.3</div>
+              </div>
+              <p class="solution-step-prose">Each file declares a <code>paths</code> glob in YAML frontmatter. Tests are scattered across the codebase, so <code>**/*.test.*</code> catches them all from one file — directory-level <code>CLAUDE.md</code> would force duplication. API handlers live under one subtree but using a path glob keeps the pattern uniform with the others. None of these load while editing unrelated code, so token usage stays lean.</p>
+
+              <div class="code-card">
+                <div class="code-card-header">
+                  <span class="code-card-path">.claude/rules/testing.md</span>
+                  <span class="code-card-lang">markdown</span>
+                </div>
+<pre><span class="keyword">---</span>
+paths: [<span class="string">"**/*.test.ts"</span>, <span class="string">"**/*.spec.ts"</span>]
+<span class="keyword">---</span>
+- Vitest. describe/it. No snapshots.
+- Reuse fixtures in tests/fixtures/ before creating new ones.
+- Mock external HTTP at the boundary (msw), not at the function level.
+- One failure mode per test. Don't conflate cases.</pre>
+              </div>
+
+              <div class="code-card">
+                <div class="code-card-header">
+                  <span class="code-card-path">.claude/rules/api-handlers.md</span>
+                  <span class="code-card-lang">markdown</span>
+                </div>
+<pre><span class="keyword">---</span>
+paths: [<span class="string">"src/api/**/*.ts"</span>]
+<span class="keyword">---</span>
+- Async/await. Wrap business logic in try/catch.
+- Validate input with Zod at the entry point.
+- Return ApiError on failure: { code, message, statusCode }. Never throw raw.
+- Idempotency keys required on POST /charges and POST /refunds.
+- Never log card data — use redactor utility.</pre>
+              </div>
+
+              <div class="code-card">
+                <div class="code-card-header">
+                  <span class="code-card-path">.claude/rules/migrations.md</span>
+                  <span class="code-card-lang">markdown</span>
+                </div>
+<pre><span class="keyword">---</span>
+paths: [<span class="string">"src/db/migrations/**/*.ts"</span>]
+<span class="keyword">---</span>
+- Every migration has up() and down() — both tested.
+- No data backfill in schema migrations. Use a separate backfill script.
+- Add new columns nullable first, backfill, then NOT NULL in a follow-up.</pre>
+              </div>
+            </div>
+
+            <!-- Step 3: The forked skill -->
+            <div class="solution-step">
+              <div class="solution-step-header">
+                <div class="solution-step-num">03</div>
+                <div class="solution-step-title">audit-deps skill with context: fork</div>
+                <div class="solution-step-tag">Task 3.2</div>
+              </div>
+              <p class="solution-step-prose">The whole point of this skill is verbose discovery — reading every <code>package.json</code> and parsing audit output. Without <code>context: fork</code>, that flood lands in the main session. With it, the subagent does the work and only the consolidated summary returns. <code>allowed-tools</code> caps the blast radius — no <code>Edit</code>, no <code>Write</code>. <code>argument-hint</code> documents what the user must supply.</p>
+              <div class="code-card">
+                <div class="code-card-header">
+                  <span class="code-card-path">.claude/skills/audit-deps/SKILL.md</span>
+                  <span class="code-card-lang">markdown</span>
+                </div>
+<pre><span class="keyword">---</span>
+name: audit-deps
+description: Scan package.json files for outdated deps and vulnerabilities; return a consolidated summary.
+<span class="accent">context: fork</span>
+<span class="accent">allowed-tools: [Read, Glob, Bash]</span>
+<span class="accent">argument-hint:</span> <span class="string">"Glob for directories to scan, e.g. 'packages/**' or '.'"</span>
+<span class="keyword">---</span>
+
+You are auditing dependencies. Steps:
+
+1. Glob for all package.json files matching the provided glob.
+2. In each directory, run `npm audit --json` and parse the result.
+3. Aggregate: outdated count, severity breakdown, and the top 10
+   critical vulns with package, version, CVE, and recommended fix.
+4. Return ONLY the aggregated summary. No per-package output.
+   No raw JSON.
+
+Output format:
+- Outdated total: &lt;n&gt;
+- Severity: critical=&lt;n&gt;, high=&lt;n&gt;, moderate=&lt;n&gt;, low=&lt;n&gt;
+- Top critical:
+  - &lt;pkg&gt;@&lt;ver&gt;  CVE-XXXX-XXXX  fix: upgrade to &lt;ver&gt;</pre>
+              </div>
+            </div>
+
+            <!-- Step 4: JSON schema -->
+            <div class="solution-step">
+              <div class="solution-step-header">
+                <div class="solution-step-num">04</div>
+                <div class="solution-step-title">JSON schema for review output</div>
+                <div class="solution-step-tag">Task 3.6</div>
+              </div>
+              <p class="solution-step-prose">The schema enforces structured output the CI script can post as inline PR comments. Each finding carries the file, line, severity, category, message, and an optional suggestion. Without the schema, parsing variable text is brittle.</p>
+              <div class="code-card">
+                <div class="code-card-header">
+                  <span class="code-card-path">.ci/review-schema.json</span>
+                  <span class="code-card-lang">json</span>
+                </div>
+<pre>{
+  <span class="string">"type"</span>: <span class="string">"object"</span>,
+  <span class="string">"required"</span>: [<span class="string">"findings"</span>],
+  <span class="string">"properties"</span>: {
+    <span class="string">"findings"</span>: {
+      <span class="string">"type"</span>: <span class="string">"array"</span>,
+      <span class="string">"items"</span>: {
+        <span class="string">"type"</span>: <span class="string">"object"</span>,
+        <span class="string">"required"</span>: [<span class="string">"file"</span>, <span class="string">"line"</span>, <span class="string">"severity"</span>, <span class="string">"category"</span>, <span class="string">"message"</span>],
+        <span class="string">"properties"</span>: {
+          <span class="string">"file"</span>:       { <span class="string">"type"</span>: <span class="string">"string"</span> },
+          <span class="string">"line"</span>:       { <span class="string">"type"</span>: <span class="string">"integer"</span> },
+          <span class="string">"severity"</span>:   { <span class="string">"enum"</span>: [<span class="string">"critical"</span>, <span class="string">"high"</span>, <span class="string">"medium"</span>, <span class="string">"low"</span>] },
+          <span class="string">"category"</span>:   { <span class="string">"enum"</span>: [<span class="string">"security"</span>, <span class="string">"correctness"</span>, <span class="string">"perf"</span>, <span class="string">"tests"</span>, <span class="string">"maintainability"</span>] },
+          <span class="string">"message"</span>:    { <span class="string">"type"</span>: <span class="string">"string"</span> },
+          <span class="string">"suggestion"</span>: { <span class="string">"type"</span>: <span class="string">"string"</span> }
+        }
+      }
+    }
+  }
+}</pre>
+              </div>
+            </div>
+
+            <!-- Step 5: GitHub Actions -->
+            <div class="solution-step">
+              <div class="solution-step-header">
+                <div class="solution-step-num">05</div>
+                <div class="solution-step-title">CI workflow with -p, JSON output, and prior-findings cache</div>
+                <div class="solution-step-tag">Task 3.6</div>
+              </div>
+              <p class="solution-step-prose">The four levers all show up here: <code>-p</code> stops the job from hanging waiting for stdin; <code>--output-format json</code> + <code>--json-schema</code> give parseable output; the cache + the explicit <em>"report only new or still-unaddressed"</em> instruction prevents duplicate review comments across commits; and the workflow runs in a fresh session every time, so it's an independent reviewer rather than the generator reviewing its own work.</p>
+              <div class="code-card">
+                <div class="code-card-header">
+                  <span class="code-card-path">.github/workflows/claude-review.yml</span>
+                  <span class="code-card-lang">yaml</span>
+                </div>
+<pre><span class="accent">name:</span> Claude PR Review
+<span class="accent">on:</span>
+  pull_request:
+    types: [opened, synchronize]
+
+<span class="accent">jobs:</span>
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - <span class="accent">name:</span> Restore prior findings
+        uses: actions/cache@v4
+        with:
+          path: .ci/prior-findings.json
+          key: claude-findings-${{ github.event.pull_request.number }}
+
+      - <span class="accent">name:</span> Run Claude review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          PRIOR=$(cat .ci/prior-findings.json 2>/dev/null || echo <span class="string">"[]"</span>)
+          DIFF=$(git diff origin/${{ github.base_ref }}...HEAD \
+                 -- <span class="string">':!**/*.lock'</span> <span class="string">':!**/dist/**'</span>)
+
+          claude <span class="keyword">-p</span> <span class="string">"$(cat &lt;&lt;EOF
+          Review this diff per CLAUDE.md severity rules.
+          Skip 'low' severity (style) — Prettier handles those.
+
+          Prior findings already reported on this PR:
+          $PRIOR
+
+          Report ONLY new or still-unaddressed issues.
+          Output must conform to the provided schema.
+
+          --- DIFF ---
+          $DIFF
+          EOF
+          )"</span> \
+            <span class="keyword">--output-format json</span> \
+            <span class="keyword">--json-schema</span> .ci/review-schema.json \
+            > review.json
+
+      - <span class="accent">name:</span> Post inline PR comments
+        run: ./scripts/post-pr-comments.sh review.json
+
+      - <span class="accent">name:</span> Persist findings for next run
+        run: cp review.json .ci/prior-findings.json</pre>
+              </div>
+            </div>
+
+            <!-- Takeaways -->
+            <div class="solution-takeaway">
+              <h4>What each artifact encoded</h4>
+              <div class="takeaway-grid">
+                <div class="takeaway-item">
+                  <div class="takeaway-tag">Task 3.1 · hierarchy</div>
+                  <div class="takeaway-text">Project-level CLAUDE.md is the team source of truth, in git, with <code>@import</code> keeping it modular.</div>
+                </div>
+                <div class="takeaway-item">
+                  <div class="takeaway-tag">Task 3.2 · skills</div>
+                  <div class="takeaway-text"><code>context: fork</code> isolates verbose audit output; <code>allowed-tools</code> caps blast radius.</div>
+                </div>
+                <div class="takeaway-item">
+                  <div class="takeaway-tag">Task 3.3 · path rules</div>
+                  <div class="takeaway-text">Three concerns, three globs, none load when irrelevant. Tokens stay lean.</div>
+                </div>
+                <div class="takeaway-item">
+                  <div class="takeaway-tag">Task 3.4 · plan mode</div>
+                  <div class="takeaway-text">Not configured here, but this scaffolding is exactly what a plan-mode session reads first to design changes.</div>
+                </div>
+                <div class="takeaway-item">
+                  <div class="takeaway-tag">Task 3.5 · refinement</div>
+                  <div class="takeaway-text">Severity definitions in CLAUDE.md act as the concrete examples that drive consistent reviewer output.</div>
+                </div>
+                <div class="takeaway-item">
+                  <div class="takeaway-tag">Task 3.6 · CI/CD</div>
+                  <div class="takeaway-text"><code>-p</code> for non-interactive · JSON schema for parsing · prior-findings cache for deduplication.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL PULL QUOTE ============ -->
+<div class="pull-quote">
+  <div class="container">
+    <div class="pull-quote-text">The structure <em>is</em> the lesson. Adapt the contents to any service — the scaffolding stays.</div>
+    <div class="pull-quote-attr">— Domain III · build exercise</div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">A field manual for <em>practitioners</em>, not test-takers.</div>
+        <div class="footer-text">This exercise puts every Domain III task statement into one repository configuration. Drop this skeleton into any service; the trade-offs travel with it.</div>
+      </div>
+      <div class="footer-col">
+        <h6>Companion guide</h6>
+        <ul>
+          <li>Domain III · 6 task statements</li>
+          <li>3.1 — CLAUDE.md hierarchy</li>
+          <li>3.2 — Commands &amp; skills</li>
+          <li>3.3 — Path-specific rules</li>
+          <li>3.4 — Plan mode vs direct</li>
+          <li>3.5 — Iterative refinement</li>
+          <li>3.6 — CI/CD integration</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h6>Mental shortcuts</h6>
+        <ul>
+          <li>Hierarchy → scope</li>
+          <li>Globs → file types</li>
+          <li>Plan mode → complexity</li>
+          <li>Examples → convergence</li>
+          <li><code>-p</code> → non-interactive</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-meta">
+      <div>Volume Three · Build Exercise</div>
+      <div>The Architect's Companion</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleSolution() {
+  const panel = document.getElementById('solution-panel');
+  const btn = document.getElementById('solution-btn');
+  const isOpen = panel.classList.toggle('open');
+
+  if (isOpen) {
+    btn.textContent = 'Hide solution';
+    btn.classList.add('revealed');
+    // Smooth scroll to the solution after the panel opens
+    setTimeout(() => {
+      document.getElementById('solution').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 300);
+  } else {
+    btn.textContent = 'Reveal solution';
+    btn.classList.remove('revealed');
+  }
+}
+
+// Smooth scroll TOC
+document.querySelectorAll('nav.toc a').forEach(link => {
+  link.addEventListener('click', (e) => {
+    const href = link.getAttribute('href');
+    if (href === '#solution') {
+      // If solution isn't open yet, open it first
+      const panel = document.getElementById('solution-panel');
+      if (!panel.classList.contains('open')) {
+        e.preventDefault();
+        toggleSolution();
+        return;
+      }
+    }
+    e.preventDefault();
+    const target = document.querySelector(href);
+    if (target) {
+      window.scrollTo({
+        top: target.offsetTop - 100,
+        behavior: 'smooth'
+      });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

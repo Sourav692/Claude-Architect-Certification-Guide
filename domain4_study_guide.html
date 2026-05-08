@@ -1235,7 +1235,6 @@ footer {
         <a href="#t44">4.4 Validate</a>
         <a href="#t45">4.5 Batch</a>
         <a href="#t46">4.6 Multi-Pass</a>
-        <a href="#mock-exam" style="color: var(--accent);">Mock Exam</a>
       </nav>
     </div>
   </div>
@@ -1535,49 +1534,7 @@ For each finding return:
       </div>
 
       <!-- CHECK QUESTIONS 4.1 -->
-      <div class="qbank-group-header" style="margin-top:48px;">
-        <div class="qbank-group-num">4.1</div>
-        <div class="qbank-group-title">Check questions</div>
-        <div class="qbank-group-tag">2 questions</div>
-      </div>
-      <div class="qbank">
-
-        <div class="question-card check-q" id="cq-1">
-          <div class="question-header">
-            <div class="question-num check"><span class="q-prefix">Check Q1</span>01</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 4.1</span><span>FP trust</span></div>
-              <p class="question-text">Your security review agent has 70% precision overall, but the "code style" category has 35% precision and developers complain it's noisy. A teammate suggests adding "only flag style issues you're highly confident about." Will this fix it? What's the right move?</p>
-            </div>
           </div>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-1')">Reveal answer</button></div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Model answer</div>
-              <p class="rationale-text"><strong>No.</strong> "High confidence" is vague — the model has no calibrated notion of confidence. Two real fixes: (a) <strong>temporarily disable</strong> the style category to restore developer trust in the accurate categories, then (b) rewrite style criteria as a categorical inclusion/exclusion list (e.g., flag only naming that violates the documented convention; skip everything else).</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="question-card check-q" id="cq-2">
-          <div class="question-header">
-            <div class="question-num check"><span class="q-prefix">Check Q2</span>02</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 4.1</span><span>severity drift</span></div>
-              <p class="question-text">You're classifying support tickets as Critical/High/Medium/Low. The same ticket gets different severities on re-runs. What single change fixes this?</p>
-            </div>
-          </div>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-2')">Reveal answer</button></div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Model answer</div>
-              <p class="rationale-text"><strong>Anchor each severity level to a concrete example ticket.</strong> The model needs reference points, not adjectives. Without anchors, it picks severity by vibes — and the same ticket gets a different label each time. Adjective-only severity scales never produce stable classification.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
   </div>
 </section>
 
@@ -1775,49 +1732,7 @@ Now extract from this record:
       </div>
 
       <!-- CHECK QUESTIONS 4.2 -->
-      <div class="qbank-group-header" style="margin-top:48px;">
-        <div class="qbank-group-num">4.2</div>
-        <div class="qbank-group-title">Check questions</div>
-        <div class="qbank-group-tag">2 questions</div>
-      </div>
-      <div class="qbank">
-
-        <div class="question-card check-q" id="cq-3">
-          <div class="question-header">
-            <div class="question-num check"><span class="q-prefix">Check Q3</span>03</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 4.2</span><span>format variation</span></div>
-              <p class="question-text">Your invoice extractor handles standard PDFs perfectly but drops <code>tax_amount</code> as null when tax appears as <code>"VAT @ 20%"</code> instead of a dollar figure. Schema is already specified. What do you add?</p>
-            </div>
           </div>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-3')">Reveal answer</button></div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Model answer</div>
-              <p class="rationale-text">Add <strong>1-2 few-shot examples</strong> showing extraction from VAT-style invoices, with reasoning that explicitly converts the percentage form into a dollar amount. Schema enforces format; few-shot teaches judgment on format variation. The schema alone can't tell the model how to do the conversion.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="question-card check-q" id="cq-4">
-          <div class="question-header">
-            <div class="question-num check"><span class="q-prefix">Check Q4</span>04</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 4.2</span><span>quantity</span></div>
-              <p class="question-text">You're choosing between (a) 12 few-shot examples covering every variation you've seen, or (b) 3 examples carefully chosen to illustrate ambiguous cases. Which performs better and why?</p>
-            </div>
-          </div>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-4')">Reveal answer</button></div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Model answer</div>
-              <p class="rationale-text"><strong>(b).</strong> Three well-chosen examples teach a generalizable judgment pattern. Twelve examples eat the context window, increase cost, and often hurt by overfitting the model to surface patterns in your examples. Past 4, marginal example value drops sharply.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
   </div>
 </section>
 
@@ -2064,49 +1979,7 @@ extracted = response.content[<span class="num">0</span>].input</pre>
       </div>
 
       <!-- CHECK QUESTIONS 4.3 -->
-      <div class="qbank-group-header" style="margin-top:48px;">
-        <div class="qbank-group-num">4.3</div>
-        <div class="qbank-group-title">Check questions</div>
-        <div class="qbank-group-tag">2 questions</div>
-      </div>
-      <div class="qbank">
-
-        <div class="question-card check-q" id="cq-5">
-          <div class="question-header">
-            <div class="question-num check"><span class="q-prefix">Check Q5</span>05</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 4.3</span><span>tool_choice</span></div>
-              <p class="question-text">You have three extraction tools (<code>invoice</code>, <code>receipt</code>, <code>contract</code>) and the document type is unknown until Claude reads it. You need guaranteed structured output. Which <code>tool_choice</code>?</p>
-            </div>
           </div>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-5')">Reveal answer</button></div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Model answer</div>
-              <p class="rationale-text"><code>tool_choice={"type": "any"}</code>. It forces Claude to call one of the three tools (so output is structured) while letting Claude pick based on the document. <code>"auto"</code> allows text responses; forced selection on a specific tool would lock you to one extractor regardless of doc type.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="question-card check-q" id="cq-6">
-          <div class="question-header">
-            <div class="question-num check"><span class="q-prefix">Check Q6</span>06</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 4.3</span><span>fabrication</span></div>
-              <p class="question-text">Your contract extractor returns <code>governing_law: "California"</code> for every contract — including ones where the clause is missing. Schema marks the field as required, type string. What's wrong and how do you fix it?</p>
-            </div>
-          </div>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-6')">Reveal answer</button></div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Model answer</div>
-              <p class="rationale-text">The schema forces fabrication. Required + non-nullable means the model must produce <em>some</em> string, so it picks a plausible default. Fix: make <code>governing_law</code> nullable (<code>"type": ["string", "null"]</code>) so the model can return <code>null</code> when the clause is absent. Optionally add an <code>"unclear"</code> enum if you want to distinguish "missing" from "ambiguous."</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
   </div>
 </section>
 
@@ -2351,49 +2224,7 @@ extracted = response.content[<span class="num">0</span>].input</pre>
       </div>
 
       <!-- CHECK QUESTIONS 4.4 -->
-      <div class="qbank-group-header" style="margin-top:48px;">
-        <div class="qbank-group-num">4.4</div>
-        <div class="qbank-group-title">Check questions</div>
-        <div class="qbank-group-tag">2 questions</div>
-      </div>
-      <div class="qbank">
-
-        <div class="question-card check-q" id="cq-7">
-          <div class="question-header">
-            <div class="question-num check"><span class="q-prefix">Check Q7</span>07</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 4.4</span><span>retry boundary</span></div>
-              <p class="question-text">Your contract extractor fails validation 8% of the time because <code>effective_date</code> doesn't parse as ISO 8601. Retries succeed on 95% of those. The remaining 5% are contracts where the date is genuinely not stated. What's the right architecture?</p>
-            </div>
           </div>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-7')">Reveal answer</button></div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Model answer</div>
-              <p class="rationale-text">Bounded retry with error feedback for the format issues, then route the remaining 5% to human review. Don't keep retrying — the data isn't there. Architecture: try → validate → retry-with-error → after 2-3 retries, mark the field null with a <code>requires_human_review</code> flag.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="question-card check-q" id="cq-8">
-          <div class="question-header">
-            <div class="question-num check"><span class="q-prefix">Check Q8</span>08</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 4.4</span><span>FP debugging</span></div>
-              <p class="question-text">Why is a <code>detected_pattern</code> field on findings more valuable than a <code>confidence_score</code> for debugging false positives?</p>
-            </div>
-          </div>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-8')">Reveal answer</button></div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Model answer</div>
-              <p class="rationale-text"><code>detected_pattern</code> lets you cluster dismissed findings: <em>"all dismissed flags fire on Logger.debug() calls"</em> → concrete prompt fix. <code>confidence_score</code> just tells you the model felt unsure — not what category of input triggered the failure. Pattern names enable systematic debugging; confidence scores don't.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
   </div>
 </section>
 
@@ -2608,49 +2439,7 @@ results, failures = {}, []
       </div>
 
       <!-- CHECK QUESTIONS 4.5 -->
-      <div class="qbank-group-header" style="margin-top:48px;">
-        <div class="qbank-group-num">4.5</div>
-        <div class="qbank-group-title">Check questions</div>
-        <div class="qbank-group-tag">2 questions</div>
-      </div>
-      <div class="qbank">
-
-        <div class="question-card check-q" id="cq-9">
-          <div class="question-header">
-            <div class="question-num check"><span class="q-prefix">Check Q9</span>09</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 4.5</span><span>API selection</span></div>
-              <p class="question-text">You have two workflows: (a) PR-blocking automated code review, (b) overnight tech-debt scan. Manager says: "Switch both to batch for the 50% savings." What do you tell them?</p>
-            </div>
           </div>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-9')">Reveal answer</button></div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Model answer</div>
-              <p class="rationale-text">Move only the overnight scan to batch — that's a non-blocking, latency-tolerant workload, perfect fit. Keep PR review on the synchronous API: developers wait for the result, and the 24-hour batch window destroys the workflow. Match each workflow to its appropriate API.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="question-card check-q" id="cq-10">
-          <div class="question-header">
-            <div class="question-num check"><span class="q-prefix">Check Q10</span>10</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 4.5</span><span>failure handling</span></div>
-              <p class="question-text">Your nightly batch of 5,000 invoices had 47 failures, all due to documents over the context limit. Fix it before tomorrow night.</p>
-            </div>
-          </div>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-10')">Reveal answer</button></div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Model answer</div>
-              <p class="rationale-text">Identify the 47 failures by <code>custom_id</code>, chunk those documents (split into sections that fit context, extract each, merge), resubmit only those 47 as a fresh batch. Don't re-run all 5,000. Optionally add a pre-flight token-count check so oversized docs auto-chunk before the next nightly run.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
   </div>
 </section>
 
@@ -2874,49 +2663,7 @@ independent = client.messages.create(
       </div>
 
       <!-- CHECK QUESTIONS 4.6 -->
-      <div class="qbank-group-header" style="margin-top:48px;">
-        <div class="qbank-group-num">4.6</div>
-        <div class="qbank-group-title">Check questions</div>
-        <div class="qbank-group-tag">2 questions</div>
-      </div>
-      <div class="qbank">
-
-        <div class="question-card check-q" id="cq-11">
-          <div class="question-header">
-            <div class="question-num check"><span class="q-prefix">Check Q11</span>11</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 4.6</span><span>self-review</span></div>
-              <p class="question-text">Your code-generation agent produces a function. You add an instruction at the end of the same prompt: "Now review your work for bugs." Why does this rarely catch real issues?</p>
-            </div>
           </div>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-11')">Reveal answer</button></div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Model answer</div>
-              <p class="rationale-text">The model retains its reasoning context from generation. It already has a committed mental model of what the code does and why — it's biased toward confirming, not challenging, that model. An <strong>independent instance</strong> with no prior context evaluates the artifact fresh and is far more likely to surface subtle issues.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="question-card check-q" id="cq-12">
-          <div class="question-header">
-            <div class="question-num check"><span class="q-prefix">Check Q12</span>12</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 4.6</span><span>attention dilution</span></div>
-              <p class="question-text">A 14-file PR review gives detailed feedback on 4 files, superficial on 10, and contradicts itself across files. Two suggestions: (a) upgrade to 1M-token context, (b) split into per-file passes plus an integration pass. Which fixes it?</p>
-            </div>
-          </div>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealCheck('cq-12')">Reveal answer</button></div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Model answer</div>
-              <p class="rationale-text"><strong>(b).</strong> Root cause = attention dilution across files in a single pass — a structural problem with how attention allocates, not a context-size problem. A bigger context window still gives every file diluted attention. Per-file passes give each file focused attention; the integration pass handles cross-file concerns separately.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
   </div>
 </section>
 
@@ -2928,34 +2675,6 @@ independent = client.messages.create(
         Criteria for <em>what</em>. Few-shot for <em>judgment</em>. Schemas for <em>format</em>. Validators for <em>semantics</em>. Batch for <em>scale</em>. Independent passes for <em>truth</em>.
       </div>
       <div class="pull-quote-attr">— The six levers of Domain IV</div>
-    </div>
-  </div>
-</section>
-
-<!-- =================== MOCK EXAM SECTION =================== -->
-<!-- =================== MOCK EXAM CTA =================== -->
-<section class="task-section" id="mock-exam">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-num">&Sigma;</div>
-      <div class="section-header-text">
-        <div class="section-tag">Mock exam &middot; graded</div>
-        <h2 class="section-title">Sit the test.</h2>
-        <div class="section-meaning">
-          8 scenario-based questions in true exam format. Aim for 7/8. The mock exam now runs as its own standalone page so the score panel and exam mode have your full attention.
-        </div>
-      </div>
-    </div>
-
-    <div class="section-body">
-      <a class="mock-cta" href="domain4_mock_exam.html">
-        <div class="mock-cta-meta">
-          <span class="mock-cta-tag">Mock Exam</span>
-          <span class="mock-cta-eyebrow">Domain 4 &middot; 8 questions &middot; pass 7/8</span>
-        </div>
-        <div class="mock-cta-title">Open the mock exam &rarr;</div>
-        <div class="mock-cta-lede">Launches a focused exam page. Use it untimed for revision, or hit &ldquo;Start exam mode&rdquo; to score across the whole bank.</div>
-      </a>
     </div>
   </div>
 </section>

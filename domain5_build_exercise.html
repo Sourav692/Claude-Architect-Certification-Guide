@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Domain 5 — Build Exercise: Multi-Agent Coordinator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0d0b;
+  --bg-elevated: #16140f;
+  --bg-card: #1a1812;
+  --ink: #f4ede0;
+  --ink-muted: #a89e8b;
+  --ink-faint: #6b6354;
+  --rule: #2a2620;
+  --rule-strong: #3a3429;
+  --accent: #e8b04e;
+  --accent-soft: #c98f3f;
+  --teal: #5fb7a5;
+  --coral: #e07b5a;
+  --rose: #c66a7a;
+  --sage: #8aa978;
+  --serif: 'Fraunces', Georgia, serif;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --sans: 'Inter', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(232,176,78,0.015) 1px, transparent 0);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 1;
+}
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 32px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== HEADER ===== */
+header.masthead {
+  border-bottom: 1px solid var(--rule);
+  padding: 32px 0;
+  position: sticky;
+  top: 0;
+  background: rgba(14, 13, 11, 0.92);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+}
+.masthead-inner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.brand {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  font-style: italic;
+}
+.brand .ampersand { color: var(--accent); font-style: italic; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+nav.toc {
+  display: flex;
+  gap: 24px;
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+nav.toc a {
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+}
+nav.toc a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ===== HERO ===== */
+.hero {
+  padding: 100px 0 60px;
+  border-bottom: 1px solid var(--rule);
+}
+.hero-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.hero-meta::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule-strong);
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(40px, 6vw, 78px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 28px;
+}
+.hero h1 em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--accent);
+}
+.hero-lede {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 720px;
+  font-style: italic;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 48px;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--rule-strong);
+  flex-wrap: wrap;
+}
+.stat { display: flex; flex-direction: column; gap: 4px; }
+.stat-value {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+/* ===== SECTION ===== */
+section.exercise-section {
+  padding: 64px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.section-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-bottom: 14px;
+}
+h2.section-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin-bottom: 20px;
+}
+h2.section-title em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 500;
+}
+.section-lede {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+  max-width: 760px;
+  padding: 14px 22px;
+  border-left: 3px solid var(--accent);
+  background: linear-gradient(90deg, rgba(232,176,78,0.04) 0%, transparent 100%);
+  margin-bottom: 32px;
+}
+h3.subhead {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  margin: 32px 0 16px;
+  color: var(--ink);
+}
+h4.minor {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin: 24px 0 12px;
+  font-weight: 600;
+}
+p {
+  margin-bottom: 14px;
+  color: var(--ink-muted);
+  font-size: 15.5px;
+  line-height: 1.7;
+  max-width: 800px;
+}
+p strong { color: var(--ink); font-weight: 600; }
+p code, li code, td code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: var(--bg-elevated);
+  padding: 2px 7px;
+  border-radius: 3px;
+  color: var(--accent);
+  border: 1px solid var(--rule);
+}
+ul.bullets {
+  list-style: none;
+  margin-bottom: 20px;
+  max-width: 820px;
+}
+ul.bullets li {
+  position: relative;
+  padding-left: 26px;
+  margin-bottom: 12px;
+  color: var(--ink-muted);
+  line-height: 1.65;
+}
+ul.bullets li::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent);
+  font-size: 10px;
+  line-height: 28px;
+}
+
+/* ===== CODE BLOCK ===== */
+.code-block {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  padding: 20px;
+  border-radius: 4px;
+  margin: 18px 0;
+  color: var(--ink);
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre;
+}
+.code-block .keyword { color: var(--coral); }
+.code-block .string  { color: var(--sage); }
+.code-block .comment { color: var(--ink-faint); font-style: italic; }
+.code-block .accent  { color: var(--accent); }
+.code-block .builtin { color: var(--teal); }
+
+.code-header {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  background: var(--bg-elevated);
+  padding: 10px 16px;
+  border: 1px solid var(--rule);
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.code-header + .code-block {
+  border-radius: 0 0 4px 4px;
+  margin-top: 0;
+}
+.code-tag {
+  background: rgba(232,176,78,0.08);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 2px;
+  border: 1px solid rgba(232,176,78,0.2);
+  letter-spacing: 0.1em;
+}
+
+/* ===== INSTRUCTIONS BOX ===== */
+.instructions-box {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--teal);
+  padding: 24px 28px;
+  border-radius: 4px;
+  margin: 24px 0;
+}
+.instructions-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--teal);
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.instructions-box h4 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 22px;
+  margin-bottom: 14px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.instructions-box ol {
+  padding-left: 20px;
+  color: var(--ink-muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.instructions-box ol li { margin-bottom: 10px; }
+.instructions-box ol li::marker { color: var(--accent); font-weight: 600; }
+.instructions-box ol li strong { color: var(--ink); }
+
+/* ===== SOLUTION REVEAL BUTTON ===== */
+.solution-cta {
+  margin: 40px 0 24px;
+  text-align: center;
+  padding: 32px;
+  background: var(--bg-card);
+  border: 1px dashed var(--rule-strong);
+  border-radius: 4px;
+}
+.solution-cta-text {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ink-muted);
+  margin-bottom: 18px;
+  line-height: 1.5;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.solution-cta-text em { color: var(--accent); font-style: italic; }
+.solution-btn {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  padding: 14px 32px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.solution-btn:hover {
+  background: var(--accent-soft);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(232,176,78,0.25);
+}
+.solution-btn:disabled {
+  background: var(--rule-strong);
+  color: var(--ink-faint);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ===== SOLUTION CONTAINER ===== */
+.solution-container {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.6s ease;
+}
+.solution-container.revealed {
+  max-height: 30000px;
+}
+.solution-container .solution-inner {
+  opacity: 0;
+  transition: opacity 0.4s ease 0.2s;
+  padding-top: 24px;
+}
+.solution-container.revealed .solution-inner {
+  opacity: 1;
+}
+
+.solution-banner {
+  background: linear-gradient(90deg, rgba(138,169,120,0.12) 0%, transparent 60%);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--sage);
+  padding: 20px 28px;
+  border-radius: 4px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.check-icon {
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--sage);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sage);
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 15px;
+}
+.solution-banner h3 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.solution-banner-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--sage);
+  margin-left: auto;
+}
+
+/* ===== FLAW CARDS ===== */
+.flaw-card {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  margin: 24px 0;
+  overflow: hidden;
+}
+.flaw-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 22px 28px;
+  border-bottom: 1px solid var(--rule);
+  background: linear-gradient(90deg, rgba(224,123,90,0.05) 0%, transparent 60%);
+}
+.flaw-num {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 1;
+  color: var(--coral);
+  letter-spacing: -0.03em;
+  min-width: 56px;
+}
+.flaw-headline {
+  flex: 1;
+}
+.flaw-task {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--coral);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.flaw-title {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+.flaw-body {
+  padding: 24px 28px;
+}
+.flaw-body p { font-size: 15px; }
+.flaw-fix-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--sage);
+  margin: 18px 0 8px;
+  font-weight: 600;
+}
+.flaw-fix {
+  font-family: var(--sans);
+  font-size: 14.5px;
+  color: var(--ink-muted);
+  background: rgba(138,169,120,0.06);
+  padding: 14px 18px;
+  border-left: 2px solid var(--sage);
+  border-radius: 0 3px 3px 0;
+  line-height: 1.65;
+}
+.flaw-fix strong { color: var(--ink); }
+
+/* ===== BONUS FLAW ===== */
+.bonus-card {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--rose);
+  padding: 24px 28px;
+  border-radius: 4px;
+  margin: 32px 0;
+}
+.bonus-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--rose);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.bonus-card h4 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 19px;
+  color: var(--ink);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+/* ===== MAPPING TABLE ===== */
+.elegant-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 14.5px;
+}
+.elegant-table th {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rule-strong);
+  font-weight: 600;
+}
+.elegant-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-muted);
+  vertical-align: top;
+}
+.elegant-table td:first-child {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--coral);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.elegant-table tbody tr:hover { background: rgba(232,176,78,0.03); }
+
+/* ===== SUMMARY BLOCK ===== */
+.summary-block {
+  margin: 40px 0;
+  padding: 28px 32px;
+  background: linear-gradient(135deg, rgba(232,176,78,0.06) 0%, transparent 60%);
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+}
+.summary-block h4 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  padding: 60px 0 40px;
+  border-top: 1px solid var(--rule-strong);
+  text-align: center;
+}
+.footer-text {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-muted);
+  max-width: 600px;
+  margin: 0 auto 16px;
+  line-height: 1.6;
+}
+.footer-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+  margin-top: 24px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 880px) {
+  .hero-stats { gap: 24px; }
+  nav.toc { display: none; }
+  .flaw-header { flex-direction: column; gap: 8px; }
+  .solution-banner { flex-wrap: wrap; }
+  .solution-banner-sub { margin-left: 0; }
+}
+</style>
+<link rel="stylesheet" href="assets/css/domain-override.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="container masthead-inner">
+    <div>
+      <div class="eyebrow">Claude Certified Architect — Foundations</div>
+      <div class="brand">Domain <em class="ampersand">V</em> · Build Exercise</div>
+    </div>
+    <nav class="toc">
+      <a class="home-btn" href="index.html">Syllabus</a>
+      <a href="#scenario">Scenario</a>
+      <a href="#scaffold">Scaffold</a>
+      <a href="#instructions">Your Task</a>
+      <a href="#solution-section" style="color: var(--accent);">Solution</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-meta">Practical exercise · Domain V</div>
+    <h1>The flawed <em>multi-agent</em><br>coordinator.</h1>
+    <p class="hero-lede">Five deliberate flaws hide in a research coordinator that delegates to web search and docs subagents. Each flaw maps to one of the six task statements you've learned. Find them before revealing the solution.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-value">5</div>
+        <div class="stat-label">Deliberate flaws</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">+1</div>
+        <div class="stat-label">Bonus flaw</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">4</div>
+        <div class="stat-label">Tasks tested</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">~25</div>
+        <div class="stat-label">Minutes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCENARIO ============ -->
+<section class="exercise-section" id="scenario">
+  <div class="container">
+    <div class="section-tag">The setup</div>
+    <h2 class="section-title">A research <em>coordinator</em> that almost works.</h2>
+    <div class="section-lede">
+      You're inheriting this scaffold from a colleague. They say it "mostly works in the happy path." Production told a different story — reports come back occasionally with missing sources, occasionally with phantom sources, and occasionally with two concurrent sessions that step on each other's case facts. Your job: find every flaw before reading the solution.
+    </div>
+
+    <h3 class="subhead">What this code is supposed to do</h3>
+    <ul class="bullets">
+      <li>Coordinator receives a research topic from a user</li>
+      <li>Delegates in parallel to a <code>web_search</code> subagent and a <code>docs</code> subagent</li>
+      <li>Each subagent returns either findings or a structured error</li>
+      <li>Coordinator synthesizes a final report — well-supported claims, contested claims, coverage gaps</li>
+      <li>Persistent case facts (the topic, query ID) survive across turns</li>
+    </ul>
+
+    <h3 class="subhead">What touches each task statement</h3>
+    <table class="elegant-table">
+      <thead>
+        <tr><th>Task</th><th>Where it appears</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>5.1</td><td>Persistent case facts block, system prompt construction</td></tr>
+        <tr><td>5.3</td><td>Subagent error handling, retry logic, empty-result distinction</td></tr>
+        <tr><td>5.4</td><td>Subagent delegation pattern (verbose work isolated)</td></tr>
+        <tr><td>5.6</td><td>Finding schema, conflict vs trend detection, synthesis</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ SCAFFOLD CODE ============ -->
+<section class="exercise-section" id="scaffold">
+  <div class="container">
+    <div class="section-tag">The scaffold</div>
+    <h2 class="section-title">Read carefully. Find the <em>five</em>.</h2>
+    <p>Skim once for shape. Then read each function with the relevant task statement in mind. Look at what the comments <em>claim</em> the code does versus what it actually does. The flaws aren't syntax errors — they're correctness issues that produce wrong reports in production.</p>
+
+    <div class="code-header">
+      <span>research_coordinator.py</span>
+      <span class="code-tag">Scaffold · Contains 5 deliberate flaws</span>
+    </div>
+<div class="code-block"><span class="keyword">import</span> asyncio
+<span class="keyword">from</span> dataclasses <span class="keyword">import</span> dataclass, field
+<span class="keyword">from</span> typing <span class="keyword">import</span> Optional
+
+<span class="comment"># ---------------------------------------------------------------------------
+# Persistent case facts — Task 5.1
+# ---------------------------------------------------------------------------</span>
+case_facts = {
+    <span class="string">"topic"</span>: <span class="keyword">None</span>,
+    <span class="string">"query_id"</span>: <span class="keyword">None</span>,
+    <span class="string">"started_at"</span>: <span class="keyword">None</span>,
+}
+
+<span class="keyword">def</span> <span class="accent">build_system_prompt</span>():
+    <span class="keyword">return</span> <span class="string">f"""You are a research coordinator.
+
+&lt;case_facts&gt;
+topic: {case_facts['topic']}
+query_id: {case_facts['query_id']}
+started_at: {case_facts['started_at']}
+&lt;/case_facts&gt;
+
+Delegate to web_search and docs subagents. Synthesize findings.
+"""</span>
+
+<span class="comment"># ---------------------------------------------------------------------------
+# Finding schema — Task 5.6
+# ---------------------------------------------------------------------------</span>
+<span class="builtin">@dataclass</span>
+<span class="keyword">class</span> <span class="accent">Finding</span>:
+    claim: str
+    source_name: str
+    source_url: str
+    publication_date: str
+    evidence_excerpt: str
+
+<span class="builtin">@dataclass</span>
+<span class="keyword">class</span> <span class="accent">SubagentResult</span>:
+    status: str            <span class="comment"># "success" | "error"</span>
+    findings: list = field(default_factory=list)
+    error_type: Optional[str] = <span class="keyword">None</span>
+    is_retryable: <span class="builtin">bool</span> = <span class="keyword">False</span>
+    attempted_query: Optional[str] = <span class="keyword">None</span>
+
+<span class="comment"># ---------------------------------------------------------------------------
+# Subagents — Task 5.3, 5.4
+# ---------------------------------------------------------------------------</span>
+<span class="keyword">async def</span> <span class="accent">web_search_subagent</span>(query: str) -> SubagentResult:
+    <span class="keyword">try</span>:
+        results = <span class="keyword">await</span> asyncio.wait_for(
+            _call_search_api(query), timeout=<span class="accent">5.0</span>
+        )
+        findings = [
+            Finding(
+                claim=r[<span class="string">"claim"</span>],
+                source_name=r[<span class="string">"source"</span>],
+                source_url=r[<span class="string">"url"</span>],
+                publication_date=r[<span class="string">"date"</span>],
+                evidence_excerpt=r[<span class="string">"excerpt"</span>],
+            )
+            <span class="keyword">for</span> r <span class="keyword">in</span> results
+        ]
+        <span class="keyword">return</span> SubagentResult(status=<span class="string">"success"</span>, findings=findings)
+    <span class="keyword">except</span> asyncio.TimeoutError:
+        <span class="keyword">return</span> SubagentResult(
+            status=<span class="string">"error"</span>,
+            error_type=<span class="string">"timeout"</span>,
+            is_retryable=<span class="keyword">True</span>,
+            attempted_query=query,
+        )
+
+<span class="keyword">async def</span> <span class="accent">docs_subagent</span>(query: str) -> SubagentResult:
+    <span class="keyword">try</span>:
+        results = <span class="keyword">await</span> _call_docs_api(query)
+        findings = [
+            Finding(
+                claim=r[<span class="string">"claim"</span>],
+                source_name=r[<span class="string">"source"</span>],
+                source_url=r[<span class="string">"url"</span>],
+                publication_date=r[<span class="string">"date"</span>],
+                evidence_excerpt=r[<span class="string">"excerpt"</span>],
+            )
+            <span class="keyword">for</span> r <span class="keyword">in</span> results
+        ]
+        <span class="keyword">return</span> SubagentResult(status=<span class="string">"success"</span>, findings=findings)
+    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+        <span class="keyword">return</span> SubagentResult(
+            status=<span class="string">"error"</span>,
+            error_type=<span class="builtin">type</span>(e).__name__,
+            is_retryable=<span class="keyword">False</span>,
+            attempted_query=query,
+        )
+
+<span class="comment"># ---------------------------------------------------------------------------
+# Synthesis — Task 5.6
+# ---------------------------------------------------------------------------</span>
+<span class="keyword">def</span> <span class="accent">synthesize</span>(all_findings: <span class="builtin">list</span>, coverage_gaps: <span class="builtin">list</span>):
+    <span class="comment"># Group findings by claim topic (simplified)</span>
+    grouped = _group_by_topic(all_findings)
+
+    well_supported = []
+    contested = []
+
+    <span class="keyword">for</span> topic, findings <span class="keyword">in</span> grouped.items():
+        dates = {f.publication_date <span class="keyword">for</span> f <span class="keyword">in</span> findings}
+        <span class="keyword">if</span> <span class="builtin">len</span>(dates) &gt; <span class="accent">1</span>:
+            <span class="comment"># Different dates → trend</span>
+            well_supported.append({
+                <span class="string">"topic"</span>: topic,
+                <span class="string">"type"</span>: <span class="string">"trend"</span>,
+                <span class="string">"findings"</span>: findings,
+            })
+        <span class="keyword">else</span>:
+            <span class="comment"># Same date → conflict</span>
+            contested.append({
+                <span class="string">"topic"</span>: topic,
+                <span class="string">"findings"</span>: findings,
+            })
+
+    <span class="keyword">return</span> {
+        <span class="string">"well_supported"</span>: well_supported,
+        <span class="string">"contested"</span>: contested,
+        <span class="string">"coverage_gaps"</span>: coverage_gaps,
+    }
+
+<span class="comment"># ---------------------------------------------------------------------------
+# Coordinator — Task 5.1, 5.3, 5.4, 5.6
+# ---------------------------------------------------------------------------</span>
+<span class="keyword">async def</span> <span class="accent">run_coordinator</span>(topic: str, query_id: str):
+    <span class="comment"># Set persistent case facts</span>
+    case_facts[<span class="string">"topic"</span>] = topic
+    case_facts[<span class="string">"query_id"</span>] = query_id
+    case_facts[<span class="string">"started_at"</span>] = _now()
+
+    system_prompt = build_system_prompt()
+
+    <span class="comment"># Run subagents in parallel</span>
+    web_result, docs_result = <span class="keyword">await</span> asyncio.gather(
+        web_search_subagent(topic),
+        docs_subagent(topic),
+    )
+
+    all_findings = []
+    coverage_gaps = []
+
+    <span class="keyword">for</span> name, result <span class="keyword">in</span> [(<span class="string">"web"</span>, web_result), (<span class="string">"docs"</span>, docs_result)]:
+        <span class="keyword">if</span> result.status == <span class="string">"success"</span>:
+            all_findings.extend(result.findings)
+        <span class="keyword">else</span>:
+            coverage_gaps.append({
+                <span class="string">"source"</span>: name,
+                <span class="string">"error_type"</span>: result.error_type,
+                <span class="string">"is_retryable"</span>: result.is_retryable,
+            })
+
+    <span class="keyword">return</span> synthesize(all_findings, coverage_gaps)</div>
+
+  </div>
+</section>
+
+<!-- ============ INSTRUCTIONS ============ -->
+<section class="exercise-section" id="instructions">
+  <div class="container">
+    <div class="section-tag">Your task</div>
+    <h2 class="section-title">Find <em>five</em> deliberate flaws.</h2>
+
+    <div class="instructions-box">
+      <div class="instructions-tag">Instructions</div>
+      <h4>Before you reveal the solution</h4>
+      <ol>
+        <li>Read the scaffold end-to-end. Note anything that feels suspicious.</li>
+        <li>For each flaw you suspect, write down: <strong>which task statement</strong> it belongs to, <strong>what's wrong</strong>, and <strong>how to fix it</strong>.</li>
+        <li>Look hardest at: error handling (does empty mean broken or genuinely empty?), persistence (could two coordinators clobber each other?), the <code>Finding</code> schema (does it carry enough metadata?), and the synthesis logic (does it correctly distinguish trend from conflict?).</li>
+        <li>Aim for five distinct flaws across four task statements (5.1, 5.3, 5.6 are heavily represented; 5.4 is lighter-touch).</li>
+        <li>There is also one <strong>bonus flaw</strong> that doesn't quite fit the five, but matters in production. Try to spot it.</li>
+      </ol>
+    </div>
+
+    <p style="font-family: var(--serif); font-style: italic; color: var(--ink-muted); font-size: 16px; margin-top: 24px;">When you're ready — or when you've given it your best shot — click below to reveal the worked solution.</p>
+
+    <!-- ============ REVEAL CTA ============ -->
+    <div class="solution-cta">
+      <div class="solution-cta-text">
+        Try to find all five flaws on your own first. The solution explains <em>why</em> each is wrong, what it produces in production, and the precise fix.
+      </div>
+      <button class="solution-btn" id="solution-btn" onclick="revealSolution()">Reveal solution</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ SOLUTION (HIDDEN BY DEFAULT) ============ -->
+<section class="exercise-section" id="solution-section" style="border-bottom: none;">
+  <div class="container">
+
+    <div class="solution-container" id="solution-container">
+      <div class="solution-inner">
+
+        <div class="solution-banner">
+          <span class="check-icon">✓</span>
+          <h3>Worked solution · five flaws + one bonus</h3>
+          <span class="solution-banner-sub">Domain V build exercise</span>
+        </div>
+
+        <p style="font-size: 16px;">Each flaw below maps to one task statement. The fix isn't always a one-liner — most are structural. Read every <em>fix</em> carefully; the exam tests these patterns directly.</p>
+
+        <!-- ============ FLAW 1 ============ -->
+        <div class="flaw-card">
+          <div class="flaw-header">
+            <div class="flaw-num">01</div>
+            <div class="flaw-headline">
+              <div class="flaw-task">Task 5.3 · Error propagation</div>
+              <div class="flaw-title">Coordinator never acts on <code>is_retryable</code>.</div>
+            </div>
+          </div>
+          <div class="flaw-body">
+            <p>The whole point of <code>is_retryable</code> is to let the coordinator decide retry vs skip. Look at what the coordinator actually does:</p>
+
+<div class="code-block"><span class="keyword">if</span> result.status == <span class="string">"success"</span>:
+    all_findings.extend(result.findings)
+<span class="keyword">else</span>:
+    coverage_gaps.append({...})  <span class="comment"># &lt;-- always treated as gap, never retried</span></div>
+
+            <p>A retryable timeout is recorded as a coverage gap and the report goes out missing data that was probably one retry away from being available. The flag travels through the system carrying useful information that nobody reads.</p>
+
+            <div class="flaw-fix-tag">Fix</div>
+            <div class="flaw-fix">
+              When <code>result.is_retryable</code> is <strong>true</strong>, retry the subagent (with exponential backoff, capped attempts) before annotating a coverage gap. Only fall through to the gap branch when the retry also fails or when <code>is_retryable</code> is <strong>false</strong>.
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ FLAW 2 ============ -->
+        <div class="flaw-card">
+          <div class="flaw-header">
+            <div class="flaw-num">02</div>
+            <div class="flaw-headline">
+              <div class="flaw-task">Task 5.3 · Access failure vs valid empty</div>
+              <div class="flaw-title">No distinction between access failure and a valid empty result.</div>
+            </div>
+          </div>
+          <div class="flaw-body">
+            <p>Imagine the docs subagent calls <code>_call_docs_api</code>, the call succeeds, and the API returns an empty list because nothing matched. The current code returns:</p>
+
+<div class="code-block"><span class="keyword">return</span> SubagentResult(status=<span class="string">"success"</span>, findings=[])</div>
+
+            <p>Now compare that with a docs source that's <em>actually broken</em> — maybe the API key was revoked but the call doesn't raise. Same shape on the wire. The coordinator can't tell "queried successfully, found nothing" from "query never reached the source" — both end up as "no findings, all good."</p>
+
+            <p>This is the classic Task 5.3 trap. Reports go out claiming "no relevant sources" when in reality the source was unreachable.</p>
+
+            <div class="flaw-fix-tag">Fix</div>
+            <div class="flaw-fix">
+              Add an explicit branch that distinguishes <strong>success-with-results</strong>, <strong>success-with-empty-findings</strong>, and <strong>access failure</strong>. The <code>success + empty</code> case should be annotated in the synthesis output — "queried but no matches found" is a real finding that stakeholders need to see, not a silent zero.
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ FLAW 3 ============ -->
+        <div class="flaw-card">
+          <div class="flaw-header">
+            <div class="flaw-num">03</div>
+            <div class="flaw-headline">
+              <div class="flaw-task">Task 5.6 · Information provenance</div>
+              <div class="flaw-title">The <code>Finding</code> schema is missing <code>collection_date</code> and <code>methodology</code>.</div>
+            </div>
+          </div>
+          <div class="flaw-body">
+            <p>Look at the dataclass:</p>
+
+<div class="code-block"><span class="builtin">@dataclass</span>
+<span class="keyword">class</span> <span class="accent">Finding</span>:
+    claim: str
+    source_name: str
+    source_url: str
+    publication_date: str   <span class="comment"># &lt;-- when the source was published</span>
+    evidence_excerpt: str
+    <span class="comment"># Missing: collection_date  (when the data was measured)
+    # Missing: methodology     (how the number was derived)</span></div>
+
+            <p>The synthesis logic needs to distinguish trends from conflicts. Two sources reporting different battery prices in <em>different quarters</em> are showing a trend; two sources from the <em>same quarter</em> with different methodologies are showing a real conflict.</p>
+
+            <p>With only <code>publication_date</code>, you'll mismatch these. A study collected in Q1 2024 but published in Q4 2024 looks contemporaneous with a Q4 2024 collection. Same publication month, totally different periods of measurement.</p>
+
+            <div class="flaw-fix-tag">Fix</div>
+            <div class="flaw-fix">
+              Add <code>collection_date</code> (when the data was measured) and <code>methodology</code> (how it was derived). Conflict detection should compare <strong>collection_date</strong>, not <strong>publication_date</strong>. Methodology lets the report explain <em>why</em> two sources disagree even on the same period (e.g., "IEA uses sales registrations; BNEF includes pre-orders").
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ FLAW 4 ============ -->
+        <div class="flaw-card">
+          <div class="flaw-header">
+            <div class="flaw-num">04</div>
+            <div class="flaw-headline">
+              <div class="flaw-task">Task 5.6 · Trend vs conflict</div>
+              <div class="flaw-title">The trend / conflict logic in <code>synthesize</code> is naïve and inverted in one branch.</div>
+            </div>
+          </div>
+          <div class="flaw-body">
+            <p>Look at the synthesis loop:</p>
+
+<div class="code-block">dates = {f.publication_date <span class="keyword">for</span> f <span class="keyword">in</span> findings}
+<span class="keyword">if</span> <span class="builtin">len</span>(dates) &gt; <span class="accent">1</span>:
+    <span class="comment"># Different dates → trend</span>
+    well_supported.append(...)
+<span class="keyword">else</span>:
+    <span class="comment"># Same date → conflict</span>
+    contested.append(...)</div>
+
+            <p>Two problems hiding in plain sight:</p>
+
+            <ul class="bullets">
+              <li>It uses <code>publication_date</code> when the right field would be <code>collection_date</code> (see flaw #3).</li>
+              <li>The <em>same date</em> branch treats every cluster as contested. But two sources from the same date that <strong>agree on a number</strong> are well-supported, not contested. Conflict requires same period <strong>AND</strong> numeric divergence — agreement on the same date is the strongest possible signal.</li>
+            </ul>
+
+            <p>Net effect: any topic where two sources happened to report on the same day appears contested in every report, even when both sources gave identical numbers. Stakeholders see false uncertainty everywhere.</p>
+
+            <div class="flaw-fix-tag">Fix</div>
+            <div class="flaw-fix">
+              Conflict requires (a) overlapping <strong>collection_date</strong> AND (b) numeric divergence beyond a tolerance (e.g., &gt;15%). Same period + numeric agreement → <strong>well-supported</strong>. Different periods → <strong>trend</strong>. Same period + divergence → <strong>contested</strong>. Three branches, not two.
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ FLAW 5 ============ -->
+        <div class="flaw-card">
+          <div class="flaw-header">
+            <div class="flaw-num">05</div>
+            <div class="flaw-headline">
+              <div class="flaw-task">Task 5.1 · Context preservation</div>
+              <div class="flaw-title">Case facts are a module-level global — concurrent calls clobber each other.</div>
+            </div>
+          </div>
+          <div class="flaw-body">
+            <p>This is the most production-shaped flaw — invisible in single-threaded testing, catastrophic at scale:</p>
+
+<div class="code-block">case_facts = {
+    <span class="string">"topic"</span>: <span class="keyword">None</span>,
+    <span class="string">"query_id"</span>: <span class="keyword">None</span>,
+    <span class="string">"started_at"</span>: <span class="keyword">None</span>,
+}
+
+<span class="keyword">async def</span> <span class="accent">run_coordinator</span>(topic, query_id):
+    case_facts[<span class="string">"topic"</span>] = topic        <span class="comment"># &lt;-- mutates global</span>
+    case_facts[<span class="string">"query_id"</span>] = query_id  <span class="comment"># &lt;-- mutates global</span>
+    ...</div>
+
+            <p>Two coordinators handling two different research topics in the same process clobber each other's case facts. Coordinator A sets <code>topic = "EV adoption"</code>, then a microsecond later Coordinator B sets <code>topic = "solar pricing"</code>. When A's <code>build_system_prompt()</code> runs, it sees B's topic.</p>
+
+            <p>Persistence is real here, but isolation is broken. The data <em>persists</em> — across requests it shouldn't.</p>
+
+            <div class="flaw-fix-tag">Fix</div>
+            <div class="flaw-fix">
+              Make case facts a <strong>per-request object</strong> — pass it explicitly through the call graph, or scope it to the coordinator's lifetime. Either a dataclass instance per call, or a contextvar if you need ambient access. Never a module-level mutable dict.
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ BONUS FLAW ============ -->
+        <div class="bonus-card">
+          <div class="bonus-tag">Bonus flaw · not in the five</div>
+          <h4><code>build_system_prompt()</code> is constructed but never sent to the API.</h4>
+          <p style="margin-bottom: 0;">Look at <code>run_coordinator</code> carefully — it calls <code>build_system_prompt()</code>, assigns the result to a local variable, and never uses it. The persistent case facts pattern from Task 5.1 only matters if those facts <em>reach the model</em>. In a real implementation, this string would be passed as the <code>system</code> parameter on every <code>client.messages.create()</code> call. Here, it's a no-op. Easy to miss; easy to ship.</p>
+        </div>
+
+        <!-- ============ MAPPING TABLE ============ -->
+        <h3 class="subhead">What this exercise tested</h3>
+        <p>Each flaw maps to one of the six task statements in Domain V. If you caught all five, you've internalized the patterns. If you missed any, return to that task and re-read its trap block.</p>
+
+        <table class="elegant-table">
+          <thead>
+            <tr><th>Flaw</th><th>Task</th><th>Concept</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>01</td><td>5.3</td><td>Act on structured error context — don't just log it</td></tr>
+            <tr><td>02</td><td>5.3</td><td>Distinguish access failure from valid empty result</td></tr>
+            <tr><td>03</td><td>5.6</td><td>Schema metadata enables temporal awareness</td></tr>
+            <tr><td>04</td><td>5.6</td><td>Trend vs conflict — same period + agreement = well-supported</td></tr>
+            <tr><td>05</td><td>5.1</td><td>Persistence requires isolation in concurrent contexts</td></tr>
+            <tr><td>+1</td><td>5.1</td><td>Persistence only matters if it reaches the model</td></tr>
+          </tbody>
+        </table>
+
+        <p style="margin-top: 16px;">Notice what's <em>not</em> tested: 5.2 (escalation), 5.4 (codebase exploration), 5.5 (confidence calibration). Those are scenarios this particular system doesn't exercise. Different production systems hit different subsets — when you ship one of these, you'll see which task statements your bugs cluster around.</p>
+
+        <!-- ============ TAKEAWAY ============ -->
+        <div class="summary-block">
+          <h4>The takeaway</h4>
+          <p>None of these flaws are syntax errors. The code runs. The tests probably pass. Each flaw produces <strong>quietly wrong outputs</strong> — reports missing sources, conflicts where there's agreement, contaminated case facts under load — that look fine until a stakeholder asks where a number came from.</p>
+          <p style="margin-bottom: 0;">That's Domain V. Most of the failure modes don't crash. They just produce confidently wrong reports. Build the patterns in early; retrofitting them under fire is expensive.</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-text">A practical exercise in finding the patterns the exam will test in disguise. Five flaws across four task statements — and one bonus to remind you that even good patterns fail if they don't reach the model.</div>
+    <div class="footer-meta">Domain V · Build Exercise · The Architect's Companion</div>
+  </div>
+</footer>
+
+<script>
+function revealSolution() {
+  const container = document.getElementById('solution-container');
+  const btn = document.getElementById('solution-btn');
+  const target = document.getElementById('solution-section');
+
+  container.classList.add('revealed');
+  btn.disabled = true;
+  btn.textContent = 'Solution revealed ↓';
+
+  // Smooth scroll to the solution after a brief delay so the expansion is visible
+  setTimeout(() => {
+    window.scrollTo({
+      top: target.offsetTop - 90,
+      behavior: 'smooth'
+    });
+  }, 350);
+}
+
+// Smooth scroll for nav
+document.querySelectorAll('nav.toc a').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      // If it's the solution link and solution is hidden, reveal it
+      if (link.getAttribute('href') === '#solution-section') {
+        const container = document.getElementById('solution-container');
+        if (!container.classList.contains('revealed')) {
+          revealSolution();
+          return;
+        }
+      }
+      window.scrollTo({ top: target.offsetTop - 90, behavior: 'smooth' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>
