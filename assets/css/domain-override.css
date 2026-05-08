@@ -467,7 +467,51 @@ a:focus-visible, button:focus-visible {
   border-radius: 2px;
 }
 
-/* ── 17. Mock-exam CTA (links to standalone exam page) ───────── */
+/* ── 17. Home / Syllabus button (every module page) ──────────── */
+nav.toc a.home-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.85rem;
+  background: var(--lava);
+  color: var(--paper) !important;
+  border: 1px solid var(--lava);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  margin-right: 0.4rem;
+  border-bottom: 1px solid var(--lava) !important;
+}
+nav.toc a.home-btn::before {
+  content: "↑";
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+nav.toc a.home-btn:hover {
+  background: var(--lava-deep);
+  border-color: var(--lava-deep) !important;
+  color: var(--paper) !important;
+  transform: translateY(-1px);
+}
+nav.toc a.home-btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* Make the brand/wordmark also act as a home link */
+.masthead .brand-link {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+}
+.masthead .brand-link:hover .brand { color: var(--lava-deep); }
+
+/* ── 18. Mock-exam CTA (links to standalone exam page) ───────── */
 .mock-cta {
   display: block;
   text-decoration: none;

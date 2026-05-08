@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anti-Pattern Checklist — Claude Certified Architect Foundations</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17; --bg2: #0f1520; --bg3: #141c2e;
+    --card: #111827; --border: #1e2d45;
+    --accent: #3b82f6; --accent2: #06b6d4; --accent3: #8b5cf6;
+    --green: #10b981; --red: #ef4444; --orange: #f59e0b;
+    --text: #e2e8f0; --muted: #64748b; --dim: #334155;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); line-height: 1.7; font-size: 15px; }
+  .hero { padding: 64px 40px 48px; border-bottom: 1px solid var(--border); }
+  .hero h1 { font-size: clamp(28px, 4vw, 46px); font-weight: 800; line-height: 1.1; margin-bottom: 16px; }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 32px 80px; }
+  .section { padding: 56px 0 24px; }
+  h2 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  p { margin-bottom: 14px; }
+  .pill { display: inline-flex; padding: 4px 12px; border-radius: 999px; font-size: 11px; margin-right: 8px; margin-top: 20px; }
+  .divider { width: 40px; height: 2px; background: var(--accent); margin: 12px 0 24px; }
+  .section-label, .hero-tag { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  .info-box { border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 16px; background: var(--card); }
+  hr.sep { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+  code { font-family: 'JetBrains Mono', monospace; font-size: 0.88em; }
+</style>
+<link rel="stylesheet" href="assets/css/course.css">
+<style>
+  /* Page-specific: masthead-rule, hero embellishments matching index.html. */
+  .masthead-rule {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 1.6rem 32px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .masthead-rule .mark { color: var(--lava); font-weight: 500; }
+  .masthead-rule a.home {
+    color: var(--lava);
+    text-decoration: none;
+    border: 1px solid var(--lava);
+    padding: 0.4rem 0.75rem;
+    border-radius: 3px;
+    transition: background 0.18s, color 0.18s;
+  }
+  .masthead-rule a.home:hover { background: var(--lava); color: var(--paper); }
+  .masthead-rule a.home::before { content: "↑ "; }
+
+  .hero h1 em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 80, "wght" 360;
+    color: var(--lava);
+  }
+
+  /* Anti-pattern checklist styling — copied from index.html. */
+  .ap-block { margin-top: 2.4rem; }
+  .ap-block:first-of-type { margin-top: 1rem; }
+  .ap-domain-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule-faint);
+    margin-bottom: 0.9rem;
+    flex-wrap: wrap;
+  }
+  .ap-domain-num {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--lava);
+    font-weight: 500;
+  }
+  .ap-domain-title {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 480;
+    font-size: 1.25rem;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+    flex: 1;
+  }
+  .ap-domain-count {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .ap-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.85rem; }
+  .ap-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-left: 3px solid var(--tone-rust);
+    border-radius: 4px;
+    padding: 1.1rem 1.3rem;
+  }
+  .ap-block.d1 .ap-card { border-left-color: var(--tone-rust); }
+  .ap-block.d2 .ap-card { border-left-color: var(--tone-ochre); }
+  .ap-block.d3 .ap-card { border-left-color: var(--tone-sepia); }
+  .ap-block.d4 .ap-card { border-left-color: var(--lava); }
+  .ap-block.d5 .ap-card { border-left-color: var(--tone-clay); }
+  .ap-num-row { display: flex; align-items: baseline; gap: 0.85rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+  .ap-num { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-mute); letter-spacing: 0.06em; font-weight: 500; min-width: 28px; }
+  .ap-priority {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 0.18rem 0.5rem;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+  .ap-priority.crit { background: var(--lava); color: var(--paper); }
+  .ap-priority.high { background: var(--tone-ochre); color: var(--paper); }
+  .ap-priority.med  { background: var(--tone-sepia); color: var(--paper); }
+  .ap-wrong {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 18, "SOFT" 25, "wght" 480;
+    font-size: 1.02rem;
+    line-height: 1.35;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    margin-bottom: 0.55rem;
+  }
+  .ap-wrong::before {
+    content: "✕ ";
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--lava-deep);
+    font-style: normal;
+    margin-right: 0.15rem;
+  }
+  .ap-why { color: var(--ink-soft); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.6rem; }
+  .ap-why::before {
+    content: "Why: ";
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 500;
+    margin-right: 0.25rem;
+  }
+  .ap-fix {
+    color: var(--ink);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    padding: 0.55rem 0.7rem;
+    background: rgba(74, 111, 63, 0.08);
+    border-left: 2px solid var(--tone-moss);
+    border-radius: 2px;
+  }
+  .ap-fix::before {
+    content: "✓ Fix: ";
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--tone-moss);
+    font-weight: 500;
+    margin-right: 0.25rem;
+  }
+  .ap-source-note {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 1.6rem 0 0;
+    text-align: right;
+  }
+  .ap-source-note a {
+    color: var(--lava);
+    border-bottom: 1px solid var(--rule-soft, rgba(14,31,38,0.18));
+    padding-bottom: 1px;
+    text-decoration: none;
+  }
+  .ap-source-note a:hover { border-bottom-color: var(--lava); }
+
+  /* Module nav */
+  .module-nav {
+    border-top: 1px solid var(--rule-soft, rgba(14,31,38,0.18));
+    background: var(--paper-card);
+    margin-top: 4rem;
+  }
+  .module-nav .container { padding: 0 32px; }
+  .module-nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .module-nav-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 2.2rem 1.6rem;
+    text-decoration: none;
+    color: var(--ink);
+    border-right: 1px solid var(--rule-faint);
+    transition: background 0.18s ease;
+  }
+  .module-nav-item:last-child { border-right: none; }
+  .module-nav-item:hover { background: var(--paper-deep); }
+  .module-nav-prev { text-align: left; }
+  .module-nav-next { text-align: right; align-items: flex-end; }
+  .module-nav-lbl {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--lava);
+    font-weight: 500;
+  }
+  .module-nav-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .module-nav-title {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 480;
+    font-size: clamp(1.05rem, 0.9rem + 0.5vw, 1.3rem);
+    line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+  .colophon {
+    text-align: center;
+    padding: 3rem 0 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+  }
+  .colophon span { color: var(--lava); }
+
+  @media (max-width: 640px) {
+    .module-nav-grid { grid-template-columns: 1fr; }
+    .module-nav-item { border-right: none; border-bottom: 1px solid var(--rule-faint); padding: 1.4rem 1rem; }
+    .module-nav-item:last-child { border-bottom: none; }
+    .module-nav-next { text-align: left; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead-rule">
+  <span><span class="mark">A</span>NTHROP\C &middot; Anti-Pattern Checklist</span>
+  <a class="home" href="index.html">Syllabus</a>
+</div>
+
+<div class="hero">
+  <div class="hero-tag">Final Cram-Night Sweep &middot; 18 Patterns</div>
+  <h1>Anti-pattern <em>checklist.</em></h1>
+  <p>Eighteen failure modes the exam tests against &mdash; distilled from the seven task statements in each domain plus the published anti-pattern cheatsheet. If you can articulate every &ldquo;Wrong&rdquo;/&ldquo;Fix&rdquo; pairing below from memory, you have most of what the test rewards in your hands.</p>
+  <div>
+    <span class="pill pill-cyan">Domain 1 &middot; 5</span>
+    <span class="pill pill-orange">Domain 2 &middot; 4</span>
+    <span class="pill pill-purple">Domain 3 &middot; 3</span>
+    <span class="pill pill-red">Domain 4 &middot; 3</span>
+    <span class="pill pill-green">Domain 5 &middot; 3</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <div class="section-label">Pitfalls &middot; Cheatsheet</div>
+    <h2>Read it before every revision.</h2>
+    <div class="divider"></div>
+
+    <div class="info-box red">
+      <strong>How to use this list</strong>
+      Each entry is a question the exam loves to ask in disguise. The <strong>priority badge</strong> reflects how often it appears as a distractor: critical items show up almost every form; high items are common; medium items are rarer but high-leverage when they appear.
+    </div>
+
+    <!-- Domain 1 -->
+    <div class="ap-block d1">
+      <div class="ap-domain-header">
+        <span class="ap-domain-num">Domain 01</span>
+        <span class="ap-domain-title">Agentic Architecture &amp; Orchestration</span>
+        <span class="ap-domain-count">5 patterns &middot; 27% weight</span>
+      </div>
+      <ol class="ap-list">
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">01</span><span class="ap-priority crit">Critical</span></div>
+          <div class="ap-wrong">Parsing natural language for loop termination.</div>
+          <div class="ap-why">The model phrases completion differently every call. Searching for &ldquo;anything else?&rdquo; or other surface text is regex-against-probability — and text can ride alongside a <code>tool_use</code> block, so the agent stops mid-task.</div>
+          <div class="ap-fix">Inspect <code>stop_reason</code> directly. <code>"end_turn"</code> means done; <code>"tool_use"</code> means continue.</div>
+        </li>
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">02</span><span class="ap-priority crit">Critical</span></div>
+          <div class="ap-wrong">Arbitrary iteration caps as the primary stopping mechanism.</div>
+          <div class="ap-why">An iteration cap is a runaway-loop guardrail, not control flow. If your loop terminates because it hit <code>max_iterations</code>, that&rsquo;s a bug; the agent had work left to do.</div>
+          <div class="ap-fix">Let <code>stop_reason == "end_turn"</code> drive normal termination. Keep the cap purely as a safety net.</div>
+        </li>
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">03</span><span class="ap-priority crit">Critical</span></div>
+          <div class="ap-wrong">Prompt-based enforcement for critical business rules.</div>
+          <div class="ap-why">When a question describes financial, security, or compliance failures with a non-zero failure rate, prompt-improvement options are distractors. Few-shot and clearer wording reduce failure rates but never to zero.</div>
+          <div class="ap-fix">Programmatic hooks (<code>PreToolUse</code> / <code>PostToolUse</code>) for guarantees. Prompts can stay for naturalness — but the hook is the safety net.</div>
+        </li>
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">04</span><span class="ap-priority high">High</span></div>
+          <div class="ap-wrong">Sentiment-based escalation to human agents.</div>
+          <div class="ap-why">Frustrated customers with simple problems just want their problem solved. Sentiment doesn&rsquo;t track case complexity; you escalate easy wins and miss hard cases that arrive politely.</div>
+          <div class="ap-fix">Acknowledge the frustration verbally; escalate only on policy gaps, capability limits, explicit human request, or business thresholds.</div>
+        </li>
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">05</span><span class="ap-priority high">High</span></div>
+          <div class="ap-wrong">Self-reported confidence scores for decision-making.</div>
+          <div class="ap-why">The model has no inherent calibration. Its 0.9 might be 60% correct in practice — and confident hallucinations score high while correct hedged answers score low.</div>
+          <div class="ap-fix">Use explicit categorical criteria (human request, policy gap, no progress) backed by observable facts, not continuous self-rated confidence.</div>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Domain 2 -->
+    <div class="ap-block d2">
+      <div class="ap-domain-header">
+        <span class="ap-domain-num">Domain 02</span>
+        <span class="ap-domain-title">Tool Design &amp; MCP Integration</span>
+        <span class="ap-domain-count">4 patterns &middot; 18% weight</span>
+      </div>
+      <ol class="ap-list">
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">06</span><span class="ap-priority crit">Critical</span></div>
+          <div class="ap-wrong">Generic error messages (&ldquo;Operation failed&rdquo;).</div>
+          <div class="ap-why">Strips signal the agent needs for recovery. The agent retries permission errors (waste), gives up on transient ones (lost requests), and can&rsquo;t distinguish between &ldquo;down&rdquo; and &ldquo;no match&rdquo;.</div>
+          <div class="ap-fix">Return structured errors: <code>isError</code>, <code>errorCategory</code>, <code>isRetryable</code>, and human-readable context. Match recovery strategy to category.</div>
+        </li>
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">07</span><span class="ap-priority crit">Critical</span></div>
+          <div class="ap-wrong">Silently returning empty results for access failures.</div>
+          <div class="ap-why">Agents cannot distinguish &ldquo;no data found&rdquo; from &ldquo;couldn&rsquo;t access the data&rdquo;. Reports get written claiming &ldquo;no findings&rdquo; when the truth is the search never ran.</div>
+          <div class="ap-fix">Empty result &rarr; <code>isError: false, results: []</code>. Reserve the error flag for actual failures, with the failure type tagged.</div>
+        </li>
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">08</span><span class="ap-priority high">High</span></div>
+          <div class="ap-wrong">Giving one agent 18+ tools.</div>
+          <div class="ap-why">Tool-selection accuracy degrades rapidly above ~5 tools; similar tools create ambiguity and the synthesis agent starts doing research instead of synthesizing.</div>
+          <div class="ap-fix">Restrict each agent to 4–5 role-specific tools. Distribute the rest across specialized subagents; add scoped cross-role tools only for documented high-frequency needs.</div>
+        </li>
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">09</span><span class="ap-priority crit">Critical</span></div>
+          <div class="ap-wrong">Hardcoding API keys in <code>.mcp.json</code>.</div>
+          <div class="ap-why">Configuration files committed to git ship your tokens to anyone with repo access. Rotation requires updating every developer&rsquo;s checkout. A leaked repo is a leaked credential.</div>
+          <div class="ap-fix">Use <code>${ENV_VAR}</code> expansion in the env block. Each developer sets the variable locally; secrets never enter version control.</div>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Domain 3 -->
+    <div class="ap-block d3">
+      <div class="ap-domain-header">
+        <span class="ap-domain-num">Domain 03</span>
+        <span class="ap-domain-title">Claude Code Configuration &amp; Workflows</span>
+        <span class="ap-domain-count">3 patterns &middot; 20% weight</span>
+      </div>
+      <ol class="ap-list">
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">10</span><span class="ap-priority med">Medium</span></div>
+          <div class="ap-wrong">Putting team rules in <code>~/.claude/CLAUDE.md</code>.</div>
+          <div class="ap-why">User-level configs live on one laptop. They never reach teammates via git. The senior engineer&rsquo;s &ldquo;team standards&rdquo; only apply to the senior engineer&rsquo;s machine.</div>
+          <div class="ap-fix">Project-level <code>.claude/CLAUDE.md</code> for team standards (committed). Reserve <code>~/.claude/CLAUDE.md</code> for personal preferences.</div>
+        </li>
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">11</span><span class="ap-priority high">High</span></div>
+          <div class="ap-wrong">Using commands for verbose tasks that pollute context.</div>
+          <div class="ap-why">Commands run in the current session, so their exploration noise lands in your main conversation. Telling a skill &ldquo;be concise&rdquo; doesn&rsquo;t change where its outputs accumulate.</div>
+          <div class="ap-fix">Skills with <code>context: fork</code> + <code>allowed-tools</code> restrictions. Output stays in the subagent; you get back the summary.</div>
+        </li>
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">12</span><span class="ap-priority crit">Critical</span></div>
+          <div class="ap-wrong">Same-session self-review in CI/CD pipelines.</div>
+          <div class="ap-why">Reviewers retain the generator&rsquo;s reasoning context. You get confirmation bias rather than a fresh, independent assessment — the worst possible reviewer is the author.</div>
+          <div class="ap-fix">Separate sessions for code generation and code review. Treat the reviewer as a different person with no prior context.</div>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Domain 4 -->
+    <div class="ap-block d4">
+      <div class="ap-domain-header">
+        <span class="ap-domain-num">Domain 04</span>
+        <span class="ap-domain-title">Prompt Engineering &amp; Structured Output</span>
+        <span class="ap-domain-count">3 patterns &middot; 20% weight</span>
+      </div>
+      <ol class="ap-list">
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">13</span><span class="ap-priority crit">Critical</span></div>
+          <div class="ap-wrong">Vague instructions like &ldquo;be thorough&rdquo; or &ldquo;find all issues&rdquo;.</div>
+          <div class="ap-why">Vague language is not a real lever. The model improvises a threshold per call. False positives, alert fatigue, and developer trust erosion follow — and lowering temperature doesn&rsquo;t help because temperature controls sampling, not what counts as a finding.</div>
+          <div class="ap-fix">Rewrite criteria as inclusion + exclusion lists with explicit measurable thresholds (&ldquo;flag functions exceeding 50 lines&rdquo;). Anchor severity to concrete code examples.</div>
+        </li>
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">14</span><span class="ap-priority high">High</span></div>
+          <div class="ap-wrong">Assuming <code>tool_use</code> guarantees semantic correctness.</div>
+          <div class="ap-why"><code>tool_use</code> guarantees schema-compliant output, not semantic correctness. Numbers can still be wrong, fields swapped, line items hallucinated — the JSON parses fine.</div>
+          <div class="ap-fix">Add Pydantic semantic validators with cross-field checks. <code>calculated_total vs stated_total</code> is the canonical pattern.</div>
+        </li>
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">15</span><span class="ap-priority high">High</span></div>
+          <div class="ap-wrong">Generic retry messages: &ldquo;There were errors, please try again&rdquo;.</div>
+          <div class="ap-why">Without specifics, the model retries the same way. It has no signal for what requires correction; you burn API calls without convergence.</div>
+          <div class="ap-fix">Bound retries (2–3) and include the original document, the failed extraction, and the specific validation error in the retry prompt. Route persistent failures to human review.</div>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Domain 5 -->
+    <div class="ap-block d5">
+      <div class="ap-domain-header">
+        <span class="ap-domain-num">Domain 05</span>
+        <span class="ap-domain-title">Context Management &amp; Reliability</span>
+        <span class="ap-domain-count">3 patterns &middot; 15% weight</span>
+      </div>
+      <ol class="ap-list">
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">16</span><span class="ap-priority crit">Critical</span></div>
+          <div class="ap-wrong">Progressive summarization of critical customer details.</div>
+          <div class="ap-why">Each summarization round loses specifics: names, IDs, amounts, dates, customer-stated expectations get condensed into &ldquo;the customer wants a refund&rdquo;. Bigger context windows don&rsquo;t fix this — lost-in-the-middle still bites.</div>
+          <div class="ap-fix">Two-layer state: an immutable <strong>case facts</strong> block at context start (durable, structured) plus a summarized history layer (tone, intent). Numbers live in the facts block.</div>
+        </li>
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">17</span><span class="ap-priority crit">Critical</span></div>
+          <div class="ap-wrong">Aggregate accuracy metrics only (e.g., &ldquo;95% overall&rdquo;).</div>
+          <div class="ap-why">Aggregate metrics mask per-category failures. Receipts at 99% can hide invoices at 70%. The headline number looks healthy while a downstream system is silently broken.</div>
+          <div class="ap-fix">Stratified metrics — track accuracy per document type / category / source. Surface the worst category, not just the average.</div>
+        </li>
+        <li class="ap-card">
+          <div class="ap-num-row"><span class="ap-num">18</span><span class="ap-priority high">High</span></div>
+          <div class="ap-wrong">No provenance tracking for multi-agent data.</div>
+          <div class="ap-why">Conflicting data from subagents cannot be resolved without knowing sources. The synthesis agent picks one value at random or averages incomparable numbers, producing a confident but wrong answer.</div>
+          <div class="ap-fix">Track source, confidence level, timestamp, and agent ID for every datum. Conflict resolution becomes a structured decision instead of a coin-flip.</div>
+        </li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<nav class="module-nav" aria-label="Module navigation">
+  <div class="container">
+    <div class="module-nav-grid">
+      <a class="module-nav-item module-nav-prev" href="index.html">
+        <span class="module-nav-lbl">&larr; Syllabus</span>
+        <span class="module-nav-eyebrow">Index</span>
+        <span class="module-nav-title">Back to study guide</span>
+      </a>
+      <a class="module-nav-item module-nav-next" href="domain1_mock_exam.html">
+        <span class="module-nav-lbl">Practice next &rarr;</span>
+        <span class="module-nav-eyebrow">Domain 01 &middot; mock exam</span>
+        <span class="module-nav-title">Sit the test &middot; 10 questions</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="colophon">
+  Anthropic <span>&middot;</span> Foundations <span>&middot;</span> Edition 2026 <span>&middot;</span> Anti-Pattern Checklist
+</div>
+
+</body>
+</html>

@@ -274,6 +274,476 @@
   .scenario-card.s5 { border-top-color: var(--tone-clay); }
   .scenario-card.s6 { border-top-color: var(--lava); }
 
+  /* Stats strip — at-a-glance metrics shown below the hero. */
+  .stats-strip {
+    border-top: 1px solid var(--rule-faint);
+    border-bottom: 1px solid var(--rule-faint);
+    background: var(--paper-card);
+    padding: 1.6rem 0;
+    margin: 0;
+  }
+  .stats-grid {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+    text-align: center;
+  }
+  .stat-cell { padding: 0 0.4rem; }
+  .stat-icon {
+    width: 24px;
+    height: 24px;
+    margin: 0 auto 0.55rem;
+    color: var(--lava);
+    stroke: currentColor;
+    stroke-width: 1.6;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .stat-cell.t-rust  .stat-icon { color: var(--tone-rust); }
+  .stat-cell.t-moss  .stat-icon { color: var(--tone-moss); }
+  .stat-cell.t-ochre .stat-icon { color: var(--tone-ochre); }
+  .stat-cell.t-sepia .stat-icon { color: var(--tone-sepia); }
+  .stat-cell.t-clay  .stat-icon { color: var(--tone-clay); }
+  .stat-num {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 56, "SOFT" 30, "wght" 520;
+    font-size: clamp(1.7rem, 1.4rem + 1.2vw, 2.4rem);
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.025em;
+    margin-bottom: 0.3rem;
+  }
+  .stat-name {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+  }
+  .stat-sub {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 14, "wght" 400;
+    font-style: italic;
+    font-size: 0.82rem;
+    color: var(--ink-mute);
+    line-height: 1.35;
+  }
+  @media (max-width: 720px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1.2rem 0.5rem; }
+  }
+  @media (max-width: 380px) {
+    .stats-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Core-surface tech grid — overrides the .info-box strong eyebrow trap.
+     Inline <strong> inside callout body should render as normal bold,
+     not as a stacked mono-uppercase band. */
+  .info-box .callout-lede {
+    margin: 0 0 0.9rem;
+    color: var(--ink);
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  .info-box .callout-lede strong { all: unset; font-weight: 600; color: var(--ink); }
+
+  .tech-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .tech-grid li {
+    display: grid;
+    grid-template-columns: minmax(160px, 220px) 1fr;
+    gap: 1.2rem;
+    align-items: baseline;
+    padding: 0.75rem 0.95rem;
+    background: var(--paper-card);
+    border-left: 2px solid var(--lava);
+    border-radius: 2px;
+  }
+  .tech-grid .tech-name {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--lava-deep);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .tech-grid .tech-role {
+    color: var(--ink);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  @media (max-width: 640px) {
+    .tech-grid li { grid-template-columns: 1fr; gap: 0.2rem; }
+  }
+
+  /* Exam Overview grid — canonical reference card. */
+  .exam-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+    margin: 1.4rem 0 0;
+  }
+  .eo-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 4px;
+    padding: 1.05rem 1.25rem 1.1rem;
+    position: relative;
+  }
+  .eo-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    height: 2px;
+    width: 36px;
+    background: var(--lava);
+  }
+  .eo-card.t-rust::before  { background: var(--tone-rust); }
+  .eo-card.t-moss::before  { background: var(--tone-moss); }
+  .eo-card.t-ochre::before { background: var(--tone-ochre); }
+  .eo-card.t-sepia::before { background: var(--tone-sepia); }
+  .eo-card.t-clay::before  { background: var(--tone-clay); }
+  .eo-card.t-lava::before  { background: var(--lava); }
+
+  .eo-label {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 500;
+    margin-bottom: 0.45rem;
+  }
+  .eo-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--lava);
+    stroke: currentColor;
+    stroke-width: 1.6;
+    fill: none;
+  }
+  .eo-card.t-rust  .eo-icon { color: var(--tone-rust); }
+  .eo-card.t-moss  .eo-icon { color: var(--tone-moss); }
+  .eo-card.t-ochre .eo-icon { color: var(--tone-ochre); }
+  .eo-card.t-sepia .eo-icon { color: var(--tone-sepia); }
+  .eo-card.t-clay  .eo-icon { color: var(--tone-clay); }
+
+  .eo-value {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 18, "SOFT" 25, "wght" 480;
+    font-size: 1.05rem;
+    line-height: 1.4;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .eo-value .num {
+    font-variation-settings: "opsz" 36, "SOFT" 30, "wght" 500;
+    font-size: 1.4rem;
+    color: var(--lava);
+    letter-spacing: -0.02em;
+    margin-right: 0.1rem;
+  }
+  @media (max-width: 640px) {
+    .exam-overview-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Registration CTA */
+  .register-cta {
+    display: block;
+    text-decoration: none;
+    margin: 1.5rem 0 0;
+    padding: 1.4rem 1.5rem;
+    background: var(--lava-soft);
+    border: 1px solid rgba(255, 54, 33, 0.22);
+    border-left: 3px solid var(--lava);
+    border-radius: 4px;
+    transition: background 0.18s ease, transform 0.18s ease;
+  }
+  .register-cta:hover {
+    background: rgba(255, 54, 33, 0.12);
+    transform: translateY(-1px);
+  }
+  .register-cta-label {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--lava);
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+  }
+  .register-cta-title {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 520;
+    font-size: 1.2rem;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+  .register-cta-body {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    margin-bottom: 0.7rem;
+    max-width: 60ch;
+  }
+  .register-cta-link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--lava-deep);
+    font-weight: 500;
+    border-bottom: 1px solid var(--lava-deep);
+    padding-bottom: 1px;
+  }
+  .register-cta-link::after { content: "→"; }
+
+  /* Anti-pattern checklist — pitfalls organized by domain. */
+  .ap-block {
+    margin-top: 2.4rem;
+  }
+  .ap-block:first-of-type { margin-top: 1rem; }
+  .ap-domain-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule-faint);
+    margin-bottom: 0.9rem;
+    flex-wrap: wrap;
+  }
+  .ap-domain-num {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--lava);
+    font-weight: 500;
+  }
+  .ap-domain-title {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 480;
+    font-size: 1.25rem;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+    flex: 1;
+  }
+  .ap-domain-count {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .ap-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.85rem;
+  }
+  .ap-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-left: 3px solid var(--tone-rust);
+    border-radius: 4px;
+    padding: 1.1rem 1.3rem;
+  }
+  .ap-block.d1 .ap-card { border-left-color: var(--tone-rust); }
+  .ap-block.d2 .ap-card { border-left-color: var(--tone-ochre); }
+  .ap-block.d3 .ap-card { border-left-color: var(--tone-sepia); }
+  .ap-block.d4 .ap-card { border-left-color: var(--lava); }
+  .ap-block.d5 .ap-card { border-left-color: var(--tone-clay); }
+
+  .ap-num-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.85rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .ap-num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ink-mute);
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    min-width: 28px;
+  }
+  .ap-priority {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 0.18rem 0.5rem;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+  .ap-priority.crit {
+    background: var(--lava);
+    color: var(--paper);
+  }
+  .ap-priority.high {
+    background: var(--tone-ochre);
+    color: var(--paper);
+  }
+  .ap-priority.med {
+    background: var(--tone-sepia);
+    color: var(--paper);
+  }
+  .ap-wrong {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 18, "SOFT" 25, "wght" 480;
+    font-size: 1.02rem;
+    line-height: 1.35;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    margin-bottom: 0.55rem;
+  }
+  .ap-wrong::before {
+    content: "✕ ";
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--lava-deep);
+    font-style: normal;
+    margin-right: 0.15rem;
+  }
+  .ap-why {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    margin-bottom: 0.6rem;
+  }
+  .ap-why::before {
+    content: "Why: ";
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 500;
+    margin-right: 0.25rem;
+  }
+  .ap-fix {
+    color: var(--ink);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    padding: 0.55rem 0.7rem;
+    background: rgba(74, 111, 63, 0.08);
+    border-left: 2px solid var(--tone-moss);
+    border-radius: 2px;
+  }
+  .ap-fix::before {
+    content: "✓ Fix: ";
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--tone-moss);
+    font-weight: 500;
+    margin-right: 0.25rem;
+  }
+
+  .ap-source-note {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 1.6rem 0 0;
+    text-align: right;
+  }
+  .ap-source-note a {
+    color: var(--lava);
+    border-bottom: 1px solid var(--rule-soft);
+    padding-bottom: 1px;
+    text-decoration: none;
+  }
+  .ap-source-note a:hover { border-bottom-color: var(--lava); }
+
+  /* Simple CTA button to the standalone anti-pattern checklist page. */
+  a.ap-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-top: 1.2rem;
+    padding: 0.75rem 1.2rem;
+    background: var(--lava);
+    color: var(--paper);
+    border: 1px solid var(--lava);
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.18s ease;
+  }
+  a.ap-btn:hover { background: var(--lava-deep); border-color: var(--lava-deep); color: var(--paper); }
+
+  /* Three-pass discipline — numbered cards for the reading rhythm. */
+  .pass-list {
+    list-style: none;
+    margin: 0.4rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.7rem;
+  }
+  .pass-list li {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 1rem;
+    align-items: start;
+    padding: 0.4rem 0;
+  }
+  .pass-list li + li { border-top: 1px solid var(--rule-faint); padding-top: 0.85rem; }
+  .pass-list .pass-num {
+    font-family: var(--font-mono);
+    font-size: 0.92rem;
+    color: var(--lava);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+  .pass-list .pass-name {
+    display: block;
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 18, "SOFT" 30, "wght" 540;
+    font-size: 1.05rem;
+    color: var(--ink);
+    margin-bottom: 0.2rem;
+    letter-spacing: -0.005em;
+  }
+  .pass-list .pass-detail {
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
   /* Closing colophon */
   .colophon {
     text-align: center;
@@ -317,29 +787,172 @@
   </div>
 </div>
 
+<!-- Stats strip — at-a-glance metrics for the study guide. -->
+<div class="stats-strip">
+  <div class="stats-grid">
+    <div class="stat-cell t-rust">
+      <svg class="stat-icon" viewBox="0 0 24 24"><path d="M4 4 H10 C12 4 12 5 12 6 V20 C12 19 12 18 10 18 H4 Z M20 4 H14 C12 4 12 5 12 6 V20 C12 19 12 18 14 18 H20 Z"/></svg>
+      <div class="stat-num">5</div>
+      <div class="stat-name">Domains</div>
+      <div class="stat-sub">complete curriculum</div>
+    </div>
+    <div class="stat-cell t-sepia">
+      <svg class="stat-icon" viewBox="0 0 24 24"><path d="M4 6 H20 M4 12 H20 M4 18 H14"/></svg>
+      <div class="stat-num">30</div>
+      <div class="stat-name">Task Statements</div>
+      <div class="stat-sub">tested skill areas</div>
+    </div>
+    <div class="stat-cell t-clay">
+      <svg class="stat-icon" viewBox="0 0 24 24"><path d="M12 3 L21 8 V12 C21 17 17 20 12 21 C7 20 3 17 3 12 V8 Z"/><path d="M9 12 L11 14 L15 10"/></svg>
+      <div class="stat-num">18</div>
+      <div class="stat-name">Anti-Patterns</div>
+      <div class="stat-sub">documented pitfalls</div>
+    </div>
+    <div class="stat-cell t-ochre">
+      <svg class="stat-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9 H15 M15 9 C15 11 9 11 9 13 C9 15 15 15 15 17 H9"/></svg>
+      <div class="stat-num">45</div>
+      <div class="stat-name">Mock Questions</div>
+      <div class="stat-sub">scenario-based practice</div>
+    </div>
+    <div class="stat-cell t-moss">
+      <svg class="stat-icon" viewBox="0 0 24 24"><path d="M3 7 H17 V21 H3 Z M3 5 H15 V7 M21 9 V21 H7"/></svg>
+      <div class="stat-num">6</div>
+      <div class="stat-name">Scenarios</div>
+      <div class="stat-sub">production contexts</div>
+    </div>
+  </div>
+</div>
+
 <div class="container">
 
   <div class="toc">
     <div class="toc-title">Contents</div>
     <div class="toc-grid">
-      <div class="toc-item"><span>01</span>How the Exam Works</div>
-      <div class="toc-item"><span>02</span>The Five Domains</div>
-      <div class="toc-item"><span>03</span>Six Production Scenarios</div>
-      <div class="toc-item"><span>04</span>Preparation Playbook</div>
+      <div class="toc-item"><span>01</span> Exam Overview</div>
+      <div class="toc-item"><span>02</span> How the Exam Works</div>
+      <div class="toc-item"><span>03</span> The Five Domains</div>
+      <div class="toc-item"><span>04</span> Six Production Scenarios</div>
+      <div class="toc-item"><span>05</span> Anti-Pattern Checklist</div>
+      <div class="toc-item"><span>06</span> Preparation Playbook</div>
     </div>
   </div>
 
-  <!-- ═══════════════════ SECTION 01 ═══ -->
+  <!-- ═══════════════════ SECTION 01 — EXAM OVERVIEW ═══ -->
   <div class="section">
-    <div class="section-label">01 — Orientation</div>
+    <div class="section-label">01 — At a Glance</div>
+    <h2>Exam overview.</h2>
+    <div class="divider"></div>
+
+    <p>The canonical reference for everything you need to know about the certification — format, scoring, audience, and how to register. Use this as your fact sheet; the chapters below go deeper into what the exam tests.</p>
+
+    <div class="exam-overview-grid">
+      <div class="eo-card t-lava">
+        <div class="eo-label">
+          <svg class="eo-icon" viewBox="0 0 24 24"><path d="M12 2 L15 9 L22 10 L17 15 L18 22 L12 19 L6 22 L7 15 L2 10 L9 9 Z"/></svg>
+          Certification Name
+        </div>
+        <div class="eo-value">Claude Certified Architect &mdash; Foundations</div>
+      </div>
+
+      <div class="eo-card t-rust">
+        <div class="eo-label">
+          <svg class="eo-icon" viewBox="0 0 24 24"><path d="M3 21 V9 L12 4 L21 9 V21 Z M9 21 V13 H15 V21"/></svg>
+          Issued By
+        </div>
+        <div class="eo-value">Anthropic</div>
+      </div>
+
+      <div class="eo-card t-sepia">
+        <div class="eo-label">
+          <svg class="eo-icon" viewBox="0 0 24 24"><path d="M4 4 H20 V20 H4 Z M8 9 H16 M8 13 H16 M8 17 H12"/></svg>
+          Exam Format
+        </div>
+        <div class="eo-value">Multiple choice, scenario-based</div>
+      </div>
+
+      <div class="eo-card t-lava">
+        <div class="eo-label">
+          <svg class="eo-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+          Passing Score
+        </div>
+        <div class="eo-value"><span class="num">720</span>/ 1000</div>
+      </div>
+
+      <div class="eo-card t-ochre">
+        <div class="eo-label">
+          <svg class="eo-icon" viewBox="0 0 24 24"><path d="M5 7 H19 V19 H5 Z M3 5 H17 V7 M21 9 V21 H7"/></svg>
+          Scenarios
+        </div>
+        <div class="eo-value"><span class="num">4</span>of 6, randomly selected</div>
+      </div>
+
+      <div class="eo-card t-moss">
+        <div class="eo-label">
+          <svg class="eo-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21 C4 16 8 14 12 14 C16 14 20 16 20 21"/></svg>
+          Target Audience
+        </div>
+        <div class="eo-value">Solution architects building production applications with Claude.</div>
+      </div>
+
+      <div class="eo-card t-clay">
+        <div class="eo-label">
+          <svg class="eo-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 8 H15 M15 8 C15 11 9 11 9 13 C9 15 15 15 15 17 H9 M12 6 V18"/></svg>
+          Cost
+        </div>
+        <div class="eo-value">Free for first 5,000 partner-company employees.</div>
+      </div>
+
+      <div class="eo-card t-moss">
+        <div class="eo-label">
+          <svg class="eo-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7 V12 L15 14"/></svg>
+          Availability
+        </div>
+        <div class="eo-value">Available now for Anthropic partners.</div>
+      </div>
+    </div>
+
+    <a class="register-cta" href="https://anthropic.skilljar.com/claude-certified-architect-foundations-access-request" target="_blank" rel="noopener">
+      <div class="register-cta-label">
+        <svg class="eo-icon" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M14 4 H20 V10 M20 4 L11 13 M5 6 H10 M5 12 H10 M5 18 H14"/></svg>
+        Register for the Exam
+      </div>
+      <div class="register-cta-title">Request access through Anthropic&rsquo;s Skilljar portal.</div>
+      <div class="register-cta-body">Currently available for partner-company employees only. Sign in with your work email; allocations are first-come on the 5,000-seat partner cohort.</div>
+      <span class="register-cta-link">Go to registration portal</span>
+    </a>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ═══════════════════ SECTION 02 ═══ -->
+  <div class="section">
+    <div class="section-label">02 — Orientation</div>
     <h2>How the exam works.</h2>
     <div class="divider"></div>
 
     <p>The Foundations exam validates that practitioners can reason about real-world tradeoffs when shipping production systems on Claude. Questions are grounded in actual customer engagements — agentic support systems, multi-agent research pipelines, CI/CD code review, structured extraction. You will be tested less on memorisation and more on architectural judgment.</p>
 
-    <div class="info-box red">
+    <div class="info-box red core-surface">
       <strong>The Core Surface</strong>
-      Four technologies underpin every question on the exam: <strong>Claude Code</strong> (the configured CLI), the <strong>Claude Agent SDK</strong> (loop control, hooks, subagents), the <strong>Claude API</strong> (tool use, structured output), and the <strong>Model Context Protocol (MCP)</strong> (tool and resource interfaces).
+      <p class="callout-lede">Four technologies underpin every question on the exam.</p>
+      <ul class="tech-grid">
+        <li>
+          <span class="tech-name">Claude Code</span>
+          <span class="tech-role">The configured CLI — CLAUDE.md, slash commands, plan mode.</span>
+        </li>
+        <li>
+          <span class="tech-name">Claude Agent SDK</span>
+          <span class="tech-role">Agentic loop control, hooks, subagents, session forking.</span>
+        </li>
+        <li>
+          <span class="tech-name">Claude API</span>
+          <span class="tech-role">Tool use, structured output, model-driven decisioning.</span>
+        </li>
+        <li>
+          <span class="tech-name">Model Context Protocol</span>
+          <span class="tech-role">Tool and resource interfaces between agents and your systems.</span>
+        </li>
+      </ul>
     </div>
 
     <h3>What the test rewards</h3>
@@ -367,9 +980,9 @@
 
   <hr class="sep">
 
-  <!-- ═══════════════════ SECTION 02 ═══ -->
+  <!-- ═══════════════════ SECTION 03 ═══ -->
   <div class="section">
-    <div class="section-label">02 — The Curriculum</div>
+    <div class="section-label">03 — The Curriculum</div>
     <h2>The five domains.</h2>
     <div class="divider"></div>
 
@@ -493,9 +1106,9 @@
 
   <hr class="sep">
 
-  <!-- ═══════════════════ SECTION 03 ═══ -->
+  <!-- ═══════════════════ SECTION 04 ═══ -->
   <div class="section">
-    <div class="section-label">03 — The Frame</div>
+    <div class="section-label">04 — The Frame</div>
     <h2>Six production scenarios.</h2>
     <div class="divider"></div>
 
@@ -548,9 +1161,36 @@
 
   <hr class="sep">
 
-  <!-- ═══════════════════ SECTION 04 ═══ -->
+  <!-- ═══════════════════ SECTION 05 — ANTI-PATTERNS CTA ═══ -->
   <div class="section">
-    <div class="section-label">04 — Method</div>
+    <div class="section-label">05 — Pitfalls</div>
+    <h2>Anti-pattern checklist.</h2>
+    <div class="divider"></div>
+
+    <p>Eighteen failure modes the exam tests against — distilled from the seven task statements in each domain plus the published anti-pattern cheatsheet. The full checklist now lives on its own page so the &ldquo;Wrong&rdquo;/&ldquo;Fix&rdquo; pairings have your full attention.</p>
+
+    <a class="ap-btn" href="anti_patterns.html">Open the anti-pattern checklist &rarr;</a>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ═══════════════════ MOCK EXAM CTA ═══ -->
+  <div class="section">
+    <div class="section-label">Practice &middot; All Domains</div>
+    <h2>Mock exam.</h2>
+    <div class="divider"></div>
+
+    <p>All 45 mock-exam questions in one place &mdash; every scenario from every domain. Click an option to lock in your answer; the rationale appears immediately. Filter by domain to drill into a single area.</p>
+
+    <a class="ap-btn" href="mock_exam.html">Open the full mock exam &rarr;</a>
+  </div>
+
+
+  <hr class="sep">
+
+  <!-- ═══════════════════ SECTION 06 ═══ -->
+  <div class="section">
+    <div class="section-label">06 — Method</div>
     <h2>A preparation playbook.</h2>
     <div class="divider"></div>
 
@@ -568,7 +1208,29 @@
     <h3>A reading rhythm that works</h3>
     <div class="card">
       <div class="card-title">Three-pass discipline</div>
-      <p><strong>Pass 1 — Survey.</strong> Read each module hero and section labels only. Build a map of the territory. <strong>Pass 2 — Depth.</strong> Read sequentially, pausing at every checkpoint. Sketch the agent graph or tool surface in your own notebook. <strong>Pass 3 — Recall.</strong> Close the module. From memory, re-derive the key idea, the anti-pattern, and the production tradeoff for each task statement.</p>
+      <ol class="pass-list">
+        <li>
+          <span class="pass-num">01</span>
+          <div>
+            <span class="pass-name">Survey</span>
+            <span class="pass-detail">Read each module hero and section labels only. Build a map of the territory before committing time to depth.</span>
+          </div>
+        </li>
+        <li>
+          <span class="pass-num">02</span>
+          <div>
+            <span class="pass-name">Depth</span>
+            <span class="pass-detail">Read sequentially, pausing at every checkpoint. Sketch the agent graph or tool surface in your own notebook.</span>
+          </div>
+        </li>
+        <li>
+          <span class="pass-num">03</span>
+          <div>
+            <span class="pass-name">Recall</span>
+            <span class="pass-detail">Close the module. From memory, re-derive the key idea, the anti-pattern, and the production tradeoff for each task statement.</span>
+          </div>
+        </li>
+      </ol>
     </div>
 
     <div class="info-box green">
