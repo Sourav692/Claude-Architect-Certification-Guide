@@ -189,6 +189,12 @@
     margin-bottom: 1.2rem;
   }
   .chapter-tags .pill { margin: 0; }
+  .chapter-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.6rem;
+    align-items: center;
+  }
   .chapter-link {
     display: inline-flex;
     align-items: baseline;
@@ -205,6 +211,11 @@
   }
   .chapter-link:hover { gap: 0.9rem; color: var(--lava-deep); border-color: var(--lava-deep); }
   .chapter-link::after { content: "→"; }
+  .chapter-link.secondary {
+    color: var(--ink-soft);
+    border-bottom-color: var(--rule-soft);
+  }
+  .chapter-link.secondary:hover { color: var(--lava); border-bottom-color: var(--lava); }
 
   @media (max-width: 640px) {
     .chapter { grid-template-columns: 1fr; gap: 0.8rem; padding: 1.8rem 0; }
@@ -380,7 +391,10 @@
           <span class="pill pill-orange">Hooks</span>
           <span class="pill pill-green">Sessions</span>
         </div>
-        <a class="chapter-link" href="domain1_study_guide.html">Open module 01</a>
+        <div class="chapter-actions">
+          <a class="chapter-link" href="domain1_study_guide.html">Open module 01</a>
+          <a class="chapter-link secondary" href="domain1_mock_exam.html">Mock exam · 10 q</a>
+        </div>
       </div>
     </div>
 
@@ -400,7 +414,10 @@
           <span class="pill pill-purple">MCP Servers</span>
           <span class="pill">Built-in Tools</span>
         </div>
-        <a class="chapter-link" href="domain2_study_guide.html">Open module 02</a>
+        <div class="chapter-actions">
+          <a class="chapter-link" href="domain2_study_guide.html">Open module 02</a>
+          <a class="chapter-link secondary" href="domain2_mock_exam.html">Mock exam · 7 q</a>
+        </div>
       </div>
     </div>
 
@@ -420,7 +437,10 @@
           <span class="pill pill-green">Plan Mode</span>
           <span class="pill pill-orange">Path Rules</span>
         </div>
-        <a class="chapter-link" href="domain3_study_guide.html">Open module 03</a>
+        <div class="chapter-actions">
+          <a class="chapter-link" href="domain3_study_guide.html">Open module 03</a>
+          <a class="chapter-link secondary" href="domain3_mock_exam.html">Mock exam · 10 q</a>
+        </div>
       </div>
     </div>
 
@@ -440,7 +460,10 @@
           <span class="pill pill-orange">Extraction</span>
           <span class="pill pill-red">Validation</span>
         </div>
-        <a class="chapter-link" href="domain4_study_guide.html">Open module 04</a>
+        <div class="chapter-actions">
+          <a class="chapter-link" href="domain4_study_guide.html">Open module 04</a>
+          <a class="chapter-link secondary" href="domain4_mock_exam.html">Mock exam · 8 q</a>
+        </div>
       </div>
     </div>
 
@@ -460,7 +483,10 @@
           <span class="pill pill-orange">HITL</span>
           <span class="pill pill-green">Self-Eval</span>
         </div>
-        <a class="chapter-link" href="domain5_study_guide.html">Open module 05</a>
+        <div class="chapter-actions">
+          <a class="chapter-link" href="domain5_study_guide.html">Open module 05</a>
+          <a class="chapter-link secondary" href="domain5_mock_exam.html">Mock exam · 10 q</a>
+        </div>
       </div>
     </div>
   </div>

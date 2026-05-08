@@ -1071,6 +1071,7 @@ footer {
       <a href="#task-5">Review</a>
       <a href="#task-6">Provenance</a>
       <a href="#practice" style="color: var(--accent);">Practice</a>
+      <a href="#mock-exam" style="color: var(--accent);">Mock Exam</a>
     </nav>
   </div>
 </header>
@@ -2636,256 +2637,54 @@ CONFIDENCE_THRESHOLDS = {
         </div>
 
       </div>
-
-      <!-- ============ BANK B: 10-QUESTION MOCK EXAM ============ -->
-      <div class="qbank" style="margin-top: 80px;" id="mock-exam">
-        <h3 class="subhead">Mock exam · 10 questions, exam format</h3>
-        <p style="margin-bottom: 32px;">Click an option to select. Click <em>Reveal answer</em> on each card, or click <em>Submit exam</em> at the bottom to grade everything at once. Pass mark: 8/10.</p>
-
-        <!-- Q1 -->
-        <div class="question-card mock-q" id="mq-1" data-correct="B">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question 01</span>01</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 5.1</span><span>Multi-issue session</span></div>
-              <p class="question-text">A support agent handles a session where the customer raises three separate order issues across 25 turns. By turn 22, the agent confuses order IDs, applies a refund amount from issue #1 to issue #3, and references "the order" without specifying which. What's the most effective architectural fix?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)"><div class="option-letter">A</div><div class="option-text">Increase the API <code>max_tokens</code> so responses can be more detailed.</div></li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)"><div class="option-letter">B</div><div class="option-text">Extract structured per-issue data (order ID, amount, status, customer-stated resolution) into a separate context layer keyed by issue, included in every prompt outside the summarized history.</div></li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)"><div class="option-letter">C</div><div class="option-text">Force the agent to handle one issue at a time and end the session between issues.</div></li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)"><div class="option-letter">D</div><div class="option-text">Have the agent re-summarize the whole session before every response.</div></li>
-          </ul>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealMock('mq-1')">Reveal answer</button></div>
-          <div class="rationale"><div class="rationale-inner">
-            <div class="rationale-tag">Rationale · B is correct</div>
-            <p class="rationale-text">Multi-issue sessions need <strong>structured issue data persisted as a separate context layer</strong>, keyed per issue. This prevents cross-contamination of order IDs and amounts. A is the capacity-not-attention trap. C creates artificial friction. D wastes tokens and still loses precision.</p>
-          </div></div>
-        </div>
-
-        <!-- Q2 -->
-        <div class="question-card mock-q" id="mq-2" data-correct="C">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question 02</span>02</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 5.2</span><span>Escalation calibration</span></div>
-              <p class="question-text">An agent escalates 42% of cases. Reviews show many escalations triggered by "<em>customer used multiple exclamation marks — high frustration</em>." Meanwhile, the agent autonomously attempts cases where policy is silent on the request (e.g., competitor price matching). First-contact resolution is 55%, target 80%. Best improvement?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)"><div class="option-letter">A</div><div class="option-text">Add a finer-grained sentiment classifier to better distinguish real frustration from mild irritation.</div></li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)"><div class="option-letter">B</div><div class="option-text">Have the agent self-report a 1–10 confidence score and escalate below 7.</div></li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)"><div class="option-letter">C</div><div class="option-text">Replace sentiment-based escalation with explicit criteria (customer requests human, policy gap, no progress) plus 4–8 few-shot examples covering each trigger.</div></li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)"><div class="option-letter">D</div><div class="option-text">Lower the escalation threshold and let the agent attempt every case.</div></li>
-          </ul>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealMock('mq-2')">Reveal answer</button></div>
-          <div class="rationale"><div class="rationale-inner">
-            <div class="rationale-tag">Rationale · C is correct</div>
-            <p class="rationale-text">Sentiment is an unreliable proxy. Self-reported confidence is uncalibrated. The right fix is <strong>explicit categorical criteria + few-shot examples</strong> targeting both ends of the calibration problem (over-escalation on frustration AND under-escalation on policy gaps). A doubles down on a broken proxy. B replaces one bad proxy with another. D removes the safety net entirely.</p>
-          </div></div>
-        </div>
-
-        <!-- Q3 -->
-        <div class="question-card mock-q" id="mq-3" data-correct="C">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question 03</span>03</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 5.3</span><span>Empty vs broken</span></div>
-              <p class="question-text">Your subagent calls a search API. Sometimes the call succeeds with no matches; sometimes the API is down; sometimes the credentials are revoked. Your current implementation returns <code>{"results": []}</code> uniformly on all failure modes plus on legitimate empty matches. What's the best redesign?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)"><div class="option-letter">A</div><div class="option-text">Always raise an exception so the workflow halts.</div></li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)"><div class="option-letter">B</div><div class="option-text">Add a single error string field; the coordinator checks if it's empty.</div></li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)"><div class="option-letter">C</div><div class="option-text">Return structured results: explicit <code>status</code> ("success" / "error"), <code>error_type</code>, <code>is_retryable</code>, <code>attempted_query</code>, <code>partial_results</code>, <code>alternative_approaches</code>. Distinguish access failure from valid empty result.</div></li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)"><div class="option-letter">D</div><div class="option-text">Hard-code a fallback dataset so empty results never reach the coordinator.</div></li>
-          </ul>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealMock('mq-3')">Reveal answer</button></div>
-          <div class="rationale"><div class="rationale-inner">
-            <div class="rationale-tag">Rationale · C is correct</div>
-            <p class="rationale-text">Structured error context is the explicit answer in this task statement. A terminates entire workflows on single failures. B isn't precise enough — coordinator still can't tell retryable from non-retryable. D fabricates data and hides real signal.</p>
-          </div></div>
-        </div>
-
-        <!-- Q4 -->
-        <div class="question-card mock-q" id="mq-4" data-correct="B">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question 04</span>04</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 5.3</span><span>Recovery decision</span></div>
-              <p class="question-text">A coordinator delegates to three subagents in parallel. One returns successfully. One returns a structured timeout with <code>is_retryable: true</code> and partial results. One returns a permission error with <code>is_retryable: false</code>. What's the right coordinator behavior?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)"><div class="option-letter">A</div><div class="option-text">Terminate the entire workflow — partial completion is unacceptable.</div></li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)"><div class="option-letter">B</div><div class="option-text">Use the successful result; retry the timeout (it's retryable); skip the permission error; synthesize with explicit coverage gaps for any source that ultimately can't be recovered.</div></li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)"><div class="option-letter">C</div><div class="option-text">Retry all three until everything succeeds.</div></li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)"><div class="option-letter">D</div><div class="option-text">Use only the successful result and silently drop the others from the final report.</div></li>
-          </ul>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealMock('mq-4')">Reveal answer</button></div>
-          <div class="rationale"><div class="rationale-inner">
-            <div class="rationale-tag">Rationale · B is correct</div>
-            <p class="rationale-text">The coordinator inspects <code>is_retryable</code> and acts accordingly: retry retryable, skip non-retryable, use what succeeded, annotate gaps in synthesis. A loses successful work. C burns budget on permission errors that won't succeed. D silently drops information that should be flagged as a coverage gap.</p>
-          </div></div>
-        </div>
-
-        <!-- Q5 -->
-        <div class="question-card mock-q" id="mq-5" data-correct="B">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question 05</span>05</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 5.4</span><span>Architecture choice</span></div>
-              <p class="question-text">A coordinator agent investigates a 200-file legacy codebase. It needs to: find all test files, trace the refund flow, identify external API dependencies. Each task involves reading dozens of files. What's the right architecture?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)"><div class="option-letter">A</div><div class="option-text">Coordinator reads each file directly and keeps all contents in its context for cross-referencing.</div></li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)"><div class="option-letter">B</div><div class="option-text">Spawn a subagent per investigation task; each reads files in its own context and returns a structured summary; coordinator persists summaries to scratchpad files and references them across phases.</div></li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)"><div class="option-letter">C</div><div class="option-text">Run all three investigations in a single sequential conversation so context is shared.</div></li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)"><div class="option-letter">D</div><div class="option-text">Use <code>/compact</code> after every file read to keep context small.</div></li>
-          </ul>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealMock('mq-5')">Reveal answer</button></div>
-          <div class="rationale"><div class="rationale-inner">
-            <div class="rationale-tag">Rationale · B is correct</div>
-            <p class="rationale-text">Subagent isolation keeps verbose discovery out of coordination context. Scratchpad files preserve findings across phase boundaries and crashes. A guarantees context degradation. C does the same in a single context. D is heavy-handed and loses signal alongside noise.</p>
-          </div></div>
-        </div>
-
-        <!-- Q6 -->
-        <div class="question-card mock-q" id="mq-6" data-correct="A">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question 06</span>06</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 5.4</span><span>Crash recovery</span></div>
-              <p class="question-text">A multi-hour codebase exploration session crashes 75% through. The coordinator and three subagents had completed several investigation phases. What design decision would have made recovery clean?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)"><div class="option-letter">A</div><div class="option-text">Each agent periodically exports state to a known location; coordinator loads a manifest on resume and injects relevant scratchpads into agent prompts.</div></li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)"><div class="option-letter">B</div><div class="option-text">Use a database with ACID guarantees to store the full conversation transcript.</div></li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)"><div class="option-letter">C</div><div class="option-text">Always restart from scratch — agents are cheap.</div></li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)"><div class="option-letter">D</div><div class="option-text">Run the entire workflow in a single Python process with global error handlers.</div></li>
-          </ul>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealMock('mq-6')">Reveal answer</button></div>
-          <div class="rationale"><div class="rationale-inner">
-            <div class="rationale-tag">Rationale · A is correct</div>
-            <p class="rationale-text">Structured state persistence with manifests is the explicit pattern for crash recovery in multi-agent systems. B is over-engineered and doesn't address agent prompt rebuild. C wastes hours. D doesn't survive process death.</p>
-          </div></div>
-        </div>
-
-        <!-- Q7 -->
-        <div class="question-card mock-q" id="mq-7" data-correct="C">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question 07</span>07</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 5.5</span><span>Ongoing audit</span></div>
-              <p class="question-text">Your team has been auto-processing high-confidence extractions for six months. Volume is 50,000/month. What ongoing audit pattern reliably catches novel error patterns introduced by document-format changes?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)"><div class="option-letter">A</div><div class="option-text">Re-run the original validation set quarterly and report aggregate accuracy.</div></li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)"><div class="option-letter">B</div><div class="option-text">Random sampling of 1% of auto-processed extractions for human audit.</div></li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)"><div class="option-letter">C</div><div class="option-text">Stratified random sampling across document type, vendor region, and confidence band; track accuracy per stratum and per field over time.</div></li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)"><div class="option-letter">D</div><div class="option-text">Increase confidence thresholds when complaints come in from downstream consumers.</div></li>
-          </ul>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealMock('mq-7')">Reveal answer</button></div>
-          <div class="rationale"><div class="rationale-inner">
-            <div class="rationale-tag">Rationale · C is correct</div>
-            <p class="rationale-text">Stratified sampling surfaces concentrated errors in rare strata. Random sampling misses them. Aggregate validation hides per-segment failures. Reactive threshold-tuning waits until users complain — too late.</p>
-          </div></div>
-        </div>
-
-        <!-- Q8 -->
-        <div class="question-card mock-q" id="mq-8" data-correct="B">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question 08</span>08</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 5.5</span><span>Threshold design</span></div>
-              <p class="question-text">Your extraction system outputs vendor_name, invoice_total, tax_amount, and invoice_date. You want to route low-confidence extractions to humans. What's the right threshold strategy?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)"><div class="option-letter">A</div><div class="option-text">Use one uniform threshold (e.g., 0.9) across all fields for simplicity.</div></li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)"><div class="option-letter">B</div><div class="option-text">Set per-field thresholds calibrated against labeled validation data — stricter on money fields (e.g., 0.95) than on free-text fields (e.g., 0.85) because error costs differ.</div></li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)"><div class="option-letter">C</div><div class="option-text">Skip thresholds entirely; route every extraction to human review.</div></li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)"><div class="option-letter">D</div><div class="option-text">Have the model self-rate on a 1–10 scale and route below 7.</div></li>
-          </ul>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealMock('mq-8')">Reveal answer</button></div>
-          <div class="rationale"><div class="rationale-inner">
-            <div class="rationale-tag">Rationale · B is correct</div>
-            <p class="rationale-text">Per-field thresholds calibrated against labeled validation data align review intensity with error cost. A treats high-cost fields too leniently and low-cost fields too strictly. C defeats the purpose of automation. D uses uncalibrated self-confidence.</p>
-          </div></div>
-        </div>
-
-        <!-- Q9 -->
-        <div class="question-card mock-q" id="mq-9" data-correct="C">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question 09</span>09</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 5.6</span><span>Conflict handling</span></div>
-              <p class="question-text">A multi-agent research system finds two credible sources reporting EV adoption rates for 2025 — IEA reports 18% YoY growth (using sales registrations); BNEF reports 31% YoY growth (including pre-orders). The synthesis subagent currently picks 18% as "more conservative" and drops 31%. Critique?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)"><div class="option-letter">A</div><div class="option-text">Correct — when sources disagree, picking the more conservative estimate is safest.</div></li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)"><div class="option-letter">B</div><div class="option-text">Should average them: (18 + 31) / 2 = 24.5%.</div></li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)"><div class="option-letter">C</div><div class="option-text">Wrong. Both sources should be preserved with attribution and methodology notes; report should flag this as a contested finding so stakeholders see the disagreement.</div></li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)"><div class="option-letter">D</div><div class="option-text">Discard both since they contradict.</div></li>
-          </ul>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealMock('mq-9')">Reveal answer</button></div>
-          <div class="rationale"><div class="rationale-inner">
-            <div class="rationale-tag">Rationale · C is correct</div>
-            <p class="rationale-text">Same time period + different methodology = real conflict. Preserve both with source attribution and methodology, present as contested. A loses information by editorial choice. B fabricates a number no source reported. D throws away signal.</p>
-          </div></div>
-        </div>
-
-        <!-- Q10 -->
-        <div class="question-card mock-q" id="mq-10" data-correct="A">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question 10</span>10</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Task 5.6</span><span>Provenance through synthesis</span></div>
-              <p class="question-text">A synthesis subagent receives findings from three other subagents and produces a polished prose report. Stakeholders ask "where did this number come from?" — the report has no attribution. The synthesis subagent's prompt says "<em>summarize the findings concisely</em>." What's the most direct fix?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)"><div class="option-letter">A</div><div class="option-text">Require subagents to emit structured records (claim, source_name, source_url, publication_date, evidence_excerpt). Synthesis prompt explicitly requires preservation of source fields through the merge. Validate output: any claim missing source attribution kicks back to the synthesis subagent for retry.</div></li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)"><div class="option-letter">B</div><div class="option-text">Add a footnote section at the end of the report listing all URLs visited.</div></li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)"><div class="option-letter">C</div><div class="option-text">Have the synthesis subagent re-fetch every source for the final report.</div></li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)"><div class="option-letter">D</div><div class="option-text">Tell the synthesis subagent to "be more careful with citations."</div></li>
-          </ul>
-          <div class="question-actions"><button class="reveal-btn" onclick="revealMock('mq-10')">Reveal answer</button></div>
-          <div class="rationale"><div class="rationale-inner">
-            <div class="rationale-tag">Rationale · A is correct</div>
-            <p class="rationale-text">Structured intermediate records + explicit preservation requirement + output validation creates a chain that source attribution can't silently fall out of. B doesn't link claims to sources — just lists URLs. C is wasteful and doesn't fix the structural issue. D is prose hand-waving against a structural problem.</p>
-          </div></div>
-        </div>
-
-        <!-- Score Panel -->
-        <div class="score-panel hidden" id="score-panel">
-          <div class="score-stat">
-            <div class="score-value" id="score-current">0/10</div>
-            <div class="score-label">Score</div>
-          </div>
-          <div class="score-stat">
-            <div class="score-value" id="score-answered">0/10</div>
-            <div class="score-label">Answered</div>
-          </div>
-          <div class="score-stat">
-            <div class="score-value" id="score-status">Not started</div>
-            <div class="score-label">Status</div>
-          </div>
-          <div class="score-actions">
-            <button class="score-action-btn" onclick="resetExam()">Reset</button>
-            <button class="score-action-btn primary" onclick="submitExam()">Submit exam</button>
-          </div>
-        </div>
-
-      </div>
     </div>
   </div>
 </section>
+
+<!-- =================== MOCK EXAM SECTION =================== -->
+<!-- =================== MOCK EXAM CTA =================== -->
+<section class="task-section" id="mock-exam">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">&Sigma;</div>
+      <div class="section-header-text">
+        <div class="section-tag">Mock exam &middot; graded</div>
+        <h2 class="section-title">Sit the test.</h2>
+        <div class="section-meaning">
+          10 scenario-based questions in true exam format. Aim for 8/10. The mock exam now runs as its own standalone page so the score panel and exam mode have your full attention.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-body">
+      <a class="mock-cta" href="domain5_mock_exam.html">
+        <div class="mock-cta-meta">
+          <span class="mock-cta-tag">Mock Exam</span>
+          <span class="mock-cta-eyebrow">Domain 5 &middot; 10 questions &middot; pass 8/10</span>
+        </div>
+        <div class="mock-cta-title">Open the mock exam &rarr;</div>
+        <div class="mock-cta-lede">Launches a focused exam page. Use it untimed for revision, or hit &ldquo;Start exam mode&rdquo; to score across the whole bank.</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<nav class="module-nav" aria-label="Module navigation">
+  <div class="container">
+    <div class="module-nav-grid">
+      <a class="module-nav-item module-nav-prev" href="domain4_study_guide.html">
+        <span class="module-nav-lbl">← Previous</span>
+        <span class="module-nav-eyebrow">Domain 04 · 20%</span>
+        <span class="module-nav-title">Prompt Engineering &amp; Structured Output</span>
+      </a>
+      <a class="module-nav-item module-nav-next" href="index.html">
+        <span class="module-nav-lbl">Syllabus →</span>
+        <span class="module-nav-eyebrow">Index</span>
+        <span class="module-nav-title">Back to Study Guide</span>
+      </a>
+    </div>
+  </div>
+</nav>
 
 <!-- ============ FOOTER ============ -->
 <footer>

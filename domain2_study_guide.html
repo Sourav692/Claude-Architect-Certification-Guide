@@ -1339,6 +1339,7 @@ footer {
       <a href="#task-4">MCP</a>
       <a href="#task-5">Built-in</a>
       <a href="#practice" style="color: var(--accent);">Practice</a>
+      <a href="#mock-exam" style="color: var(--accent);">Mock Exam</a>
     </nav>
   </div>
 </header>
@@ -2682,321 +2683,54 @@ grep(<span class="string">"from 'lodash'|require\\('lodash'\\)"</span>,
         </div>
 
       </div>
-
-      <!-- ============ BANK B: 7 MOCK EXAM QUESTIONS ============ -->
-      <div class="qbank" style="margin-top: 80px;" id="mock-exam">
-
-        <div class="qbank-group-header">
-          <div class="qbank-group-num" style="color: var(--coral);">B</div>
-          <div class="qbank-group-title">Mock exam · scenario-based</div>
-          <div class="qbank-group-tag">7 questions · pass mark 6/7</div>
-        </div>
-
-        <p style="margin-bottom: 24px;">Click any option to select it. The "Reveal answer" button shows the correct answer with rationale. Switch to <strong>Exam mode</strong> below to track a score across all 7 questions before revealing.</p>
-
-        <div style="display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;">
-          <button class="exam-mode-toggle" id="exam-mode-btn" onclick="toggleExamMode()">Start exam mode</button>
-          <button class="exam-mode-toggle" onclick="resetExam()">Reset all answers</button>
-        </div>
-
-        <!-- Q1 -->
-        <div class="question-card mock-q" data-correct="B" id="mq-1">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>01</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Customer Support</span><span>Tool descriptions</span></div>
-              <p class="question-text">Your customer support agent has two tools: <code>get_customer</code> ("Retrieves customer information") and <code>lookup_order</code> ("Retrieves order details"). Both accept ID-shaped strings. Production logs show 12% of "check my order #12345" queries route to <code>get_customer</code>. What's the most effective first step?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Add 5-8 few-shot examples to the system prompt showing correct tool selection</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Expand each tool's description to include input formats, example queries, edge cases, and boundaries explaining when to use it versus the other</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Implement a routing layer that pre-parses each user message and selects the tool based on detected keywords</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Consolidate both tools into a single <code>lookup_entity</code> tool that routes internally</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-1')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: B</div>
-              <p class="rationale-text">Tool descriptions are the primary selection mechanism. The root cause is inadequate descriptions; expanding them is the lowest-effort, highest-leverage fix.</p>
-              <div class="rationale-distractors"><strong>A:</strong> Few-shot examples mask the underlying issue and grow tokens. <strong>C:</strong> A routing classifier replaces LLM reasoning with hand-coded heuristics — over-engineered. <strong>D:</strong> Consolidation is a valid architectural choice but it's a redesign, not a "first step."</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q2 -->
-        <div class="question-card mock-q" data-correct="C" id="mq-2">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>02</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Document Processing</span><span>Tool splitting</span></div>
-              <p class="question-text">You have a generic <code>analyze_document</code> tool that handles fact-checking, summarization, and structured field extraction. Agents misuse it about 25% of the time — using it for summarization when extraction was needed, and vice versa. What's the right architectural fix?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Add a <code>task_type</code> parameter to the tool so callers can specify what they want</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Rewrite the description with longer prose explaining each use case</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Split it into <code>extract_data_points</code>, <code>summarize_content</code>, and <code>verify_claim_against_source</code> — three tools with defined input/output contracts</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Force the tool with <code>tool_choice</code> selection on every call to ensure consistent behavior</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-2')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: C</div>
-              <p class="rationale-text">Generic tools with mixed responsibilities cause selection ambiguity. Splitting into purpose-specific tools with defined contracts makes selection obvious — three tools, three jobs, three clean signals.</p>
-              <div class="rationale-distractors"><strong>A:</strong> Mode flags push the ambiguity into the input parameter; selection is still unclear. <strong>B:</strong> Long descriptions for a single tool can't compete with three distinct tool boundaries. <strong>D:</strong> Forcing the same tool doesn't fix when it should be used.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q3 -->
-        <div class="question-card mock-q" data-correct="C" id="mq-3">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>03</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Refund Processing</span><span>Error categories</span></div>
-              <p class="question-text">Your <code>process_refund</code> MCP tool gets a request for $750 when company policy caps refunds at $500. What error response should it return?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text"><code>isError: true</code>, <code>errorCategory: "transient"</code>, <code>isRetryable: true</code></span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text"><code>isError: true</code>, <code>errorCategory: "validation"</code>, <code>isRetryable: true</code>, with a corrected amount</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text"><code>isError: true</code>, <code>errorCategory: "business"</code>, <code>isRetryable: false</code>, with a customer-friendly message and the policy limit in details</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text"><code>isError: false</code> with the refund silently capped at $500</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-3')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: C</div>
-              <p class="rationale-text">Policy violations are business errors, not transient or validation. They are NOT retryable — retrying with the same amount fails again. Customer-friendly messaging and structured details enable the agent to explain or escalate appropriately.</p>
-              <div class="rationale-distractors"><strong>A:</strong> Wastes retries on a deterministic policy block. <strong>B:</strong> Validation implies bad input format; the format is fine, the value violates policy. <strong>D:</strong> Silent capping breaks user expectations and audit trails.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q4 -->
-        <div class="question-card mock-q" data-correct="A" id="mq-4">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>04</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Multi-Agent Research</span><span>Error propagation</span></div>
-              <p class="question-text">A web search subagent times out while researching a complex topic. You're designing how the failure information flows back to the coordinator. Which approach best enables intelligent recovery?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Return structured error context including failure type, the attempted query, partial results, and potential alternative approaches</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Return a generic <code>"search unavailable"</code> status only after the subagent's internal exponential-backoff retry logic exhausts</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Catch the timeout inside the subagent and return an empty result set marked as successful so the coordinator can proceed</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Propagate the timeout exception directly to a top-level handler that terminates the entire research workflow</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-4')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: A</div>
-              <p class="rationale-text">Structured error context gives the coordinator everything it needs to choose recovery: retry with a different query, route to a different subagent, or proceed with partial results and annotate gaps.</p>
-              <div class="rationale-distractors"><strong>B:</strong> Generic status strips the signal needed for intelligent recovery. <strong>C:</strong> Silent suppression — coordinator synthesizes from incomplete data, doesn't know it failed. <strong>D:</strong> Over-aggressive — kills a workflow that could have recovered.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q5 -->
-        <div class="question-card mock-q" data-correct="A" id="mq-5">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>05</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Multi-Agent Research</span><span>Scoped tools</span></div>
-              <p class="question-text">Your synthesis agent frequently needs to verify simple facts (dates, names, statistics) while combining findings. Currently it returns control to the coordinator, which invokes the web search agent, then re-invokes synthesis with results — adding 40% latency. Telemetry shows 85% of these verifications are simple fact-checks; 15% need deeper investigation. What's the most effective approach?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Give the synthesis agent a scoped <code>verify_fact</code> tool for simple lookups; complex verifications continue routing through the coordinator</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Have the synthesis agent batch all verification needs and return them at the end of its pass for the coordinator to handle</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Give the synthesis agent access to the full set of web search tools so it can handle any verification directly</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Have the web search agent proactively cache extra context around each source during initial research to anticipate what synthesis might need</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-5')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: A</div>
-              <p class="rationale-text">Least-privilege applied to tool distribution. The 85% common case gets a scoped tool inline; the 15% complex case still routes through the coordinator. Eliminates round trips for high-frequency simple lookups without over-provisioning.</p>
-              <div class="rationale-distractors"><strong>B:</strong> Batching breaks synthesis flow — synthesis often needs verified facts mid-pass. <strong>C:</strong> Over-provisioning. Synthesis agent will start doing research instead of synthesizing. <strong>D:</strong> Speculative caching — unreliable prediction of what will be needed.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q6 -->
-        <div class="question-card mock-q" data-correct="A" id="mq-6">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>06</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">MCP Setup</span><span>Configuration scope</span></div>
-              <p class="question-text">A new team member clones your repo and runs Claude Code. They report none of the MCP servers you set up are available to them. You configured GitHub, Jira, and your internal billing server in <code>~/.claude.json</code> on your machine. What's the fix?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Move the server configurations from <code>~/.claude.json</code> into a project-level <code>.mcp.json</code> committed to the repo, using environment variable expansion for credentials</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Have the new team member copy your <code>~/.claude.json</code> to their home directory</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Add the server commands to a startup script in <code>.claude/commands/</code> so they run when Claude Code starts</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Document the server URLs in the project README so new members can manually add them to their own <code>~/.claude.json</code></span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-6')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: A</div>
-              <p class="rationale-text">Project-level <code>.mcp.json</code> ships with the repo so every clone gets the servers automatically. Environment variable expansion keeps secrets out of git — each developer sets their own tokens locally.</p>
-              <div class="rationale-distractors"><strong>B:</strong> Copying user-level config also copies your credentials — security violation. <strong>C:</strong> <code>.claude/commands/</code> is for slash commands, not MCP server configuration. <strong>D:</strong> Manual setup is fragile and error-prone; the whole point of project scope is automation.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q7 -->
-        <div class="question-card mock-q" data-correct="B" id="mq-7">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>07</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Codebase Exploration</span><span>Tool selection</span></div>
-              <p class="question-text">You need to find every file in a TypeScript codebase that imports the <code>lodash</code> library. Which built-in tool is appropriate?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Glob with pattern <code>**/*lodash*</code> to match files by name</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Grep searching for the string <code>from 'lodash'</code> or <code>require('lodash')</code> across file contents</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Read every <code>.ts</code> file and inspect the import statements</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Bash with <code>find . -name "*.ts"</code> to list TypeScript files first, then inspect each</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-7')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: B</div>
-              <p class="rationale-text">Grep searches file contents — exactly what you need to find import statements. Mental rule: contents = Grep, paths = Glob.</p>
-              <div class="rationale-distractors"><strong>A:</strong> Glob matches paths only — would only catch files NAMED with "lodash" in the path. <strong>C:</strong> Reading every file blows context unnecessarily — the incremental anti-pattern. <strong>D:</strong> Bash + find is just listing files, doesn't actually search contents — same problem as A plus more steps.</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Score panel -->
-      <div class="score-panel hidden" id="score-panel">
-        <div class="score-stat">
-          <div class="score-value" id="score-current">0/7</div>
-          <div class="score-label">Score</div>
-        </div>
-        <div class="score-stat">
-          <div class="score-value" id="score-answered">0/7</div>
-          <div class="score-label">Answered</div>
-        </div>
-        <div class="score-stat">
-          <div class="score-value" id="score-status">Not started</div>
-          <div class="score-label">Status</div>
-        </div>
-        <div class="score-actions">
-          <button class="score-action-btn" onclick="resetExam()">Reset</button>
-          <button class="score-action-btn primary" onclick="submitExam()">Submit all</button>
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
+
+<!-- =================== MOCK EXAM SECTION =================== -->
+<!-- =================== MOCK EXAM CTA =================== -->
+<section class="task-section" id="mock-exam">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">&Sigma;</div>
+      <div class="section-header-text">
+        <div class="section-tag">Mock exam &middot; graded</div>
+        <h2 class="section-title">Sit the test.</h2>
+        <div class="section-meaning">
+          7 scenario-based questions in true exam format. Aim for 6/7. The mock exam now runs as its own standalone page so the score panel and exam mode have your full attention.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-body">
+      <a class="mock-cta" href="domain2_mock_exam.html">
+        <div class="mock-cta-meta">
+          <span class="mock-cta-tag">Mock Exam</span>
+          <span class="mock-cta-eyebrow">Domain 2 &middot; 7 questions &middot; pass 6/7</span>
+        </div>
+        <div class="mock-cta-title">Open the mock exam &rarr;</div>
+        <div class="mock-cta-lede">Launches a focused exam page. Use it untimed for revision, or hit &ldquo;Start exam mode&rdquo; to score across the whole bank.</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<nav class="module-nav" aria-label="Module navigation">
+  <div class="container">
+    <div class="module-nav-grid">
+      <a class="module-nav-item module-nav-prev" href="domain1_study_guide.html">
+        <span class="module-nav-lbl">← Previous</span>
+        <span class="module-nav-eyebrow">Domain 01 · 27%</span>
+        <span class="module-nav-title">Agentic Architecture &amp; Orchestration</span>
+      </a>
+      <a class="module-nav-item module-nav-next" href="domain3_study_guide.html">
+        <span class="module-nav-lbl">Next →</span>
+        <span class="module-nav-eyebrow">Domain 03 · 20%</span>
+        <span class="module-nav-title">Claude Code Configuration &amp; Workflows</span>
+      </a>
+    </div>
+  </div>
+</nav>
 
 <footer>
   <div class="container">

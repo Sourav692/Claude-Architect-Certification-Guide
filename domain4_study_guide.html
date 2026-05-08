@@ -1234,7 +1234,7 @@ footer {
         <a href="#t44">4.4 Validate</a>
         <a href="#t45">4.5 Batch</a>
         <a href="#t46">4.6 Multi-Pass</a>
-        <a href="#exam">Exam</a>
+        <a href="#mock-exam" style="color: var(--accent);">Mock Exam</a>
       </nav>
     </div>
   </div>
@@ -2931,259 +2931,50 @@ independent = client.messages.create(
   </div>
 </section>
 
-<!-- =================== PRACTICE EXAM =================== -->
-<section class="task-section" id="exam" style="border-bottom:none;">
+<!-- =================== MOCK EXAM SECTION =================== -->
+<!-- =================== MOCK EXAM CTA =================== -->
+<section class="task-section" id="mock-exam">
   <div class="container">
     <div class="section-header">
-      <div class="section-num" style="color:var(--teal);">EX</div>
+      <div class="section-num">&Sigma;</div>
       <div class="section-header-text">
-        <div class="section-tag">Practice exam</div>
-        <h2 class="section-title">Eight questions. Aim for 7/8.</h2>
-        <p class="section-meaning">
-          Click an option to select it, then "Reveal answer" to see the rationale and
-          which option you should have picked. Your score updates at the bottom.
-        </p>
+        <div class="section-tag">Mock exam &middot; graded</div>
+        <h2 class="section-title">Sit the test.</h2>
+        <div class="section-meaning">
+          8 scenario-based questions in true exam format. Aim for 7/8. The mock exam now runs as its own standalone page so the score panel and exam mode have your full attention.
+        </div>
       </div>
     </div>
 
-    <div class="qbank">
-
-      <!-- EXAM Q1 -->
-      <div class="question-card exam-q" id="eq-1" data-correct="C">
-        <div class="question-header">
-          <div class="question-num"><span class="q-prefix">Question 01</span>01</div>
-          <div class="question-body">
-            <div class="question-scenario"><span class="scenario-tag">Task 4.1</span><span>FP trust</span></div>
-            <p class="question-text">Your security review agent flags 200 issues per week. The "input validation" category has 22% precision; developers ignore that category and now also ignore the "auth" category (which has 88% precision). Which action <em>first</em>?</p>
-          </div>
+    <div class="section-body">
+      <a class="mock-cta" href="domain4_mock_exam.html">
+        <div class="mock-cta-meta">
+          <span class="mock-cta-tag">Mock Exam</span>
+          <span class="mock-cta-eyebrow">Domain 4 &middot; 8 questions &middot; pass 7/8</span>
         </div>
-        <ul class="options-list">
-          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">Add "only flag with high confidence" to the prompt.</span></li>
-          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">Lower the temperature to 0.</span></li>
-          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Temporarily disable the input-validation category, rewrite its criteria, then re-enable.</span></li>
-          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Add a confidence score field and filter to scores &gt; 0.8.</span></li>
-        </ul>
-        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-1')">Reveal answer</button></div>
-        <div class="rationale">
-          <div class="rationale-inner">
-            <div class="rationale-tag">Why C</div>
-            <p class="rationale-text">High-FP categories poison trust in the accurate ones around them. The fix is disable-and-rewrite: protect developer trust in the working categories while you fix the broken one offline. <strong>A and D</strong> are vague-confidence theater — the model has no calibrated notion of confidence. <strong>B</strong> is unrelated; temperature controls sampling randomness, not what counts as a finding.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- EXAM Q2 -->
-      <div class="question-card exam-q" id="eq-2" data-correct="B">
-        <div class="question-header">
-          <div class="question-num"><span class="q-prefix">Question 02</span>02</div>
-          <div class="question-body">
-            <div class="question-scenario"><span class="scenario-tag">Task 4.3</span><span>tool_choice</span></div>
-            <p class="question-text">You have three extraction tools (<code>invoice</code>, <code>receipt</code>, <code>purchase_order</code>) and the document type is unknown. You need guaranteed structured output. What <code>tool_choice</code>?</p>
-          </div>
-        </div>
-        <ul class="options-list">
-          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text"><code>"auto"</code></span></li>
-          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text"><code>{"type": "any"}</code></span></li>
-          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text"><code>{"type": "tool", "name": "invoice"}</code></span></li>
-          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Omit <code>tool_choice</code> entirely.</span></li>
-        </ul>
-        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-2')">Reveal answer</button></div>
-        <div class="rationale">
-          <div class="rationale-inner">
-            <div class="rationale-tag">Why B</div>
-            <p class="rationale-text"><code>{"type": "any"}</code> forces a tool call (so output is always structured) while letting Claude choose which extractor based on the document. <strong>A and D</strong> default to "auto" — Claude may return text. <strong>C</strong> locks to one extractor regardless of document type, which is wrong when the type is unknown.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- EXAM Q3 -->
-      <div class="question-card exam-q" id="eq-3" data-correct="B">
-        <div class="question-header">
-          <div class="question-num"><span class="q-prefix">Question 03</span>03</div>
-          <div class="question-body">
-            <div class="question-scenario"><span class="scenario-tag">Task 4.3</span><span>fabrication</span></div>
-            <p class="question-text">Your contract extractor's <code>governing_law</code> field returns <code>"California"</code> even for contracts with no governing-law clause. Schema marks the field required, type string. What's the fix?</p>
-          </div>
-        </div>
-        <ul class="options-list">
-          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">Add a few-shot example showing the model to default to "California" when missing.</span></li>
-          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">Make the field nullable so the model can return null when the clause is absent.</span></li>
-          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Add a Pydantic validator that rejects "California".</span></li>
-          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Force a retry until the model returns something different.</span></li>
-        </ul>
-        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-3')">Reveal answer</button></div>
-        <div class="rationale">
-          <div class="rationale-inner">
-            <div class="rationale-tag">Why B</div>
-            <p class="rationale-text">Required + non-nullable forces the model to fabricate to satisfy the schema. Nullable lets it correctly return null when the clause is absent. <strong>A</strong> teaches it to fabricate worse. <strong>C</strong> just rejects the symptom — model will pick another plausible default. <strong>D</strong> wastes calls on a problem the schema is causing.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- EXAM Q4 -->
-      <div class="question-card exam-q" id="eq-4" data-correct="B">
-        <div class="question-header">
-          <div class="question-num"><span class="q-prefix">Question 04</span>04</div>
-          <div class="question-body">
-            <div class="question-scenario"><span class="scenario-tag">Task 4.5</span><span>API selection</span></div>
-            <p class="question-text">You have two workflows: (a) PR-blocking pre-merge review, (b) nightly tech-debt scan. Manager wants both moved to the Message Batches API for 50% savings. What's correct?</p>
-          </div>
-        </div>
-        <ul class="options-list">
-          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">Move both — savings outweigh latency.</span></li>
-          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">Move only the nightly scan; keep PR review on sync.</span></li>
-          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Keep both on sync — batch result ordering is unreliable.</span></li>
-          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Move both, with a fallback to sync if a batch is slow.</span></li>
-        </ul>
-        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-4')">Reveal answer</button></div>
-        <div class="rationale">
-          <div class="rationale-inner">
-            <div class="rationale-tag">Why B</div>
-            <p class="rationale-text">Batch fits non-blocking, latency-tolerant workloads; sync fits blocking workflows where developers are waiting. The 24-hour batch ceiling makes batch unworkable for pre-merge. <strong>C</strong> reflects a misconception — <code>custom_id</code> handles correlation cleanly. <strong>D</strong> over-engineers; matching API to workflow is the simpler, correct answer.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- EXAM Q5 -->
-      <div class="question-card exam-q" id="eq-5" data-correct="B">
-        <div class="question-header">
-          <div class="question-num"><span class="q-prefix">Question 05</span>05</div>
-          <div class="question-body">
-            <div class="question-scenario"><span class="scenario-tag">Task 4.4</span><span>retry boundary</span></div>
-            <p class="question-text">Your invoice extractor sometimes fails validation: <code>line_items.sum() != stated_total</code>. About 60% of failures are model errors fixable on retry; the other 40% are documents where the line items are genuinely missing. What architecture?</p>
-          </div>
-        </div>
-        <ul class="options-list">
-          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">Retry indefinitely until validation passes.</span></li>
-          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">Bounded retries (2-3) with the validation error appended; route remaining failures to human review.</span></li>
-          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Lower the model temperature to reduce the failure rate.</span></li>
-          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Remove the line-items sum check and trust <code>stated_total</code>.</span></li>
-        </ul>
-        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-5')">Reveal answer</button></div>
-        <div class="rationale">
-          <div class="rationale-inner">
-            <div class="rationale-tag">Why B</div>
-            <p class="rationale-text">Bounded retry with error feedback for the fixable 60%; human routing for the unfixable 40% (data genuinely absent). <strong>A</strong> wastes cost on unfixable cases. <strong>C</strong> doesn't address what's wrong. <strong>D</strong> abandons the most valuable semantic check you have.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- EXAM Q6 -->
-      <div class="question-card exam-q" id="eq-6" data-correct="C">
-        <div class="question-header">
-          <div class="question-num"><span class="q-prefix">Question 06</span>06</div>
-          <div class="question-body">
-            <div class="question-scenario"><span class="scenario-tag">Task 4.6</span><span>multi-pass</span></div>
-            <p class="question-text">A 14-file PR review produces inconsistent depth, missed bugs, and contradictory findings (same pattern flagged in one file, approved in another). Best fix?</p>
-          </div>
-        </div>
-        <ul class="options-list">
-          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">Upgrade to a model with a 1M-token context window.</span></li>
-          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">Run three independent passes on the full PR; only flag issues appearing in ≥2 of 3.</span></li>
-          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Split into per-file passes for local issues + a separate integration pass for cross-file flow.</span></li>
-          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Require developers to split the PR into 3-4 file submissions.</span></li>
-        </ul>
-        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-6')">Reveal answer</button></div>
-        <div class="rationale">
-          <div class="rationale-inner">
-            <div class="rationale-tag">Why C</div>
-            <p class="rationale-text">Root cause is attention dilution across files. Per-file focused passes plus an integration pass solves it. <strong>A</strong> doesn't fix dilution — bigger context still spreads attention across files. <strong>B</strong> is crude consensus that misses unique findings and adds 3× cost. <strong>D</strong> shifts the architectural problem onto humans.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- EXAM Q7 -->
-      <div class="question-card exam-q" id="eq-7" data-correct="A">
-        <div class="question-header">
-          <div class="question-num"><span class="q-prefix">Question 07</span>07</div>
-          <div class="question-body">
-            <div class="question-scenario"><span class="scenario-tag">Task 4.3</span><span>schema scope</span></div>
-            <p class="question-text">Which set of failures does <code>tool_use</code> with a strict JSON schema eliminate?</p>
-          </div>
-        </div>
-        <ul class="options-list">
-          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">JSON syntax errors, missing required fields, wrong-type fields, invalid enums.</span></li>
-          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">All semantic correctness errors.</span></li>
-          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Hallucinated values for required fields.</span></li>
-          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Line items not summing to the stated total.</span></li>
-        </ul>
-        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-7')">Reveal answer</button></div>
-        <div class="rationale">
-          <div class="rationale-inner">
-            <div class="rationale-tag">Why A</div>
-            <p class="rationale-text"><code>tool_use</code> eliminates <em>syntactic</em> errors only. Semantic errors (B-D) survive — that's why Task 4.4 (validation-retry with semantic validators) exists. The most-tested confusion on this domain is conflating "schema-validated" with "correct."</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- EXAM Q8 -->
-      <div class="question-card exam-q" id="eq-8" data-correct="B">
-        <div class="question-header">
-          <div class="question-num"><span class="q-prefix">Question 08</span>08</div>
-          <div class="question-body">
-            <div class="question-scenario"><span class="scenario-tag">Task 4.2</span><span>format judgment</span></div>
-            <p class="question-text">Your invoice extractor returns <code>tax_amount: null</code> on invoices that show tax as <code>"VAT @ 20%"</code> rather than a dollar amount. Schema is correct (nullable). What's the right fix?</p>
-          </div>
-        </div>
-        <ul class="options-list">
-          <li class="option-item" data-letter="A" onclick="selectOption(this)"><span class="option-letter">A</span><span class="option-text">Force <code>tax_amount</code> to be required so the model has to produce a value.</span></li>
-          <li class="option-item" data-letter="B" onclick="selectOption(this)"><span class="option-letter">B</span><span class="option-text">Add 1-2 few-shot examples showing extraction from VAT-style invoices, with reasoning that converts the percentage to a dollar amount.</span></li>
-          <li class="option-item" data-letter="C" onclick="selectOption(this)"><span class="option-letter">C</span><span class="option-text">Set <code>tool_choice</code> to <code>"any"</code> instead of forced.</span></li>
-          <li class="option-item" data-letter="D" onclick="selectOption(this)"><span class="option-letter">D</span><span class="option-text">Switch to the Message Batches API.</span></li>
-        </ul>
-        <div class="question-actions"><button class="reveal-btn" onclick="revealExam('eq-8')">Reveal answer</button></div>
-        <div class="rationale">
-          <div class="rationale-inner">
-            <div class="rationale-tag">Why B</div>
-            <p class="rationale-text">Few-shot teaches the judgment to convert percentage to dollar amount. The schema is fine (nullable allows correct null behavior); what's missing is the judgment that the data <em>is</em> there in a different form. <strong>A</strong> causes hallucination. <strong>C and D</strong> are unrelated to format judgment.</p>
-          </div>
-        </div>
-      </div>
-
+        <div class="mock-cta-title">Open the mock exam &rarr;</div>
+        <div class="mock-cta-lede">Launches a focused exam page. Use it untimed for revision, or hit &ldquo;Start exam mode&rdquo; to score across the whole bank.</div>
+      </a>
     </div>
-
-    <!-- SCORE PANEL -->
-    <div class="score-panel" id="score-panel">
-      <div class="score-stat">
-        <div class="score-value" id="score-correct">0</div>
-        <div class="score-label">Correct</div>
-      </div>
-      <div class="score-stat">
-        <div class="score-value" id="score-total">0/8</div>
-        <div class="score-label">Answered</div>
-      </div>
-      <div class="score-stat">
-        <div class="score-value" id="score-pct">—</div>
-        <div class="score-label">Percent</div>
-      </div>
-      <div class="score-actions">
-        <button class="score-action-btn" onclick="resetExam()">Reset</button>
-        <button class="score-action-btn" onclick="revealAll()">Reveal all</button>
-      </div>
-    </div>
-
-    <!-- BUILD EXERCISE -->
-    <div class="exercise-block" style="margin-top:80px;">
-      <div class="exercise-tag">Build exercise · all 6 tasks</div>
-      <h3>Production extraction tool with validation-retry.</h3>
-      <p>
-        Build an extraction tool that processes 10 documents end-to-end with all six
-        Domain 4 concepts wired together. This is the canonical full-stack exercise — if
-        you can ship this cleanly, you've operationalized the entire domain.
-      </p>
-      <ol>
-        <li><strong>JSON schema</strong> with required, optional, and nullable fields; an enum that includes <code>"unclear"</code> and <code>"other"</code> + detail string.</li>
-        <li><strong>2-3 few-shot examples</strong> in the system prompt — at least one demonstrating null-return for missing data.</li>
-        <li><strong>tool_choice forced selection</strong> (single extractor, must run).</li>
-        <li><strong>Pydantic validation</strong> including a semantic check (<code>calculated_total</code> vs <code>stated_total</code>).</li>
-        <li><strong>Validation-retry loop</strong>, bounded at 2 retries, with the specific error appended to the retry message.</li>
-        <li><strong>Process 10 documents</strong>, log each outcome (pass / passed-on-retry / human-review).</li>
-      </ol>
-      <p style="margin-top:24px;"><strong>Stretch goals.</strong> Add a <code>detected_pattern</code> field for FP analysis. Wrap the 10 docs in a batch submission with <code>custom_id</code>. Add a second independent reviewer instance that flags suspicious values with a confidence label, then route low-confidence to a <code>needs_review</code> queue.</p>
-    </div>
-
   </div>
 </section>
+
+<nav class="module-nav" aria-label="Module navigation">
+  <div class="container">
+    <div class="module-nav-grid">
+      <a class="module-nav-item module-nav-prev" href="domain3_study_guide.html">
+        <span class="module-nav-lbl">← Previous</span>
+        <span class="module-nav-eyebrow">Domain 03 · 20%</span>
+        <span class="module-nav-title">Claude Code Configuration &amp; Workflows</span>
+      </a>
+      <a class="module-nav-item module-nav-next" href="domain5_study_guide.html">
+        <span class="module-nav-lbl">Next →</span>
+        <span class="module-nav-eyebrow">Domain 05 · 15%</span>
+        <span class="module-nav-title">Context Management &amp; Reliability</span>
+      </a>
+    </div>
+  </div>
+</nav>
 
 <!-- =================== FOOTER =================== -->
 <footer>

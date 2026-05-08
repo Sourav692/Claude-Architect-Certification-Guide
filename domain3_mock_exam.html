@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mock Exam — Domain 3 · Claude Code Configuration &amp; Workflows</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Inline dark fallback — domain-override.css below flips it to paper editorial. */
+  :root {
+    --bg: #0e0d0b; --bg-elevated: #16140f; --bg-card: #1a1812;
+    --ink: #f4ede0; --ink-muted: #a89e8b; --ink-faint: #6b6354;
+    --rule: #2a2620; --rule-strong: #3a3429;
+    --accent: #e8b04e; --accent-soft: #c98f3f;
+    --teal: #5fb7a5; --coral: #e07b5a; --rose: #c66a7a; --sage: #8aa978;
+    --serif: 'Fraunces', Georgia, serif;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--ink); line-height: 1.65; font-size: 16px; }
+  .container { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
+  header.masthead { padding: 28px 0; border-bottom: 1px solid var(--rule); position: sticky; top: 0; background: var(--bg); z-index: 50; }
+  .masthead-inner { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .brand { font-family: var(--serif); font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+  .brand .ampersand { color: var(--accent); font-style: italic; }
+  .eyebrow { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--ink-faint); margin-top: 4px; }
+  nav.toc { display: flex; gap: 24px; font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; }
+  nav.toc a { color: var(--ink-muted); text-decoration: none; padding-bottom: 2px; border-bottom: 1px solid transparent; }
+  nav.toc a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  section.hero { padding: 80px 0 64px; border-bottom: 1px solid var(--rule); }
+  .hero-grid { display: grid; grid-template-columns: 1fr 320px; gap: 80px; align-items: end; }
+  .hero-meta { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.25em; color: var(--accent); margin-bottom: 28px; display: flex; align-items: center; gap: 16px; }
+  .hero-meta::after { content: ''; flex: 1; height: 1px; background: var(--rule-strong); }
+  .hero h1 { font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 6vw, 72px); line-height: 1; letter-spacing: -0.03em; margin-bottom: 24px; }
+  .hero h1 em { font-style: italic; font-weight: 500; color: var(--accent); }
+  .hero-lede { font-family: var(--serif); font-style: italic; font-size: 20px; line-height: 1.5; color: var(--ink-muted); max-width: 640px; }
+  .hero-stats { border-left: 1px solid var(--rule-strong); padding-left: 28px; display: flex; flex-direction: column; gap: 24px; }
+  .stat { display: flex; flex-direction: column; gap: 4px; }
+  .stat-value { font-family: var(--serif); font-weight: 600; font-size: 44px; line-height: 1; letter-spacing: -0.04em; color: var(--ink); }
+  .stat-value .pct { color: var(--accent); font-size: 0.6em; }
+  .stat-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--ink-faint); }
+  section.task-section { padding: 64px 0; border-bottom: 1px solid var(--rule); }
+  .section-header { display: grid; grid-template-columns: 120px 1fr; gap: 48px; margin-bottom: 40px; align-items: start; }
+  .section-num { font-family: var(--serif); font-weight: 300; font-size: 88px; line-height: 1; color: var(--accent); letter-spacing: -0.04em; }
+  .section-tag { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--ink-faint); margin-bottom: 12px; }
+  h2.section-title { font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 4vw, 48px); line-height: 1.05; letter-spacing: -0.025em; margin-bottom: 16px; }
+  .section-meaning { font-family: var(--serif); font-style: italic; font-size: 17px; line-height: 1.5; color: var(--ink-muted); max-width: 720px; padding: 14px 22px; border-left: 3px solid var(--accent); }
+  .qbank-group-header { display: flex; align-items: baseline; gap: 16px; padding: 16px 0; border-top: 1px solid var(--rule-strong); margin-top: 32px; margin-bottom: 24px; }
+  .qbank-group-num { font-family: var(--serif); font-weight: 600; font-size: 28px; color: var(--accent); }
+  .qbank-group-title { font-family: var(--serif); font-weight: 500; font-size: 22px; }
+  .qbank-group-tag { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--ink-faint); margin-left: auto; }
+  .question-card { background: var(--bg-card); border: 1px solid var(--rule); border-radius: 4px; padding: 28px; margin-bottom: 16px; }
+  .question-header { display: flex; gap: 24px; align-items: baseline; }
+  .question-num { font-family: var(--serif); font-size: 28px; color: var(--accent); flex-shrink: 0; }
+  .q-prefix { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; display: block; color: var(--ink-faint); margin-bottom: 4px; }
+  .question-scenario { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-faint); margin-bottom: 12px; }
+  .scenario-tag { color: var(--accent); margin-right: 12px; }
+  .question-text { font-family: var(--serif); font-size: 18px; line-height: 1.55; color: var(--ink); }
+  .options-list { list-style: none; padding: 0; margin: 16px 0; }
+  .option-item { display: flex; gap: 12px; padding: 12px 16px; border: 1px solid var(--rule); border-radius: 4px; cursor: pointer; margin-bottom: 6px; transition: border-color 0.15s ease; align-items: baseline; }
+  .option-item:hover { border-color: var(--ink-faint); }
+  .option-item.selected { border-color: var(--accent); background: rgba(232,176,78,0.06); }
+  .option-item.correct { border-color: var(--sage); background: rgba(138,169,120,0.08); }
+  .option-item.incorrect { border-color: var(--coral); background: rgba(224,123,90,0.08); }
+  .option-letter { font-family: var(--mono); font-weight: 600; min-width: 28px; flex-shrink: 0; text-align: center; padding: 2px 0; border: 1px solid var(--rule); border-radius: 3px; }
+  .option-text { flex: 1; line-height: 1.55; }
+  .question-actions { margin-top: 16px; }
+  .reveal-btn { font-family: var(--mono); font-size: 12px; padding: 10px 18px; background: var(--accent); color: var(--bg); border: 0; border-radius: 3px; cursor: pointer; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; }
+  .rationale { display: none; margin-top: 18px; padding: 18px 22px; background: var(--bg-elevated); border-left: 3px solid var(--teal); border-radius: 0 4px 4px 0; }
+  .question-card.revealed .rationale { display: block; }
+  .rationale-tag { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--teal); margin-bottom: 8px; }
+  .rationale-text { font-size: 15px; line-height: 1.65; color: var(--ink-muted); }
+  .rationale-distractors { font-size: 14px; line-height: 1.6; color: var(--ink-faint); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rule); }
+  .exam-mode-toggle { font-family: var(--mono); font-size: 12px; padding: 10px 18px; border: 1px solid var(--rule-strong); background: transparent; color: var(--ink); cursor: pointer; border-radius: 3px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .exam-mode-toggle.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .score-panel { display: flex; gap: 32px; padding: 24px 28px; margin-top: 40px; background: var(--bg-card); border: 1px solid var(--rule); border-radius: 6px; align-items: center; flex-wrap: wrap; }
+  .score-panel.hidden { display: none; }
+  .score-stat { display: flex; flex-direction: column; gap: 4px; }
+  .score-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--ink-faint); }
+  .score-value { font-family: var(--serif); font-weight: 600; font-size: 28px; line-height: 1; color: var(--ink); }
+  .score-value.good { color: var(--sage); }
+  .score-value.bad { color: var(--coral); }
+  .score-actions { margin-left: auto; display: flex; gap: 8px; }
+  .score-action-btn { font-family: var(--mono); font-size: 11px; padding: 10px 18px; border: 1px solid var(--rule-strong); background: transparent; color: var(--ink); cursor: pointer; border-radius: 3px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .score-action-btn.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  footer { padding: 56px 0; border-top: 1px solid var(--rule); }
+  @media (max-width: 880px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+    .section-header { grid-template-columns: 1fr; gap: 16px; }
+    .section-num { font-size: 56px; }
+    nav.toc { display: none; }
+  }
+</style>
+<link rel="stylesheet" href="assets/css/domain-override.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="container masthead-inner">
+    <div>
+      <div class="brand">Foundations <span class="ampersand">·</span> Mock Exam</div>
+      <div class="eyebrow">Domain 3 of 5 · Claude Code Configuration &amp; Workflows</div>
+    </div>
+    <nav class="toc">
+      <a href="domain3_study_guide.html">Study Guide</a>
+      <a href="index.html">Syllabus</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-meta">Domain 3 · Mock exam</div>
+        <h1>Sit the test.<br><em>Claude Code Configuration.</em></h1>
+        <p class="hero-lede">Ten scenario-based questions on CLAUDE.md hierarchy, custom commands and skills, path-scoped rules, plan-mode versus direct execution, and iterative refinement. Aim for 8/10.</p>
+      </div>
+      <aside class="hero-stats">
+        <div class="stat">
+          <div class="stat-value">10<span class="pct"> q</span></div>
+          <div class="stat-label">Scenario-based</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">8<span class="pct">/10</span></div>
+          <div class="stat-label">Pass mark</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">20<span class="pct">%</span></div>
+          <div class="stat-label">Of cert weight</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="task-section" id="mock-exam">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">&Sigma;</div>
+      <div class="section-header-text">
+        <div class="section-tag">Mock exam &middot; graded</div>
+        <h2 class="section-title">Sit the test.</h2>
+        <div class="section-meaning">
+          Ten scenario-based questions in true exam format &mdash; four options, one correct answer. Aim for 8/10. Click any option to select, then &ldquo;Reveal answer&rdquo; for the rationale, or hit &ldquo;Start exam mode&rdquo; to score across the whole bank.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-body">
+      <div class="qbank" style="margin-top: 0;" id="mock-exam-bank">
+
+        <div class="qbank-group-header">
+          <div class="qbank-group-num" style="color: var(--coral);">B</div>
+          <div class="qbank-group-title">Mock exam · scenario-based</div>
+          <div class="qbank-group-tag">10 questions · pass mark 8/10</div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;">
+          <button class="exam-mode-toggle" id="exam-mode-btn" onclick="toggleExamMode()">Start exam mode</button>
+          <button class="exam-mode-toggle" onclick="resetExam()">Reset all answers</button>
+        </div>
+
+        <!-- Q1 -->
+        <div class="question-card mock-q" data-correct="B" id="mq-1">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>01</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Hierarchy</span></div>
+              <p class="question-text">A senior engineer set up "team coding standards" two months ago. Today, a new hire's first PR violates every standard, even though the new hire pulled the latest <code>main</code>. The senior engineer insists everything is configured. Where are the rules likely stored, and what's the fix?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">In <code>.claude/CLAUDE.md</code> in the repo — the new hire needs to clone again</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">In <code>~/.claude/CLAUDE.md</code> on the senior engineer's laptop only — move them to project-level <code>CLAUDE.md</code> at the repo root and commit</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">In <code>.claude/rules/</code> with no glob — add a glob pattern</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">In the project README — move them to <code>CLAUDE.md</code></span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-1')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: B</div>
+              <p class="rationale-text">User-level configs (<code>~/.claude/CLAUDE.md</code>) live on one laptop and are never in version control. The new hire's clone never had them. Project-level CLAUDE.md is the right tier for team-wide rules.</p>
+              <div class="rationale-distractors"><strong>A:</strong> If the rules were in the repo, the new hire would have them. <strong>C:</strong> Path globs are about file-type scoping, not the team-sharing problem. <strong>D:</strong> README isn't loaded by Claude Code as instructions.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="question-card mock-q" data-correct="A" id="mq-2">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>02</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Path scoping</span></div>
+              <p class="question-text">Your codebase has React components with hook conventions, API handlers with specific error handling, and database models following a repository pattern. Test files live next to the code they test (<code>Button.test.tsx</code> next to <code>Button.tsx</code>) and are spread across many directories. You want all tests to follow the same conventions regardless of location. What's the most maintainable approach?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">Create rule files in <code>.claude/rules/</code> with YAML frontmatter glob patterns to conditionally apply conventions based on file paths (e.g., <code>paths: ["**/*.test.*"]</code>)</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">Consolidate all conventions in the root <code>CLAUDE.md</code> file under headers for each area</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">Create skills in <code>.claude/skills/</code> for each code type and embed conventions in their <code>SKILL.md</code> files</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">Place a separate <code>CLAUDE.md</code> file in each subdirectory containing that area's specific conventions</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-2')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: A</div>
+              <p class="rationale-text">Path-scoped rules with globs apply conventions to file types regardless of directory. One file, scoped loading, no duplication.</p>
+              <div class="rationale-distractors"><strong>B:</strong> Loads test rules every session even when editing non-test code — wasted tokens. <strong>C:</strong> Skills are for tasks Claude auto-invokes, not file-edit conventions. <strong>D:</strong> Tests are scattered, so directory CLAUDE.md duplicates across many directories.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="question-card mock-q" data-correct="A" id="mq-3">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>03</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Plan vs direct</span></div>
+              <p class="question-text">You've been assigned to restructure your team's monolithic application into microservices. This will involve changes across dozens of files and requires decisions about service boundaries and module dependencies. Which approach should you take?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">Enter plan mode to explore the codebase, understand dependencies, and design an implementation approach before making changes</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">Start with direct execution and make changes incrementally, letting the implementation reveal the natural service boundaries</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">Use direct execution with a comprehensive upfront prompt detailing exactly how each service should be structured</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">Begin in direct execution mode and only switch to plan mode if you encounter unexpected complexity during implementation</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-3')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: A</div>
+              <p class="rationale-text">Plan mode is designed for large-scale changes with architectural decisions and multiple valid approaches — exactly what microservice restructuring is. It enables safe codebase exploration before committing to changes.</p>
+              <div class="rationale-distractors"><strong>B:</strong> Risks costly rework when dependencies are discovered late. <strong>C:</strong> Assumes you know the right structure without exploring the code. <strong>D:</strong> The complexity is already known from the requirements, not something that "might emerge."</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="question-card mock-q" data-correct="A" id="mq-4">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>04</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Slash commands</span></div>
+              <p class="question-text">You want to create a custom <code>/review</code> slash command that runs your team's standard code review checklist. This command should be available to every developer when they clone or pull the repository. Where should you create this command file?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">In the <code>.claude/commands/</code> directory in the project repository</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">In <code>~/.claude/commands/</code> in each developer's home directory</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">In the <code>CLAUDE.md</code> file at the project root, under a "commands" header</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">In a <code>.claude/config.json</code> file with a <code>commands</code> array</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-4')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: A</div>
+              <p class="rationale-text">Project-scoped commands live in <code>.claude/commands/</code> in the repo. Version-controlled, automatically available after <code>git pull</code>.</p>
+              <div class="rationale-distractors"><strong>B:</strong> User-scope is personal — teammates won't see it. <strong>C:</strong> CLAUDE.md is for instructions/context, not command definitions. <strong>D:</strong> No such configuration mechanism exists.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="question-card mock-q" data-correct="C" id="mq-5">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>05</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">CI for Claude Code</span><span>Non-interactive mode</span></div>
+              <p class="question-text">Your pipeline script runs <code>claude "Analyze this pull request for security issues"</code> but the job hangs indefinitely. Logs indicate Claude Code is waiting for interactive input. What's the correct approach?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">Set the environment variable <code>CLAUDE_HEADLESS=true</code> before running the command</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">Add the <code>--batch</code> flag</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">Add the <code>-p</code> flag: <code>claude -p "Analyze this pull request for security issues"</code></span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">Redirect stdin from <code>/dev/null</code>: <code>claude "..." &lt; /dev/null</code></span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-5')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: C</div>
+              <p class="rationale-text"><code>-p</code> (or <code>--print</code>) is the documented flag for non-interactive mode. It processes the prompt, outputs to stdout, and exits — exactly what CI requires.</p>
+              <div class="rationale-distractors"><strong>A &amp; B:</strong> Reference non-existent features. <strong>D:</strong> A Unix workaround that doesn't address Claude Code's command syntax.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="question-card mock-q" data-correct="B" id="mq-6">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>06</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Skill output</span></div>
+              <p class="question-text">A skill named <code>analyze-codebase</code> dumps thousands of lines of architectural analysis into the main session every time a developer invokes it. Subsequent turns slow down and the conversation context fills with noise. Which single change to the skill's <code>SKILL.md</code> frontmatter is the right fix?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">Add <code>allowed-tools: [Read]</code> to restrict the skill's tool access</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">Add <code>context: fork</code> to run the skill in an isolated subagent context</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">Add <code>argument-hint</code> to require a narrower scope from the developer</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">Move the skill from <code>.claude/skills/</code> to <code>~/.claude/skills/</code> for personal scope</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-6')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: B</div>
+              <p class="rationale-text"><code>context: fork</code> isolates the skill in a subagent. Verbose output stays there; only a summary returns to the main session.</p>
+              <div class="rationale-distractors"><strong>A:</strong> Restricting tools doesn't address verbosity. <strong>C:</strong> Doesn't change how output flows. <strong>D:</strong> Changing scope doesn't reduce output volume; it just removes the skill from teammates.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="question-card mock-q" data-correct="C" id="mq-7">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>07</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Refinement</span></div>
+              <p class="question-text">Claude is generating date-formatted output inconsistently across calls despite a detailed natural-language specification ("format dates in a clean, professional, user-friendly way"). You've already tried adding more emphasis and constraints. What's the most effective next move?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">Add a stronger constraint: "ALWAYS format dates correctly and consistently"</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">Lower the temperature on the API call</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">Provide 2 to 3 concrete input/output examples showing the exact transformation</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">Switch to plan mode for this task</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-7')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: C</div>
+              <p class="rationale-text">Concrete I/O examples beat prose. Models generalize from the pattern; prose has irreducible interpretation variance.</p>
+              <div class="rationale-distractors"><strong>A:</strong> ALL CAPS prose is still prose. <strong>B:</strong> Doesn't address ambiguity in the spec. <strong>D:</strong> Plan mode is for scope/architecture, not output formatting.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="question-card mock-q" data-correct="C" id="mq-8">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>08</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">CI for Claude Code</span><span>Duplicate review comments</span></div>
+              <p class="question-text">Your CI re-runs Claude as a PR reviewer after each new commit. Developers complain that issues already raised on prior commits keep generating new duplicate inline comments. What's the architectural fix?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">Disable the reviewer after the first run to avoid noise</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">Reuse the same Claude session across all commits via <code>--resume</code></span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">Cache prior findings between runs and pass them in the prompt with the instruction "Report only new or still-unaddressed issues"</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">Switch to plan mode in CI to avoid posting comments at all</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-8')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: C</div>
+              <p class="rationale-text">Pass prior findings as context with explicit deduplication instructions. Claude reports only new or unaddressed issues — clean PR feedback across commits.</p>
+              <div class="rationale-distractors"><strong>A:</strong> Defeats the purpose of automated review. <strong>B:</strong> Contradicts independent-review-instances; same-session reviewer has the same blind spots. <strong>D:</strong> Plan mode isn't a CI-output mode.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q9 -->
+        <div class="question-card mock-q" data-correct="A" id="mq-9">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>09</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Personal customization</span></div>
+              <p class="question-text">Your team uses a project-scoped skill at <code>.claude/skills/deploy/SKILL.md</code>. You want a personal variant that also tails logs after deploy, but you don't want to affect teammates. How should you set this up?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">Copy the skill to <code>~/.claude/skills/deploy-with-logs/</code> with a different name and modify the personal copy</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">Edit <code>.claude/skills/deploy/SKILL.md</code> in place and avoid committing the change</span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">Add a personal flag to the project skill via <code>argument-hint</code></span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">Copy the skill to <code>~/.claude/skills/deploy/</code> with the same name to override the team version</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-9')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: A</div>
+              <p class="rationale-text">Personal scope (<code>~/.claude/</code>) plus a different name keeps both versions available without collision or accidental commits.</p>
+              <div class="rationale-distractors"><strong>B:</strong> The change can be reverted on the next pull, or accidentally committed. <strong>C:</strong> <code>argument-hint</code> prompts for input; it's not a customization mechanism. <strong>D:</strong> Same name in personal scope can shadow the team version unpredictably and breaks for teammates if it leaks back.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="question-card mock-q" data-correct="B" id="mq-10">
+          <div class="question-header">
+            <div class="question-num"><span class="q-prefix">Question</span>10</div>
+            <div class="question-body">
+              <div class="question-scenario"><span class="scenario-tag">CI for Claude Code</span><span>Test generation noise</span></div>
+              <p class="question-text">Your CI uses Claude to generate tests for new code in PRs. Developers report that generated tests frequently duplicate scenarios already covered by the existing test suite, polluting the suite with low-value tests. What's the most effective fix?</p>
+            </div>
+          </div>
+          <ul class="options-list">
+            <li class="option-item" data-letter="A" onclick="selectOption(this)">
+              <span class="option-letter">A</span>
+              <span class="option-text">Increase the model's reasoning budget so it considers existing tests more carefully</span>
+            </li>
+            <li class="option-item" data-letter="B" onclick="selectOption(this)">
+              <span class="option-letter">B</span>
+              <span class="option-text">Provide existing test files in context and document testing standards, valuable test criteria, and available fixtures in <code>CLAUDE.md</code></span>
+            </li>
+            <li class="option-item" data-letter="C" onclick="selectOption(this)">
+              <span class="option-letter">C</span>
+              <span class="option-text">Run test generation in plan mode so the developer reviews each test before commit</span>
+            </li>
+            <li class="option-item" data-letter="D" onclick="selectOption(this)">
+              <span class="option-letter">D</span>
+              <span class="option-text">Switch the test framework so Claude has fewer existing tests to consider</span>
+            </li>
+          </ul>
+          <div class="question-actions">
+            <button class="reveal-btn" onclick="revealMock('mq-10')">Reveal answer</button>
+          </div>
+          <div class="rationale">
+            <div class="rationale-inner">
+              <div class="rationale-tag">Correct: B</div>
+              <p class="rationale-text">Two changes work together: existing tests in context tell Claude what's already covered, and CLAUDE.md defines what counts as a valuable test (real bug coverage, not coverage padding). The combination cuts duplicate-and-low-value test generation.</p>
+              <div class="rationale-distractors"><strong>A:</strong> Reasoning budget doesn't help when the existing tests aren't even visible. <strong>C:</strong> Plan mode is about exploration, not output filtering. <strong>D:</strong> Switching frameworks is unrelated to the noise problem.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ====== SCORE PANEL ====== -->
+      <div class="score-panel hidden" id="score-panel">
+        <div class="score-stat">
+          <div class="score-value" id="score-current">0/10</div>
+          <div class="score-label">Score</div>
+        </div>
+        <div class="score-stat">
+          <div class="score-value" id="score-answered">0</div>
+          <div class="score-label">Answered</div>
+        </div>
+        <div class="score-stat">
+          <div class="score-value" id="score-status">In progress</div>
+          <div class="score-label">Status</div>
+        </div>
+        <div class="score-actions">
+          <button class="score-action-btn" onclick="resetExam()">Reset</button>
+          <button class="score-action-btn primary" onclick="submitExam()">Submit &amp; reveal all</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<nav class="module-nav" aria-label="Module navigation">
+  <div class="container">
+    <div class="module-nav-grid">
+      <a class="module-nav-item module-nav-prev" href="domain3_study_guide.html">
+        <span class="module-nav-lbl">← Module</span>
+        <span class="module-nav-eyebrow">Domain 03</span>
+        <span class="module-nav-title">Back to study guide</span>
+      </a>
+      <a class="module-nav-item module-nav-next" href="domain4_mock_exam.html">
+        <span class="module-nav-lbl">Next mock →</span>
+        <span class="module-nav-eyebrow">Domain 04 · 20%</span>
+        <span class="module-nav-title">Prompt Engineering &amp; Structured Output</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 24px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint);">
+      <span>Anthropic &middot; Foundations &middot; Edition 2026</span>
+      <span>Mock Exam &middot; Domain 3</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ============ MOCK EXAM LOGIC ============
+let examMode = false;
+const QUESTION_SELECTOR = document.querySelector('.exam-q') ? '.exam-q' : '.mock-q';
+
+function selectOption(optionEl) {
+  const card = optionEl.closest('.question-card');
+  if (!card || card.classList.contains('revealed')) return;
+  card.querySelectorAll('.option-item').forEach(o => o.classList.remove('selected'));
+  optionEl.classList.add('selected');
+  if (examMode) updateScorePanel();
+}
+
+function revealQuestion(id) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  card.classList.add('revealed');
+  const correct = card.dataset.correct;
+  card.querySelectorAll('.option-item').forEach(opt => {
+    if (opt.dataset.letter === correct) opt.classList.add('correct');
+  });
+  const sel = card.querySelector('.option-item.selected');
+  if (sel && sel.dataset.letter !== correct) {
+    sel.classList.add('incorrect');
+    card.classList.add('answered', 'incorrect');
+  } else if (sel) {
+    card.classList.add('answered', 'correct');
+  }
+  if (examMode) updateScorePanel();
+}
+const revealMock = revealQuestion;
+const revealExam = revealQuestion;
+
+function toggleExamMode() {
+  examMode = !examMode;
+  const btn = document.getElementById('exam-mode-btn');
+  const panel = document.getElementById('score-panel');
+  if (btn) {
+    btn.textContent = examMode ? 'Exit exam mode' : 'Start exam mode';
+    btn.classList.toggle('active', examMode);
+  }
+  if (panel) panel.classList.toggle('hidden', !examMode);
+  if (examMode) resetExam();
+}
+
+function submitExam() {
+  document.querySelectorAll(QUESTION_SELECTOR).forEach(card => {
+    if (!card.classList.contains('revealed')) revealQuestion(card.id);
+  });
+  updateScorePanel(true);
+}
+function revealAll() { submitExam(); }
+
+function resetExam() {
+  document.querySelectorAll(QUESTION_SELECTOR).forEach(card => {
+    card.classList.remove('revealed', 'answered', 'correct', 'incorrect');
+    card.querySelectorAll('.option-item').forEach(opt => {
+      opt.classList.remove('selected', 'correct', 'incorrect');
+    });
+  });
+  updateScorePanel();
+}
+
+function updateScorePanel(submitted = false) {
+  const cards = document.querySelectorAll(QUESTION_SELECTOR);
+  const total = cards.length;
+  let answered = 0, correct = 0;
+  cards.forEach(c => {
+    const sel = c.querySelector('.option-item.selected');
+    if (sel) {
+      answered++;
+      if (sel.dataset.letter === c.dataset.correct) correct++;
+    }
+  });
+  const sCur = document.getElementById('score-current');
+  const sAns = document.getElementById('score-answered');
+  const sSt  = document.getElementById('score-status');
+  if (sCur) sCur.textContent = correct + '/' + total;
+  if (sAns) sAns.textContent = answered + '/' + total;
+  const passMark = 8;
+  if (sSt) {
+    if (submitted || answered === total) {
+      if (correct >= passMark) {
+        if (sCur) sCur.className = 'score-value good';
+        sSt.className = 'score-value good'; sSt.textContent = 'Pass';
+      } else {
+        if (sCur) sCur.className = 'score-value bad';
+        sSt.className = 'score-value bad'; sSt.textContent = 'Revisit';
+      }
+    } else {
+      if (sCur) sCur.className = 'score-value';
+      sSt.className = 'score-value';
+      sSt.textContent = answered === 0 ? 'Not started' : 'In progress';
+    }
+  }
+}
+function updateScore() { updateScorePanel(); }
+</script>
+</body>
+</html>

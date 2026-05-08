@@ -1445,6 +1445,7 @@ footer {
       <a href="#task-5">Refinement</a>
       <a href="#task-6">CI/CD</a>
       <a href="#practice" style="color: var(--accent);">Practice</a>
+      <a href="#mock-exam" style="color: var(--accent);">Mock Exam</a>
     </nav>
   </div>
 </header>
@@ -2897,433 +2898,34 @@ Report ONLY new or still-unaddressed issues."</span> \
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
 
-      <!-- ====== BANK B: MOCK EXAM ====== -->
-      <div class="qbank" style="margin-top: 64px;">
-
-        <div class="qbank-group-header">
-          <div class="qbank-group-num" style="color: var(--coral);">B</div>
-          <div class="qbank-group-title">Mock exam · scenario-based</div>
-          <div class="qbank-group-tag">10 questions · pass mark 8/10</div>
-        </div>
-
-        <div style="display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;">
-          <button class="exam-mode-toggle" id="exam-mode-btn" onclick="toggleExamMode()">Start exam mode</button>
-          <button class="exam-mode-toggle" onclick="resetExam()">Reset all answers</button>
-        </div>
-
-        <!-- Q1 -->
-        <div class="question-card mock-q" data-correct="B" id="mq-1">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>01</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Hierarchy</span></div>
-              <p class="question-text">A senior engineer set up "team coding standards" two months ago. Today, a new hire's first PR violates every standard, even though the new hire pulled the latest <code>main</code>. The senior engineer insists everything is configured. Where are the rules likely stored, and what's the fix?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">In <code>.claude/CLAUDE.md</code> in the repo — the new hire needs to clone again</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">In <code>~/.claude/CLAUDE.md</code> on the senior engineer's laptop only — move them to project-level <code>CLAUDE.md</code> at the repo root and commit</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">In <code>.claude/rules/</code> with no glob — add a glob pattern</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">In the project README — move them to <code>CLAUDE.md</code></span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-1')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: B</div>
-              <p class="rationale-text">User-level configs (<code>~/.claude/CLAUDE.md</code>) live on one laptop and are never in version control. The new hire's clone never had them. Project-level CLAUDE.md is the right tier for team-wide rules.</p>
-              <div class="rationale-distractors"><strong>A:</strong> If the rules were in the repo, the new hire would have them. <strong>C:</strong> Path globs are about file-type scoping, not the team-sharing problem. <strong>D:</strong> README isn't loaded by Claude Code as instructions.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q2 -->
-        <div class="question-card mock-q" data-correct="A" id="mq-2">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>02</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Path scoping</span></div>
-              <p class="question-text">Your codebase has React components with hook conventions, API handlers with specific error handling, and database models following a repository pattern. Test files live next to the code they test (<code>Button.test.tsx</code> next to <code>Button.tsx</code>) and are spread across many directories. You want all tests to follow the same conventions regardless of location. What's the most maintainable approach?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Create rule files in <code>.claude/rules/</code> with YAML frontmatter glob patterns to conditionally apply conventions based on file paths (e.g., <code>paths: ["**/*.test.*"]</code>)</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Consolidate all conventions in the root <code>CLAUDE.md</code> file under headers for each area</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Create skills in <code>.claude/skills/</code> for each code type and embed conventions in their <code>SKILL.md</code> files</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Place a separate <code>CLAUDE.md</code> file in each subdirectory containing that area's specific conventions</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-2')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: A</div>
-              <p class="rationale-text">Path-scoped rules with globs apply conventions to file types regardless of directory. One file, scoped loading, no duplication.</p>
-              <div class="rationale-distractors"><strong>B:</strong> Loads test rules every session even when editing non-test code — wasted tokens. <strong>C:</strong> Skills are for tasks Claude auto-invokes, not file-edit conventions. <strong>D:</strong> Tests are scattered, so directory CLAUDE.md duplicates across many directories.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q3 -->
-        <div class="question-card mock-q" data-correct="A" id="mq-3">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>03</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Plan vs direct</span></div>
-              <p class="question-text">You've been assigned to restructure your team's monolithic application into microservices. This will involve changes across dozens of files and requires decisions about service boundaries and module dependencies. Which approach should you take?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Enter plan mode to explore the codebase, understand dependencies, and design an implementation approach before making changes</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Start with direct execution and make changes incrementally, letting the implementation reveal the natural service boundaries</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Use direct execution with a comprehensive upfront prompt detailing exactly how each service should be structured</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Begin in direct execution mode and only switch to plan mode if you encounter unexpected complexity during implementation</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-3')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: A</div>
-              <p class="rationale-text">Plan mode is designed for large-scale changes with architectural decisions and multiple valid approaches — exactly what microservice restructuring is. It enables safe codebase exploration before committing to changes.</p>
-              <div class="rationale-distractors"><strong>B:</strong> Risks costly rework when dependencies are discovered late. <strong>C:</strong> Assumes you know the right structure without exploring the code. <strong>D:</strong> The complexity is already known from the requirements, not something that "might emerge."</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q4 -->
-        <div class="question-card mock-q" data-correct="A" id="mq-4">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>04</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Slash commands</span></div>
-              <p class="question-text">You want to create a custom <code>/review</code> slash command that runs your team's standard code review checklist. This command should be available to every developer when they clone or pull the repository. Where should you create this command file?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">In the <code>.claude/commands/</code> directory in the project repository</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">In <code>~/.claude/commands/</code> in each developer's home directory</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">In the <code>CLAUDE.md</code> file at the project root, under a "commands" header</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">In a <code>.claude/config.json</code> file with a <code>commands</code> array</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-4')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: A</div>
-              <p class="rationale-text">Project-scoped commands live in <code>.claude/commands/</code> in the repo. Version-controlled, automatically available after <code>git pull</code>.</p>
-              <div class="rationale-distractors"><strong>B:</strong> User-scope is personal — teammates won't see it. <strong>C:</strong> CLAUDE.md is for instructions/context, not command definitions. <strong>D:</strong> No such configuration mechanism exists.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q5 -->
-        <div class="question-card mock-q" data-correct="C" id="mq-5">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>05</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">CI for Claude Code</span><span>Non-interactive mode</span></div>
-              <p class="question-text">Your pipeline script runs <code>claude "Analyze this pull request for security issues"</code> but the job hangs indefinitely. Logs indicate Claude Code is waiting for interactive input. What's the correct approach?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Set the environment variable <code>CLAUDE_HEADLESS=true</code> before running the command</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Add the <code>--batch</code> flag</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Add the <code>-p</code> flag: <code>claude -p "Analyze this pull request for security issues"</code></span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Redirect stdin from <code>/dev/null</code>: <code>claude "..." &lt; /dev/null</code></span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-5')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: C</div>
-              <p class="rationale-text"><code>-p</code> (or <code>--print</code>) is the documented flag for non-interactive mode. It processes the prompt, outputs to stdout, and exits — exactly what CI requires.</p>
-              <div class="rationale-distractors"><strong>A &amp; B:</strong> Reference non-existent features. <strong>D:</strong> A Unix workaround that doesn't address Claude Code's command syntax.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q6 -->
-        <div class="question-card mock-q" data-correct="B" id="mq-6">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>06</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Skill output</span></div>
-              <p class="question-text">A skill named <code>analyze-codebase</code> dumps thousands of lines of architectural analysis into the main session every time a developer invokes it. Subsequent turns slow down and the conversation context fills with noise. Which single change to the skill's <code>SKILL.md</code> frontmatter is the right fix?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Add <code>allowed-tools: [Read]</code> to restrict the skill's tool access</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Add <code>context: fork</code> to run the skill in an isolated subagent context</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Add <code>argument-hint</code> to require a narrower scope from the developer</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Move the skill from <code>.claude/skills/</code> to <code>~/.claude/skills/</code> for personal scope</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-6')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: B</div>
-              <p class="rationale-text"><code>context: fork</code> isolates the skill in a subagent. Verbose output stays there; only a summary returns to the main session.</p>
-              <div class="rationale-distractors"><strong>A:</strong> Restricting tools doesn't address verbosity. <strong>C:</strong> Doesn't change how output flows. <strong>D:</strong> Changing scope doesn't reduce output volume; it just removes the skill from teammates.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q7 -->
-        <div class="question-card mock-q" data-correct="C" id="mq-7">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>07</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Refinement</span></div>
-              <p class="question-text">Claude is generating date-formatted output inconsistently across calls despite a detailed natural-language specification ("format dates in a clean, professional, user-friendly way"). You've already tried adding more emphasis and constraints. What's the most effective next move?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Add a stronger constraint: "ALWAYS format dates correctly and consistently"</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Lower the temperature on the API call</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Provide 2 to 3 concrete input/output examples showing the exact transformation</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Switch to plan mode for this task</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-7')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: C</div>
-              <p class="rationale-text">Concrete I/O examples beat prose. Models generalize from the pattern; prose has irreducible interpretation variance.</p>
-              <div class="rationale-distractors"><strong>A:</strong> ALL CAPS prose is still prose. <strong>B:</strong> Doesn't address ambiguity in the spec. <strong>D:</strong> Plan mode is for scope/architecture, not output formatting.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q8 -->
-        <div class="question-card mock-q" data-correct="C" id="mq-8">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>08</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">CI for Claude Code</span><span>Duplicate review comments</span></div>
-              <p class="question-text">Your CI re-runs Claude as a PR reviewer after each new commit. Developers complain that issues already raised on prior commits keep generating new duplicate inline comments. What's the architectural fix?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Disable the reviewer after the first run to avoid noise</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Reuse the same Claude session across all commits via <code>--resume</code></span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Cache prior findings between runs and pass them in the prompt with the instruction "Report only new or still-unaddressed issues"</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Switch to plan mode in CI to avoid posting comments at all</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-8')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: C</div>
-              <p class="rationale-text">Pass prior findings as context with explicit deduplication instructions. Claude reports only new or unaddressed issues — clean PR feedback across commits.</p>
-              <div class="rationale-distractors"><strong>A:</strong> Defeats the purpose of automated review. <strong>B:</strong> Contradicts independent-review-instances; same-session reviewer has the same blind spots. <strong>D:</strong> Plan mode isn't a CI-output mode.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q9 -->
-        <div class="question-card mock-q" data-correct="A" id="mq-9">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>09</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Personal customization</span></div>
-              <p class="question-text">Your team uses a project-scoped skill at <code>.claude/skills/deploy/SKILL.md</code>. You want a personal variant that also tails logs after deploy, but you don't want to affect teammates. How should you set this up?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Copy the skill to <code>~/.claude/skills/deploy-with-logs/</code> with a different name and modify the personal copy</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Edit <code>.claude/skills/deploy/SKILL.md</code> in place and avoid committing the change</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Add a personal flag to the project skill via <code>argument-hint</code></span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Copy the skill to <code>~/.claude/skills/deploy/</code> with the same name to override the team version</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-9')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: A</div>
-              <p class="rationale-text">Personal scope (<code>~/.claude/</code>) plus a different name keeps both versions available without collision or accidental commits.</p>
-              <div class="rationale-distractors"><strong>B:</strong> The change can be reverted on the next pull, or accidentally committed. <strong>C:</strong> <code>argument-hint</code> prompts for input; it's not a customization mechanism. <strong>D:</strong> Same name in personal scope can shadow the team version unpredictably and breaks for teammates if it leaks back.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q10 -->
-        <div class="question-card mock-q" data-correct="B" id="mq-10">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>10</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">CI for Claude Code</span><span>Test generation noise</span></div>
-              <p class="question-text">Your CI uses Claude to generate tests for new code in PRs. Developers report that generated tests frequently duplicate scenarios already covered by the existing test suite, polluting the suite with low-value tests. What's the most effective fix?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Increase the model's reasoning budget so it considers existing tests more carefully</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Provide existing test files in context and document testing standards, valuable test criteria, and available fixtures in <code>CLAUDE.md</code></span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Run test generation in plan mode so the developer reviews each test before commit</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Switch the test framework so Claude has fewer existing tests to consider</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-10')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: B</div>
-              <p class="rationale-text">Two changes work together: existing tests in context tell Claude what's already covered, and CLAUDE.md defines what counts as a valuable test (real bug coverage, not coverage padding). The combination cuts duplicate-and-low-value test generation.</p>
-              <div class="rationale-distractors"><strong>A:</strong> Reasoning budget doesn't help when the existing tests aren't even visible. <strong>C:</strong> Plan mode is about exploration, not output filtering. <strong>D:</strong> Switching frameworks is unrelated to the noise problem.</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ====== SCORE PANEL ====== -->
-      <div class="score-panel hidden" id="score-panel">
-        <div class="score-stat">
-          <div class="score-value" id="score-current">0/10</div>
-          <div class="score-label">Score</div>
-        </div>
-        <div class="score-stat">
-          <div class="score-value" id="score-answered">0</div>
-          <div class="score-label">Answered</div>
-        </div>
-        <div class="score-stat">
-          <div class="score-value" id="score-status">In progress</div>
-          <div class="score-label">Status</div>
-        </div>
-        <div class="score-actions">
-          <button class="score-action-btn" onclick="resetExam()">Reset</button>
-          <button class="score-action-btn primary" onclick="submitExam()">Submit &amp; reveal all</button>
+<!-- =================== MOCK EXAM SECTION =================== -->
+<!-- =================== MOCK EXAM CTA =================== -->
+<section class="task-section" id="mock-exam">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">&Sigma;</div>
+      <div class="section-header-text">
+        <div class="section-tag">Mock exam &middot; graded</div>
+        <h2 class="section-title">Sit the test.</h2>
+        <div class="section-meaning">
+          10 scenario-based questions in true exam format. Aim for 8/10. The mock exam now runs as its own standalone page so the score panel and exam mode have your full attention.
         </div>
       </div>
+    </div>
 
+    <div class="section-body">
+      <a class="mock-cta" href="domain3_mock_exam.html">
+        <div class="mock-cta-meta">
+          <span class="mock-cta-tag">Mock Exam</span>
+          <span class="mock-cta-eyebrow">Domain 3 &middot; 10 questions &middot; pass 8/10</span>
+        </div>
+        <div class="mock-cta-title">Open the mock exam &rarr;</div>
+        <div class="mock-cta-lede">Launches a focused exam page. Use it untimed for revision, or hit &ldquo;Start exam mode&rdquo; to score across the whole bank.</div>
+      </a>
     </div>
   </div>
 </section>
@@ -3335,6 +2937,23 @@ Report ONLY new or still-unaddressed issues."</span> \
     <div class="pull-quote-attr">— The five mental shortcuts for Domain III</div>
   </div>
 </div>
+
+<nav class="module-nav" aria-label="Module navigation">
+  <div class="container">
+    <div class="module-nav-grid">
+      <a class="module-nav-item module-nav-prev" href="domain2_study_guide.html">
+        <span class="module-nav-lbl">← Previous</span>
+        <span class="module-nav-eyebrow">Domain 02 · 18%</span>
+        <span class="module-nav-title">Tool Design &amp; MCP Integration</span>
+      </a>
+      <a class="module-nav-item module-nav-next" href="domain4_study_guide.html">
+        <span class="module-nav-lbl">Next →</span>
+        <span class="module-nav-eyebrow">Domain 04 · 20%</span>
+        <span class="module-nav-title">Prompt Engineering &amp; Structured Output</span>
+      </a>
+    </div>
+  </div>
+</nav>
 
 <footer>
   <div class="container">

@@ -466,3 +466,141 @@ a:focus-visible, button:focus-visible {
   outline-offset: 3px;
   border-radius: 2px;
 }
+
+/* ── 17. Mock-exam CTA (links to standalone exam page) ───────── */
+.mock-cta {
+  display: block;
+  text-decoration: none;
+  background: var(--paper-card);
+  border: 1px solid var(--rule-faint);
+  border-left: 3px solid var(--lava);
+  padding: 2rem 2.2rem;
+  margin: 1.2rem 0 0.5rem;
+  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  position: relative;
+  overflow: hidden;
+}
+.mock-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255, 54, 33, 0.04), transparent 60%);
+  pointer-events: none;
+}
+.mock-cta:hover {
+  border-left-color: var(--lava-deep);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(14, 31, 38, 0.08);
+}
+.mock-cta:focus-visible {
+  outline: 2px solid var(--lava);
+  outline-offset: 3px;
+}
+.mock-cta-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  align-items: baseline;
+  margin-bottom: 0.9rem;
+  position: relative;
+}
+.mock-cta-tag {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--lava);
+  padding: 0.3rem 0.6rem;
+  border-radius: 2px;
+  font-weight: 500;
+}
+.mock-cta-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mute-2);
+}
+.mock-cta-title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 36, "SOFT" 30, "wght" 460;
+  font-size: clamp(1.5rem, 1.2rem + 0.9vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+  margin-bottom: 0.6rem;
+  position: relative;
+}
+.mock-cta:hover .mock-cta-title { color: var(--lava-deep); }
+.mock-cta-lede {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 16, "SOFT" 30, "wght" 400;
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ink-soft-2);
+  max-width: 60ch;
+  position: relative;
+}
+
+/* ── 18. Module pagination (prev / next) ─────────────────────── */
+.module-nav {
+  border-top: 1px solid var(--rule-soft);
+  border-bottom: 1px solid var(--rule-faint);
+  background: var(--paper-card);
+  margin-top: 4rem;
+}
+.module-nav .container { padding: 0 32px; }
+.module-nav-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.module-nav-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 2.2rem 1.6rem;
+  text-decoration: none;
+  color: var(--ink);
+  border-right: 1px solid var(--rule-faint);
+  transition: background 0.18s ease, color 0.18s ease;
+  position: relative;
+}
+.module-nav-item:last-child { border-right: none; }
+.module-nav-item:hover { background: var(--paper-deep); }
+.module-nav-prev { text-align: left; }
+.module-nav-next { text-align: right; align-items: flex-end; }
+.module-nav-lbl {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--lava);
+  font-weight: 500;
+}
+.module-nav-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute-2);
+  margin-top: 0.25rem;
+}
+.module-nav-title {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24, "SOFT" 30, "wght" 480;
+  font-size: clamp(1.05rem, 0.9rem + 0.5vw, 1.3rem);
+  line-height: 1.2;
+  color: var(--ink);
+  letter-spacing: -0.012em;
+}
+.module-nav-item:hover .module-nav-title { color: var(--lava-deep); }
+
+@media (max-width: 640px) {
+  .module-nav-grid { grid-template-columns: 1fr; }
+  .module-nav-item { border-right: none; border-bottom: 1px solid var(--rule-faint); padding: 1.4rem 1rem; }
+  .module-nav-item:last-child { border-bottom: none; }
+  .module-nav-next { text-align: left; align-items: flex-start; }
+}

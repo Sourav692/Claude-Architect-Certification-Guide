@@ -1446,6 +1446,7 @@ footer {
       <a href="#task-6">Decomposition</a>
       <a href="#task-7">Sessions</a>
       <a href="#practice" style="color: var(--accent);">Practice</a>
+      <a href="#mock-exam" style="color: var(--accent);">Mock Exam</a>
     </nav>
   </div>
 </header>
@@ -2946,435 +2947,34 @@ footer {
         </div>
 
       </div>
+    </div>
+  </div>
+</section>
 
-      <!-- ============ BANK B: 10 MOCK EXAM QUESTIONS ============ -->
-      <div class="qbank" style="margin-top: 80px;" id="mock-exam">
-
-        <div class="qbank-group-header">
-          <div class="qbank-group-num" style="color: var(--coral);">B</div>
-          <div class="qbank-group-title">Mock exam · scenario-based</div>
-          <div class="qbank-group-tag">10 questions · pass mark 8/10</div>
-        </div>
-
-        <p style="margin-bottom: 24px;">Click any option to select it. The "Reveal answer" button shows the correct answer with rationale. Switch to <strong>Exam mode</strong> below to track a score across all 10 questions before revealing.</p>
-
-        <div style="display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;">
-          <button class="exam-mode-toggle" id="exam-mode-btn" onclick="toggleExamMode()">Start exam mode</button>
-          <button class="exam-mode-toggle" onclick="resetExam()">Reset all answers</button>
-        </div>
-
-        <!-- Q1 -->
-        <div class="question-card mock-q" data-correct="B" id="mq-1">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>01</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Customer Support</span><span>Loop control</span></div>
-              <p class="question-text">Your agentic loop terminates the conversation as soon as Claude returns any text content in its response. Production logs show that in 8% of cases, the agent stops mid-task — Claude returned a brief acknowledgment ("Let me check that for you") alongside a <code>tool_use</code> block, and your code interpreted the text as completion. What's the correct fix?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Add a regex to detect closing phrases like "let me know" before terminating</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Inspect <code>stop_reason</code> explicitly: continue when it's <code>"tool_use"</code>, terminate when it's <code>"end_turn"</code></span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Set a higher minimum text length threshold before treating a response as final</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Have Claude return only tool calls or only text, never both, by adjusting the system prompt</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-1')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: B</div>
-              <p class="rationale-text"><code>stop_reason</code> is the structured signal the API guarantees. Text content is generated output that can accompany a tool call in the same response.</p>
-              <div class="rationale-distractors"><strong>A:</strong> Regex is fragile and probabilistic. <strong>C:</strong> Length thresholds don't address the root cause. <strong>D:</strong> Constrains Claude unnaturally; doesn't fix the underlying control flow bug.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q2 -->
-        <div class="question-card mock-q" data-correct="C" id="mq-2">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>02</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Multi-Agent Research</span><span>Context passing</span></div>
-              <p class="question-text">Your coordinator delegates to a web search subagent and a synthesis subagent sequentially. The synthesis subagent's output frequently contains the phrase "based on available sources" but never cites specific URLs, even though the web search subagent successfully returned 12 articles with full URLs. What's the most likely cause?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">The synthesis subagent's context window is too small to hold the URLs</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">The web search subagent isn't returning URLs in a format the synthesis subagent recognizes</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">The coordinator is passing the article content but not the URL metadata to the synthesis subagent's prompt</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">The synthesis subagent needs its own <code>web_fetch</code> tool to retrieve the URLs</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-2')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: C</div>
-              <p class="rationale-text">Subagents have no shared memory. If the coordinator passes article content without URLs, the synthesis agent can't cite them — they don't exist in its context. Fix: pass content separated from metadata.</p>
-              <div class="rationale-distractors"><strong>A:</strong> Capacity isn't the issue if nothing was passed. <strong>B:</strong> Subagents don't communicate directly. <strong>D:</strong> Defeats specialization; URLs are already known to the coordinator.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q3 -->
-        <div class="question-card mock-q" data-correct="B" id="mq-3">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>03</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Customer Support</span><span>Compliance gate</span></div>
-              <p class="question-text">Your agent processes refunds. A new compliance requirement states: all refunds over $250 must trigger a notification to the compliance team via the <code>notify_compliance</code> tool before <code>process_refund</code> is called. You've added this rule to the system prompt, but logs show 4% of refunds over $250 skip the notification. What's the right architectural fix?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Strengthen the prompt with bold formatting and few-shot examples showing correct sequencing</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Add a pre-tool-use hook that intercepts <code>process_refund</code>, checks the amount, and blocks the call if <code>notify_compliance</code> hasn't run for refunds over $250</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Add a PostToolUse hook on <code>process_refund</code> that retroactively calls <code>notify_compliance</code> after refunds complete</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Train the agent on a fine-tuned dataset of correct refund sequences</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-3')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: B</div>
-              <p class="rationale-text">Compliance rules require deterministic enforcement. A pre-tool-use hook gates the sensitive operation before it executes — zero failure rate by construction.</p>
-              <div class="rationale-distractors"><strong>A:</strong> Prompts remain probabilistic regardless of formatting. <strong>C:</strong> PostToolUse runs after the refund — too late for "before" requirements. <strong>D:</strong> Out of scope and over-engineered.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q4 -->
-        <div class="question-card mock-q" data-correct="C" id="mq-4">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>04</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Multi-Agent Research</span><span>Latency</span></div>
-              <p class="question-text">Your coordinator runs three independent subagents — web search, internal docs, statistics database — sequentially. Total latency is 75 seconds and your SLA target is 30 seconds. None of the subagents depends on another's output. How should you reduce latency?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Increase the coordinator's <code>max_tokens</code> to allow it to process subagents faster</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Switch to a faster model variant for all three subagents</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Have the coordinator emit all three <code>Task</code> tool calls in a single response so they execute in parallel</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Combine the three subagents into a single subagent with all three tools available</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-4')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: C</div>
-              <p class="rationale-text">Parallel spawning happens within a <em>single</em> coordinator response. Three independent subagents become concurrent, total latency drops to the slowest one's runtime.</p>
-              <div class="rationale-distractors"><strong>A:</strong> <code>max_tokens</code> doesn't affect tool execution. <strong>B:</strong> Optimizes individual subagent speed but keeps sequential structure. <strong>D:</strong> Re-introduces attention dilution and tool selection complexity.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q5 -->
-        <div class="question-card mock-q" data-correct="C" id="mq-5">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>05</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Session state</span></div>
-              <p class="question-text">You've been investigating a complex bug for two hours. The agent has read 30+ files and traced data flow through several modules. Overnight, a teammate merged a PR that renamed two of the modules involved and refactored their interfaces. You want to continue the investigation today. What's the right approach?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Resume the session with <code>--resume</code> and let the agent re-read files when it needs them</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Use <code>fork_session</code> to create an independent branch from yesterday's analysis</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Start a fresh session and inject a structured summary of yesterday's findings (suspected functions, ruled-out hypotheses)</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Resume the session but increase the model's temperature to encourage re-analysis</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-5')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: C</div>
-              <p class="rationale-text">Stale tool results in conversation history are dangerous — the agent reasons over outdated data without any signal it's wrong. Carry forward conclusions, not raw tool results.</p>
-              <div class="rationale-distractors"><strong>A:</strong> Resuming preserves stale results. The agent has no mechanism to detect which are now wrong. <strong>B:</strong> Fork is for divergent exploration, not stale-context recovery. <strong>D:</strong> Temperature doesn't solve stale grounding.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q6 -->
-        <div class="question-card mock-q" data-correct="C" id="mq-6">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>06</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Multi-Agent Research</span><span>Coverage gaps</span></div>
-              <p class="question-text">Your final research reports about "the impact of remote work on urban economies" consistently miss findings about transportation infrastructure and commercial real estate, even though the synthesis and web search subagents both execute cleanly per their logs. The coordinator's logs show it decomposed the topic into "remote work productivity," "remote work and employee wellbeing," and "remote work tools." Where do you investigate first?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">The synthesis subagent — it's failing to identify coverage gaps</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">The web search subagent — its queries are too narrow</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">The coordinator's task decomposition — it's mapped the topic onto worker-experience subtopics and omitted economic dimensions</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">The document analysis subagent — it's filtering out economic sources</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-6')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: C</div>
-              <p class="rationale-text">Output gaps trace back to coordinator decomposition. The logs show the coordinator mapped "urban economies" onto worker-experience subtopics — subagents executed correctly within their assigned (narrow) scope.</p>
-              <div class="rationale-distractors"><strong>A, B, D:</strong> All blame downstream agents that worked correctly within their scope. The bug is upstream, in what they were assigned.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q7 -->
-        <div class="question-card mock-q" data-correct="B" id="mq-7">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>07</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Customer Support</span><span>Data normalization</span></div>
-              <p class="question-text">Your agent integrates three MCP tools that return order timestamps in different formats: <code>lookup_order</code> returns Unix epochs, <code>get_shipment</code> returns ISO 8601 strings, and <code>check_warehouse</code> returns numeric date codes (YYYYMMDD as integer). The agent occasionally produces incorrect conclusions when comparing event ordering. What's the most reliable fix?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Add detailed prompt instructions explaining each timestamp format and how to convert between them</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Implement a PostToolUse hook that normalizes all timestamps to ISO 8601 before they reach the agent</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">Implement a pre-tool-use hook that rejects calls to tools with inconsistent timestamp formats</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">Have the agent call a separate <code>convert_timestamp</code> tool before reasoning about dates</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-7')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: B</div>
-              <p class="rationale-text">PostToolUse normalizes results before the agent sees them — deterministic and transparent. The agent reasons over consistent data without knowing the inconsistency existed.</p>
-              <div class="rationale-distractors"><strong>A:</strong> Probabilistic fix to a deterministic problem. <strong>C:</strong> Wrong direction — pre-hooks intercept calls, not results. <strong>D:</strong> Adds tool-call overhead for every comparison; agent may forget to call it.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q8 -->
-        <div class="question-card mock-q" data-correct="C" id="mq-8">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>08</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Code Generation</span><span>Attention dilution</span></div>
-              <p class="question-text">You're reviewing a pull request that modifies 18 files across three modules. Your single-pass review produces inconsistent results: some files get detailed feedback, others get superficial comments, and the same code pattern is flagged as a bug in one file and approved in another. The team proposes upgrading to a model with a 1M token context window. Will this fix the problem?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">Yes — a larger context window allows the model to hold all files with room to spare, eliminating the inconsistency</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">Yes — but only if combined with a higher reasoning budget setting</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">No — attention dilution is independent of context window capacity; the fix is splitting into per-file passes plus a separate integration pass</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">No — the model needs more training data on multi-file reviews</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-8')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: C</div>
-              <p class="rationale-text">Attention dilution is a cognitive load issue, independent of capacity. Decomposition into focused passes is the fix.</p>
-              <div class="rationale-distractors"><strong>A, B:</strong> Both confuse capacity with focus. <strong>D:</strong> Out of scope and doesn't address the architectural issue.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q9 -->
-        <div class="question-card mock-q" data-correct="B" id="mq-9">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>09</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Multi-Agent Research</span><span>Error propagation</span></div>
-              <p class="question-text">Your coordinator spawns a web search subagent that times out after 60 seconds while researching a niche topic. You need the coordinator to make an intelligent recovery decision (retry with a modified query, try an alternative subagent, or proceed with partial results). Which error propagation approach best supports this?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">The subagent catches the timeout and returns an empty result set marked as successful</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">The subagent returns structured error context including the failure type, attempted query, partial results obtained before timeout, and potential alternative approaches</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">The subagent propagates the timeout exception directly to a top-level handler that terminates the workflow</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">The subagent retries internally with exponential backoff and returns a generic "search unavailable" status only after all retries fail</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-9')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: B</div>
-              <p class="rationale-text">Structured error context lets the coordinator make intelligent recovery decisions: retry with a modified query, try an alternative, or proceed with partial results.</p>
-              <div class="rationale-distractors"><strong>A:</strong> Suppresses the error — silent failure. <strong>C:</strong> Terminates the entire workflow unnecessarily. <strong>D:</strong> Generic status hides valuable context from the coordinator.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q10 -->
-        <div class="question-card mock-q" data-correct="B" id="mq-10">
-          <div class="question-header">
-            <div class="question-num"><span class="q-prefix">Question</span>10</div>
-            <div class="question-body">
-              <div class="question-scenario"><span class="scenario-tag">Customer Support</span><span>Human handoff</span></div>
-              <p class="question-text">Your AI agent decides to escalate a complex billing dispute to a human agent. When the human picks up the ticket, the customer is frustrated because the human asks them to re-explain everything they already told the AI. What's the root cause and the correct fix?</p>
-            </div>
-          </div>
-          <ul class="options-list">
-            <li class="option-item" data-letter="A" onclick="selectOption(this)">
-              <span class="option-letter">A</span>
-              <span class="option-text">The AI should have resolved the issue itself instead of escalating; add stricter escalation criteria</span>
-            </li>
-            <li class="option-item" data-letter="B" onclick="selectOption(this)">
-              <span class="option-letter">B</span>
-              <span class="option-text">The human agent has no access to the conversation transcript; the AI must compile a structured handoff summary including customer ID, conversation summary, investigation results, root cause, and recommended action</span>
-            </li>
-            <li class="option-item" data-letter="C" onclick="selectOption(this)">
-              <span class="option-letter">C</span>
-              <span class="option-text">The customer should be informed before escalation that they'll need to re-explain the issue</span>
-            </li>
-            <li class="option-item" data-letter="D" onclick="selectOption(this)">
-              <span class="option-letter">D</span>
-              <span class="option-text">The AI should automatically forward the raw conversation transcript to the human via email before escalation</span>
-            </li>
-          </ul>
-          <div class="question-actions">
-            <button class="reveal-btn" onclick="revealMock('mq-10')">Reveal answer</button>
-          </div>
-          <div class="rationale">
-            <div class="rationale-inner">
-              <div class="rationale-tag">Correct: B</div>
-              <p class="rationale-text">The human reviewer has no transcript access by default. The AI must compile a structured handoff with all required fields so the human starts informed.</p>
-              <div class="rationale-distractors"><strong>A:</strong> Solves a different problem; the issue is about handoff quality, not escalation criteria. <strong>C:</strong> Worsens UX by accepting the broken pattern. <strong>D:</strong> Raw transcripts aren't structured for fast human consumption.</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ====== SCORE PANEL ====== -->
-      <div class="score-panel hidden" id="score-panel">
-        <div class="score-stat">
-          <div class="score-value" id="score-current">0/10</div>
-          <div class="score-label">Score</div>
-        </div>
-        <div class="score-stat">
-          <div class="score-value" id="score-answered">0</div>
-          <div class="score-label">Answered</div>
-        </div>
-        <div class="score-stat">
-          <div class="score-value" id="score-status">In progress</div>
-          <div class="score-label">Status</div>
-        </div>
-        <div class="score-actions">
-          <button class="score-action-btn" onclick="resetExam()">Reset</button>
-          <button class="score-action-btn primary" onclick="submitExam()">Submit &amp; reveal all</button>
+<!-- =================== MOCK EXAM SECTION =================== -->
+<!-- =================== MOCK EXAM CTA =================== -->
+<section class="task-section" id="mock-exam">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-num">&Sigma;</div>
+      <div class="section-header-text">
+        <div class="section-tag">Mock exam &middot; graded</div>
+        <h2 class="section-title">Sit the test.</h2>
+        <div class="section-meaning">
+          10 scenario-based questions in true exam format. Aim for 8/10. The mock exam now runs as its own standalone page so the score panel and exam mode have your full attention.
         </div>
       </div>
+    </div>
 
+    <div class="section-body">
+      <a class="mock-cta" href="domain1_mock_exam.html">
+        <div class="mock-cta-meta">
+          <span class="mock-cta-tag">Mock Exam</span>
+          <span class="mock-cta-eyebrow">Domain 1 &middot; 10 questions &middot; pass 8/10</span>
+        </div>
+        <div class="mock-cta-title">Open the mock exam &rarr;</div>
+        <div class="mock-cta-lede">Launches a focused exam page. Use it untimed for revision, or hit &ldquo;Start exam mode&rdquo; to score across the whole bank.</div>
+      </a>
     </div>
   </div>
 </section>
@@ -3386,6 +2986,23 @@ footer {
     <div class="pull-quote-attr">— The four mental shortcuts for Domain I</div>
   </div>
 </div>
+
+<nav class="module-nav" aria-label="Module navigation">
+  <div class="container">
+    <div class="module-nav-grid">
+      <a class="module-nav-item module-nav-prev" href="index.html">
+        <span class="module-nav-lbl">← Syllabus</span>
+        <span class="module-nav-eyebrow">Index</span>
+        <span class="module-nav-title">Back to Study Guide</span>
+      </a>
+      <a class="module-nav-item module-nav-next" href="domain2_study_guide.html">
+        <span class="module-nav-lbl">Next →</span>
+        <span class="module-nav-eyebrow">Domain 02 · 18%</span>
+        <span class="module-nav-title">Tool Design &amp; MCP Integration</span>
+      </a>
+    </div>
+  </div>
+</nav>
 
 <footer>
   <div class="container">
