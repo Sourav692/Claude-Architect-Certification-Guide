@@ -633,10 +633,60 @@ blockquote {
   font-family: var(--font-mono);
 }
 
-/* ── 21. Reduced motion ──────────────────────────────────────── */
+/* ── 21. Motion — entrance & feedback ────────────────────────── */
+@keyframes editorial-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes editorial-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes editorial-pulse {
+  0%   { transform: scaleY(1); }
+  45%  { transform: scaleY(1.6); }
+  100% { transform: scaleY(1); }
+}
+
+/* Reveal-on-view: an element becomes visible when JS toggles `.in-view`.
+   Default state is "off" so we don't ship a flash of unstyled animation. */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  will-change: opacity, transform;
+}
+.reveal.in-view {
+  animation: editorial-rise 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+/* Stagger helpers — apply to siblings via :nth-child or via inline --reveal-delay. */
+.reveal-stagger > *.reveal { --reveal-delay: 0ms; }
+.reveal-stagger > *.reveal:nth-child(2) { --reveal-delay: 80ms; }
+.reveal-stagger > *.reveal:nth-child(3) { --reveal-delay: 160ms; }
+.reveal-stagger > *.reveal:nth-child(4) { --reveal-delay: 240ms; }
+.reveal-stagger > *.reveal:nth-child(5) { --reveal-delay: 320ms; }
+
+/* Sticky masthead — shadow grows in when the page scrolls. */
+header.masthead.scrolled {
+  box-shadow: 0 2px 18px -8px rgba(14, 31, 38, 0.18);
+}
+header.masthead {
+  transition: box-shadow 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── 22. Reduced motion ──────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .toc-item, .course-nav { transition: none; }
+  .reveal,
+  .reveal.in-view {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  header.masthead { transition: none; }
+  header.masthead.scrolled { box-shadow: none; }
 }
 
 /* ── 22. Selection ───────────────────────────────────────────── */

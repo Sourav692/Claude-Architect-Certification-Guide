@@ -1564,5 +1564,17 @@ function resetSolution() {
 }
 </script>
 
+
+<script>
+(function(){
+  var m = document.querySelector('header.masthead');
+  if (!m) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+  function update(){ m.classList.toggle('scrolled', window.scrollY > 80); }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+</script>
 </body>
 </html>

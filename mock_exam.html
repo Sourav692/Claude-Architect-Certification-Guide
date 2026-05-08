@@ -127,11 +127,24 @@
   .progress-cell {
     height: 4px; border-radius: 2px;
     background: var(--rule-faint);
-    transition: background 0.25s ease;
+    transition: background 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    transform-origin: center;
   }
-  .progress-cell.active { background: var(--lava); }
+  .progress-cell.active {
+    background: var(--lava);
+    animation: cell-pulse 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
   .progress-cell.done { background: var(--tone-moss); }
   .progress-cell.done.wrong { background: var(--lava-deep); }
+  @keyframes cell-pulse {
+    0%   { transform: scaleY(1); }
+    45%  { transform: scaleY(1.7); }
+    100% { transform: scaleY(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .progress-cell { transition: none; }
+    .progress-cell.active { animation: none; }
+  }
 
   .quiz-card { display: none; padding: 1rem 0; }
   .quiz-card.show { display: block; }
