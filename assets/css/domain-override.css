@@ -467,8 +467,8 @@ a:focus-visible, button:focus-visible {
   border-radius: 2px;
 }
 
-/* ── 17. Home / Syllabus button (every module page) ──────────── */
-nav.toc a.home-btn {
+/* ── 17. Home button (every module / practice / exercise page) ─ */
+a.home-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -487,18 +487,18 @@ nav.toc a.home-btn {
   margin-right: 0.4rem;
   border-bottom: 1px solid var(--lava) !important;
 }
-nav.toc a.home-btn::before {
+a.home-btn::before {
   content: "↑";
   font-family: var(--font-mono);
   font-weight: 600;
 }
-nav.toc a.home-btn:hover {
+a.home-btn:hover {
   background: var(--lava-deep);
   border-color: var(--lava-deep) !important;
   color: var(--paper) !important;
   transform: translateY(-1px);
 }
-nav.toc a.home-btn:focus-visible {
+a.home-btn:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 3px;
 }

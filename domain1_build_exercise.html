@@ -1009,9 +1009,7 @@ footer .meta {
       <div class="brand">The Architect's <em class="ampersand">Workshop</em></div>
     </div>
     <div class="toolbar">
-      <a class="home-btn" href="index.html">Syllabus</a>
-      <button class="tool-btn" id="reset-btn" onclick="resetSolution()" style="display:none;">Hide solution</button>
-      <button class="tool-btn primary" id="reveal-top-btn" onclick="revealSolution()">Show solution</button>
+      <a class="home-btn" href="index.html">Home</a>
     </div>
   </div>
 </header>
@@ -1529,8 +1527,8 @@ function revealSolution() {
   revealSection.classList.add('solved');
   revealTrigger.classList.add('hidden');
   revealSection.querySelector('.reveal-prompt').textContent = 'Solution revealed below';
-  resetBtn.style.display = 'inline-flex';
-  revealTopBtn.style.display = 'none';
+  if (resetBtn) resetBtn.style.display = 'inline-flex';
+  if (revealTopBtn) revealTopBtn.style.display = 'none';
 
   // Smooth scroll to the solution intro after a short delay
   setTimeout(() => {
@@ -1555,8 +1553,8 @@ function resetSolution() {
   revealSection.classList.remove('solved');
   revealTrigger.classList.remove('hidden');
   revealSection.querySelector('.reveal-prompt').innerHTML = 'Take a moment to design your answer first.<br>When you\'re ready, reveal the reference solution.';
-  resetBtn.style.display = 'none';
-  revealTopBtn.style.display = 'inline-flex';
+  if (resetBtn) resetBtn.style.display = 'none';
+  if (revealTopBtn) revealTopBtn.style.display = 'inline-flex';
 
   // Scroll back to top
   window.scrollTo({
