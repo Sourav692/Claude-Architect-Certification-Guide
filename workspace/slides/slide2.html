@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #181B24; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #181B24; font-family: Arial, sans-serif;
+  display: flex; color: #FCFCFC;
+}
+.frame { margin: 50pt; width: 620pt; display: flex; flex-direction: column; }
+.label { font-size: 12pt; letter-spacing: 4pt; color: #B165FB; font-weight: bold; margin: 0; }
+.bar { width: 60pt; height: 3pt; background: #B165FB; margin: 12pt 0 22pt 0; }
+.h1 { font-size: 36pt; font-weight: bold; line-height: 1.15; margin: 0 0 18pt 0; color: #FCFCFC; }
+.lede { font-size: 16pt; line-height: 1.5; color: #C9CFDB; margin: 0 0 24pt 0; }
+.cards { display: flex; gap: 14pt; margin-top: 8pt; }
+.card { flex: 1; background: #21242F; border-left: 4pt solid #B165FB; padding: 16pt; }
+.card.emerald { border-left-color: #4FB89E; }
+.card .num { font-size: 11pt; letter-spacing: 2pt; color: #B165FB; font-weight: bold; margin: 0 0 6pt 0; }
+.card.emerald .num { color: #4FB89E; }
+.card .name { font-size: 14pt; font-weight: bold; margin: 0; color: #FCFCFC; }
+</style>
+</head>
+<body>
+<div class="frame">
+  <p class="label">THESIS</p>
+  <div class="bar"></div>
+  <h1 class="h1">Reliable agents need <i>architecture</i>, not clever prompts</h1>
+  <p class="lede">Claude Code's harness shows that production agent reliability comes from deterministic, structural choices — how memory is laid out, how permissions gate actions, how workflows separate phases. Prompts are not enough.</p>
+  <div class="cards">
+    <div class="card"><p class="num">CATEGORY 1</p><p class="name">Memory &amp; Context</p></div>
+    <div class="card emerald"><p class="num">CATEGORY 2</p><p class="name">Workflow &amp; Orchestration</p></div>
+    <div class="card"><p class="num">CATEGORY 3</p><p class="name">Tools &amp; Permissions</p></div>
+    <div class="card emerald"><p class="num">CATEGORY 4</p><p class="name">Automation</p></div>
+  </div>
+</div>
+</body>
+</html>
