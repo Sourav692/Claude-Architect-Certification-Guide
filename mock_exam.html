@@ -866,11 +866,14 @@ const DOMAIN_NAMES  = {
   5: "Context & Reliability"
 };
 
-let activeFilters = new Set(["all"]);
-let activeQuestions = [];
-let currentIdx = 0;
-let correctCount = 0;
-let answers = [];
+// NOTE: `var` (not `let`) so these globals land on `window`, allowing the
+// exam-mode engine in #examModeEngine to read/write the same state the
+// original render loop uses.
+var activeFilters = new Set(["all"]);
+var activeQuestions = [];
+var currentIdx = 0;
+var correctCount = 0;
+var answers = [];
 
 function toggleFilter(d) {
   // Click "All Domains" -> only "all" active.
