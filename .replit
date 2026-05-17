@@ -1,7 +1,8 @@
-modules = ["web", "nodejs-20", "python-3.11"]
+modules = ["web", "nodejs-20", "python-3.11", "postgresql-16"]
 [agent]
 expertMode = true
 stack = "BEST_EFFORT_FALLBACK"
+integrations = ["javascript_log_in_with_replit:2.0.0"]
 
 [nix]
 channel = "stable-25_05"
@@ -22,13 +23,13 @@ args = "Start application"
 name = "Start application"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python3 -m http.server 5000 --bind 0.0.0.0"
-waitForPort = 5000
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node server/index.js"
+waitForPort = 5000
 
 [[ports]]
 localPort = 5000

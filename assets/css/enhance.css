@@ -726,3 +726,58 @@ body.enh-ready .masthead .toc .home-btn { display: none; }
   .enh-brand-volume { display: none; }
   .enh-progress-chip { display: none; }
 }
+
+/* ─────────── User widget (account menu) ─────────── */
+.enh-user { position: relative; margin-left: 4px; }
+.enh-user-btn {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid var(--rule-faint, #d8d2c4);
+  background: var(--paper-deep, #f3ede0);
+  cursor: pointer; padding: 0; overflow: hidden;
+  display: inline-grid; place-items: center;
+  font-family: var(--font-mono, monospace); font-size: 0.66rem;
+  letter-spacing: 0.04em; color: var(--ink, #1a1a1a);
+}
+.enh-user-btn:hover { border-color: var(--lava, #C72D1A); }
+.enh-user-btn img { width: 100%; height: 100%; object-fit: cover; }
+.enh-user-init { font-weight: 600; }
+.enh-user-menu {
+  position: absolute; right: 0; top: calc(100% + 6px);
+  min-width: 220px;
+  background: var(--paper-card, #faf6ec);
+  border: 1px solid var(--rule-faint, #d8d2c4);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  padding: 6px;
+  z-index: 60;
+}
+.enh-user-id {
+  padding: 8px 10px 10px;
+  border-bottom: 1px solid var(--rule-faint, #d8d2c4);
+  margin-bottom: 4px;
+}
+.enh-user-name { font-size: 0.86rem; color: var(--ink); font-weight: 500; }
+.enh-user-email {
+  font-family: var(--font-mono, monospace); font-size: 0.7rem;
+  color: var(--ink-mute, #6e6a5e); margin-top: 2px;
+  word-break: break-all;
+}
+.enh-user-menu a {
+  display: block; padding: 7px 10px; border-radius: 4px;
+  font-family: var(--font-mono, monospace); font-size: 0.72rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink); text-decoration: none;
+}
+.enh-user-menu a:hover { background: var(--paper-deep, #f3ede0); color: var(--lava, #C72D1A); }
+.enh-user-signin {
+  display: inline-flex; align-items: center;
+  height: 30px; padding: 0 12px;
+  border: 1px solid var(--lava, #C72D1A); border-radius: 4px;
+  background: transparent; color: var(--lava, #C72D1A);
+  font-family: var(--font-mono, monospace); font-size: 0.7rem;
+  letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+}
+.enh-user-signin:hover { background: var(--lava, #C72D1A); color: white; }
+@media (max-width: 720px) {
+  .enh-user-menu { right: -8px; }
+}

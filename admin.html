@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Claude Certified Architect Foundations</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/course.css">
+<link rel="stylesheet" href="/assets/css/enhance.css">
+<script src="/assets/js/sync.js" defer></script>
+<script src="/assets/js/enhance.js" defer></script>
+<style>
+  .adm { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+  .adm-hd {
+    margin: 1.6rem 0 1.4rem; padding-bottom: 1rem;
+    border-bottom: 2px solid var(--ink);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .adm-hd h1 {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 144, "SOFT" 60, "wght" 380;
+    font-size: 2rem; color: var(--ink); letter-spacing: -0.03em;
+  }
+  .adm-hd h1 em { color: var(--lava); font-style: italic; }
+  .adm-eyebrow {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--lava); margin-top: 6px;
+  }
+  .adm-count {
+    font-family: var(--font-mono); font-size: 0.74rem;
+    color: var(--ink-mute); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  table.adm-tbl {
+    width: 100%; border-collapse: collapse;
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 6px; overflow: hidden;
+    font-size: 0.92rem;
+  }
+  table.adm-tbl th, table.adm-tbl td {
+    padding: 12px 14px; text-align: left;
+    border-bottom: 1px solid var(--rule-faint);
+    vertical-align: middle;
+  }
+  table.adm-tbl thead th {
+    background: var(--paper-deep);
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-mute); font-weight: 500;
+  }
+  table.adm-tbl tbody tr:last-child td { border-bottom: 0; }
+  table.adm-tbl tbody tr:hover { background: var(--paper-deep); }
+  .adm-user { display: flex; align-items: center; gap: 12px; }
+  .adm-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--rule-faint);
+    display: inline-grid; place-items: center;
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 24, "wght" 560;
+    color: var(--ink); font-size: 0.95rem;
+    overflow: hidden;
+  }
+  .adm-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .adm-name { font-weight: 500; color: var(--ink); }
+  .adm-email { font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-mute); }
+  .adm-pill {
+    display: inline-block;
+    padding: 2px 9px; border-radius: 99px;
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    background: var(--paper-deep); color: var(--ink);
+  }
+  .adm-pill.admin { background: rgba(199,45,26,0.1); color: var(--lava); }
+  .adm-num {
+    font-family: var(--font-mono); font-size: 0.95rem;
+    color: var(--ink); font-weight: 500;
+  }
+  .adm-empty, .adm-error {
+    text-align: center; padding: 3rem;
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 6px;
+    font-family: var(--font-display); font-style: italic;
+    color: var(--ink-mute);
+  }
+  .adm-error { color: var(--lava-deep); border-color: var(--lava-deep); }
+  .adm-btn {
+    background: transparent; border: 1px solid var(--rule-faint);
+    padding: 5px 10px; border-radius: 4px;
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink); cursor: pointer;
+  }
+  .adm-btn:hover { border-color: var(--lava); color: var(--lava); }
+</style>
+</head>
+<body>
+
+<div class="masthead-rule" style="max-width: 1100px; margin: 0 auto; padding: 1.6rem 32px 0; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);">
+  <span><a href="/index.html" style="color: var(--ink-soft); text-decoration: none;">Home</a> <span style="margin: 0 0.4rem;">›</span> <span style="color: var(--ink);">Admin</span></span>
+  <a href="/index.html" style="color: var(--lava); text-decoration: none; border: 1px solid var(--lava); padding: 0.4rem 0.75rem; border-radius: 3px;">Home</a>
+</div>
+
+<main class="adm">
+  <div class="adm-hd">
+    <div>
+      <h1>User <em>roster.</em></h1>
+      <div class="adm-eyebrow">Admin · Foundations</div>
+    </div>
+    <div class="adm-count" id="admCount">—</div>
+  </div>
+
+  <div id="admBody">
+    <div class="adm-empty">Loading users…</div>
+  </div>
+</main>
+
+<script>
+(async function () {
+  const body = document.getElementById('admBody');
+  const cnt  = document.getElementById('admCount');
+
+  async function load() {
+    try {
+      const [meR, usersR] = await Promise.all([
+        fetch('/api/me', { credentials: 'include' }),
+        fetch('/api/admin/users', { credentials: 'include' })
+      ]);
+      if (usersR.status === 403) {
+        body.innerHTML = '<div class="adm-error">You don\'t have admin access. Ask the workspace owner to promote you.</div>';
+        return;
+      }
+      if (!usersR.ok) throw new Error('HTTP ' + usersR.status);
+      const me = meR.ok ? await meR.json() : null;
+      const users = await usersR.json();
+      cnt.textContent = users.length + ' user' + (users.length === 1 ? '' : 's');
+      render(users, me);
+    } catch (err) {
+      body.innerHTML = '<div class="adm-error">Couldn\'t load: ' + (err.message || err) + '</div>';
+    }
+  }
+
+  function initials(u) {
+    const a = (u.first_name || '').trim()[0] || '';
+    const b = (u.last_name  || '').trim()[0] || '';
+    return (a + b).toUpperCase() || (u.email || '?')[0].toUpperCase();
+  }
+  function fmtDate(s) {
+    if (!s) return '—';
+    return new Date(s).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function render(users, me) {
+    if (!users.length) { body.innerHTML = '<div class="adm-empty">No users yet.</div>'; return; }
+    const rows = users.map(u => {
+      const name = [u.first_name, u.last_name].filter(Boolean).join(' ') || '(no name)';
+      const isMe = me && u.id === me.id;
+      const avatar = u.profile_image_url
+        ? `<img src="${esc(u.profile_image_url)}" alt="">`
+        : esc(initials(u));
+      const adminBtn = isMe
+        ? '<span class="adm-pill admin">You</span>'
+        : `<button class="adm-btn" data-id="${esc(u.id)}" data-make="${u.is_admin ? 'false' : 'true'}" type="button">${u.is_admin ? 'Revoke admin' : 'Make admin'}</button>`;
+      return `
+        <tr>
+          <td>
+            <div class="adm-user">
+              <span class="adm-avatar">${avatar}</span>
+              <div>
+                <div class="adm-name">${esc(name)}</div>
+                <div class="adm-email">${esc(u.email || '—')}</div>
+              </div>
+            </div>
+          </td>
+          <td>${u.is_admin ? '<span class="adm-pill admin">Admin</span>' : '<span class="adm-pill">Member</span>'}</td>
+          <td class="adm-num">${u.pages_visited}</td>
+          <td class="adm-num">${u.mock_attempts}</td>
+          <td>${fmtDate(u.last_login_at)}</td>
+          <td>${fmtDate(u.last_activity)}</td>
+          <td>${adminBtn}</td>
+        </tr>
+      `;
+    }).join('');
+    body.innerHTML = `
+      <table class="adm-tbl">
+        <thead>
+          <tr>
+            <th>User</th><th>Role</th>
+            <th>Pages visited</th><th>Mock attempts</th>
+            <th>Last login</th><th>Last activity</th><th></th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+    body.querySelectorAll('.adm-btn').forEach(b => b.addEventListener('click', async () => {
+      const id = b.dataset.id;
+      const make = b.dataset.make === 'true';
+      b.disabled = true; b.textContent = '…';
+      try {
+        const r = await fetch('/api/admin/users/' + encodeURIComponent(id) + '/admin', {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isAdmin: make })
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        load();
+      } catch (e) {
+        b.disabled = false; b.textContent = 'Retry';
+      }
+    }));
+  }
+
+  load();
+})();
+</script>
+</body>
+</html>

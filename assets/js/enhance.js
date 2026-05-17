@@ -131,10 +131,12 @@
           <button class="enh-btn enh-icon-btn" data-action="theme" aria-label="Toggle theme">
             <span data-theme-icon></span>
           </button>
+          <div class="enh-user" data-enh-user hidden></div>
         </div>
       </div>
     `;
     document.body.prepend(bar);
+    mountUserWidget(bar.querySelector('[data-enh-user]'));
 
     // search modal
     const modal = document.createElement('div');
@@ -1118,6 +1120,52 @@
     clearTimeout(flashToast._t);
     flashToast._t = setTimeout(() => t.classList.remove('show'), 1600);
   }
+
+  /* ─── User widget (sign-in / logout) ─── */
+  function mountUserWidget(host) {
+    if (!host) return;
+    const render = (user) => {
+      if (!user) {
+        host.hidden = false;
+        host.innerHTML = '<a class="enh-user-signin" href="/api/login">Sign in</a>';
+        return;
+      }
+      const name = [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email || 'You';
+      const init = ((user.firstName || user.email || '?')[0] + (user.lastName ? user.lastName[0] : '')).toUpperCase();
+      const avatar = user.profileImageUrl
+        ? '<img src="' + escapeAttr(user.profileImageUrl) + '" alt="">'
+        : '<span class="enh-user-init">' + escapeHtml(init) + '</span>';
+      const adminLink = user.isAdmin ? '<a href="/admin.html" role="menuitem">Admin</a>' : '';
+      host.hidden = false;
+      host.innerHTML =
+        '<button class="enh-user-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Account menu">' +
+          avatar +
+        '</button>' +
+        '<div class="enh-user-menu" role="menu" hidden>' +
+          '<div class="enh-user-id">' +
+            '<div class="enh-user-name">' + escapeHtml(name) + '</div>' +
+            '<div class="enh-user-email">' + escapeHtml(user.email || '') + '</div>' +
+          '</div>' +
+          adminLink +
+          '<a href="/api/logout" role="menuitem">Sign out</a>' +
+        '</div>';
+      const btn = host.querySelector('.enh-user-btn');
+      const menu = host.querySelector('.enh-user-menu');
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const open = !menu.hidden;
+        menu.hidden = open;
+        btn.setAttribute('aria-expanded', String(!open));
+      });
+      document.addEventListener('click', e => {
+        if (!host.contains(e.target)) { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+      });
+    };
+    const apply = () => render(window.enhSync && window.enhSync.user);
+    if (window.enhSync && window.enhSync.ready) apply();
+    else document.addEventListener('enh-sync-ready', apply, { once: true });
+  }
+  function escapeAttr(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
   /* ─── Phase 3 boot hook ─── */
   function bootPhase3() {

@@ -1,28 +1,20 @@
 /* Service worker — site-root scope so it controls all HTML pages.
    Strategy:
-   - HTML pages: network-first (always try to get fresh content, fall back to cache offline).
-   - Static assets (CSS/JS/SVG/JSON): cache-first with background refresh.
+   - /api/* and /login.html  → never intercept (always hit the network).
+   - HTML pages              → network-first (so auth gating / fresh content always reach the user).
+   - Static assets           → cache-first with background refresh.
    Bump CACHE on every meaningful asset change. */
-const CACHE = 'cca-foundations-v2';
+const CACHE = 'cca-foundations-v3';
 
 const PRECACHE = [
-  'index.html',
-  'domain1_study_guide.html', 'domain1_practice.html', 'domain1_build_exercise.html',
-  'domain2_study_guide.html', 'domain2_practice.html', 'domain2_build_exercise.html',
-  'domain3_study_guide.html', 'domain3_practice.html', 'domain3_build_exercise.html',
-  'domain4_study_guide.html', 'domain4_practice.html', 'domain4_build_exercise.html',
-  'domain5_study_guide.html', 'domain5_practice.html', 'domain5_build_exercise.html',
-  'anti_patterns.html',
-  'mock_exam.html',
-  'flashcards.html',
-  'report.html',
-  'assets/css/course.css',
-  'assets/css/enhance.css',
-  'assets/js/course.js',
-  'assets/js/enhance.js',
-  'assets/favicon.svg',
-  'assets/manifest.webmanifest',
-  'assets/data/flashcards.json'
+  '/assets/css/course.css',
+  '/assets/css/enhance.css',
+  '/assets/js/course.js',
+  '/assets/js/enhance.js',
+  '/assets/js/sync.js',
+  '/assets/favicon.svg',
+  '/assets/manifest.webmanifest',
+  '/assets/data/flashcards.json'
 ];
 
 self.addEventListener('install', e => {
@@ -53,12 +45,15 @@ self.addEventListener('fetch', e => {
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
 
+  // Never intercept auth / API / login page — they must always be live.
+  if (url.pathname.startsWith('/api/') || url.pathname === '/login.html') return;
+
   if (isHtmlRequest(req)) {
-    // Network-first for HTML so deploys propagate; fall back to cache offline.
     e.respondWith((async () => {
       try {
         const fresh = await fetch(req);
-        if (fresh && fresh.ok) {
+        // Only cache successful 2xx HTML responses (skip 3xx redirects to /login.html).
+        if (fresh && fresh.ok && (fresh.headers.get('content-type') || '').includes('text/html')) {
           const c = await caches.open(CACHE);
           c.put(req, fresh.clone());
         }
@@ -66,8 +61,6 @@ self.addEventListener('fetch', e => {
       } catch {
         const cached = await caches.match(req);
         if (cached) return cached;
-        const home = await caches.match('index.html');
-        if (home) return home;
         return new Response('Offline', { status: 503, statusText: 'Offline' });
       }
     })());
