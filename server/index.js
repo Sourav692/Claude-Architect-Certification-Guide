@@ -29,6 +29,12 @@ app.use('/assets', express.static(path.join(ROOT, 'assets'), {
 app.get('/sw.js', (_req, res) => res.sendFile(path.join(ROOT, 'sw.js')));
 app.get('/favicon.svg', (_req, res) => res.sendFile(path.join(ROOT, 'assets/favicon.svg')));
 app.get('/login.html', (_req, res) => res.sendFile(path.join(ROOT, 'login.html')));
+app.get('/robots.txt', (_req, res) => {
+  res.type('text/plain').sendFile(path.join(ROOT, 'robots.txt'));
+});
+app.get('/sitemap.xml', (_req, res) => {
+  res.type('application/xml').sendFile(path.join(ROOT, 'sitemap.xml'));
+});
 app.get('/healthz', (_req, res) => res.json({ ok: true }));
 
 /* ── API ── */

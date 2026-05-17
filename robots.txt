@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /$
+Allow: /login.html
+Allow: /assets/
+Allow: /favicon.svg
+Allow: /robots.txt
+Allow: /sitemap.xml
+Disallow: /api/
+Disallow: /admin.html
+
+Sitemap: https://claude-craft.replit.app/sitemap.xml
