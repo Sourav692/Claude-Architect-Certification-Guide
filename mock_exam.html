@@ -375,7 +375,392 @@
 </style>
 <link rel="stylesheet" href="assets/css/enhance.css">
 <script src="assets/js/enhance.js" defer></script>
-</head>
+<style id="examModeStyles">
+  /* ── Phase 2 · Exam mode & rich score report ─────────────────── */
+  .mode-toggle {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 8px; padding: 4px; margin-bottom: 1.25rem;
+    max-width: 480px;
+  }
+  .mode-opt {
+    padding: 0.7rem 1rem; cursor: pointer;
+    background: transparent; border: 0;
+    border-radius: 6px;
+    text-align: left;
+    font-family: var(--font-body); color: var(--ink-soft);
+    transition: background 0.15s, color 0.15s;
+  }
+  .mode-opt:hover { color: var(--ink); }
+  .mode-opt.active {
+    background: var(--paper-deep); color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--rule-faint);
+  }
+  .mode-opt .mode-opt-title {
+    display: block; font-weight: 600; font-size: 0.92rem; margin-bottom: 2px;
+  }
+  .mode-opt .mode-opt-sub {
+    display: block; font-family: var(--font-mono);
+    font-size: 0.66rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-mute);
+  }
+  .mode-opt.active .mode-opt-sub { color: var(--lava); }
+
+  .exam-config {
+    display: none; grid-template-columns: 1fr 1fr; gap: 12px;
+    margin-bottom: 1.25rem;
+  }
+  .exam-config.show { display: grid; }
+  .config-field {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+  }
+  .config-field-label {
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-mute); margin-bottom: 4px;
+  }
+  .config-field-value {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 28, "SOFT" 30, "wght" 540;
+    font-size: 1.4rem; color: var(--ink);
+  }
+  .config-field select, .config-field button.preset {
+    background: transparent; border: 0; padding: 0;
+    font: inherit; color: inherit; cursor: pointer;
+  }
+
+  /* timer chip in progress row */
+  .timer-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    color: var(--ink-soft); letter-spacing: 0.04em;
+  }
+  .timer-chip .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--tone-moss);
+    animation: timer-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes timer-pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+  .timer-chip .time-val { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .timer-chip.warn .dot { background: var(--orange, #A37B1F); }
+  .timer-chip.warn .time-val { color: var(--orange, #A37B1F); }
+  .timer-chip.danger .dot { background: var(--lava-deep); animation-duration: 0.8s; }
+  .timer-chip.danger .time-val { color: var(--lava-deep); }
+  .flag-count-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 0.74rem;
+    color: var(--ink-mute);
+  }
+  .flag-count-chip strong { color: var(--ochre, #A37B1F); font-weight: 600; }
+
+  /* flag button on question card */
+  .qcard-actions-top {
+    display: flex; justify-content: flex-end; gap: 8px;
+    margin-bottom: 0.6rem;
+  }
+  .flag-btn {
+    background: var(--paper); border: 1px solid var(--rule-faint);
+    padding: 0.45rem 0.85rem; border-radius: 4px;
+    font-family: var(--font-mono); font-size: 0.7rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-soft); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: all 0.15s;
+  }
+  .flag-btn:hover { color: var(--ink); border-color: var(--ink-mute); }
+  .flag-btn.flagged {
+    background: rgba(163, 123, 31, 0.08);
+    border-color: rgba(163, 123, 31, 0.4);
+    color: #A37B1F;
+  }
+  .flag-btn::before {
+    content: "⚑"; font-size: 0.85rem;
+    transition: transform 0.15s;
+  }
+  .flag-btn.flagged::before { transform: scale(1.1); }
+
+  /* exam-mode question nav (jump between questions) */
+  .qnav-bar {
+    display: none; margin-top: 1rem;
+    padding: 0.9rem 1rem;
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 6px;
+    justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 0.6rem;
+  }
+  .qnav-bar.show { display: flex; }
+  .qnav-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .qnav-btn {
+    background: var(--paper); border: 1px solid var(--rule-faint);
+    padding: 0.55rem 0.95rem; border-radius: 4px;
+    font-family: var(--font-mono); font-size: 0.72rem;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink); cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .qnav-btn:hover { background: var(--paper-deep); }
+  .qnav-btn.primary {
+    background: var(--ink); color: var(--paper); border-color: var(--ink);
+  }
+  .qnav-btn.primary:hover { background: var(--lava); border-color: var(--lava); }
+  .qnav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* question grid (review screen) */
+  .qgrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 6px; margin: 1rem 0 1.4rem;
+  }
+  .qgrid-cell {
+    aspect-ratio: 1; display: grid; place-items: center;
+    background: var(--paper); color: var(--ink-soft);
+    border: 1px solid var(--rule-faint);
+    border-radius: 4px;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    cursor: pointer; transition: all 0.15s;
+    position: relative;
+  }
+  .qgrid-cell:hover { border-color: var(--ink-mute); color: var(--ink); }
+  .qgrid-cell.answered { background: var(--paper-deep); color: var(--ink); }
+  .qgrid-cell.current { border-color: var(--lava); color: var(--lava); font-weight: 600; }
+  .qgrid-cell.flagged::after {
+    content: ""; position: absolute; top: 2px; right: 2px;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #A37B1F;
+  }
+  .qgrid-cell.correct { background: rgba(74,111,63,0.14); border-color: rgba(74,111,63,0.4); color: var(--tone-moss); }
+  .qgrid-cell.wrong   { background: rgba(199,45,26,0.10); border-color: rgba(199,45,26,0.4); color: var(--lava-deep); }
+
+  /* review-state (between active and complete) */
+  .review-state { display: none; padding: 1.5rem 0 1rem; }
+  .review-state.show { display: block; }
+  .review-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 6px;
+    padding: 1.8rem 2rem;
+  }
+  .review-eyebrow {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--lava); margin-bottom: 0.6rem; font-weight: 500;
+  }
+  .review-title {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 56, "SOFT" 40, "wght" 480;
+    font-size: 1.8rem; color: var(--ink); margin-bottom: 0.4rem;
+    letter-spacing: -0.02em;
+  }
+  .review-title em { color: var(--lava); font-style: italic; }
+  .review-summary { color: var(--ink-soft); margin-bottom: 1rem; }
+  .review-summary strong { color: var(--ink); }
+  .review-legend {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-mute); margin-bottom: 0.6rem;
+  }
+  .review-legend .swatch {
+    display: inline-block; width: 10px; height: 10px;
+    border-radius: 2px; margin-right: 5px;
+    vertical-align: -1px; background: var(--rule-faint);
+    border: 1px solid var(--rule-faint);
+  }
+  .review-legend .sw-answered { background: var(--paper-deep); }
+  .review-legend .sw-unanswered { background: var(--paper); }
+  .review-legend .sw-flagged { background: #A37B1F; border-color: #A37B1F; }
+
+  /* rich score report */
+  .score-report { padding: 1rem 0; }
+  .score-grid {
+    display: grid; grid-template-columns: 1fr 1.2fr;
+    gap: 1.4rem; margin-bottom: 1.6rem;
+  }
+  @media (max-width: 720px) { .score-grid { grid-template-columns: 1fr; } }
+  .score-headline-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 6px;
+    padding: 1.8rem 1.6rem;
+    text-align: center;
+  }
+  .score-dial {
+    width: 160px; height: 160px; margin: 0 auto 0.8rem;
+    position: relative;
+  }
+  .score-dial svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .score-dial circle { fill: none; stroke-width: 9; }
+  .score-dial .track { stroke: var(--rule-faint); }
+  .score-dial .fill {
+    stroke: var(--lava);
+    transition: stroke-dashoffset 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .score-dial .fill.pass { stroke: var(--tone-moss); }
+  .score-dial-text {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    text-align: center;
+  }
+  .score-dial-pct {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 144, "SOFT" 60, "wght" 380;
+    font-size: 2.6rem; color: var(--ink); line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .score-dial-lbl {
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .score-verdict {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 1.15rem; color: var(--ink-soft); margin-bottom: 0.3rem;
+  }
+  .score-verdict.pass { color: var(--tone-moss); font-style: normal; font-weight: 600; }
+  .score-verdict.fail { color: var(--lava-deep); font-style: normal; font-weight: 600; }
+  .score-meta {
+    display: flex; justify-content: center; gap: 1.2rem;
+    font-family: var(--font-mono); font-size: 0.72rem;
+    color: var(--ink-mute); letter-spacing: 0.08em;
+  }
+  .score-meta strong { color: var(--ink); font-weight: 500; }
+
+  .score-domains {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 6px;
+    padding: 1.4rem 1.5rem;
+  }
+  .score-domains h3 {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink); margin-bottom: 1rem; font-weight: 500;
+  }
+  .domain-row { margin-bottom: 0.9rem; }
+  .domain-row:last-child { margin-bottom: 0; }
+  .domain-row-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 5px;
+  }
+  .domain-row-name {
+    font-family: var(--font-body); font-size: 0.88rem;
+    color: var(--ink); font-weight: 500;
+  }
+  .domain-row-name a { color: inherit; text-decoration: none; }
+  .domain-row-name a:hover { color: var(--lava); }
+  .domain-row-score {
+    font-family: var(--font-mono); font-size: 0.74rem;
+    color: var(--ink-soft);
+  }
+  .domain-row-score .pct { color: var(--ink); font-weight: 500; }
+  .domain-bar {
+    height: 6px; background: var(--rule-faint);
+    border-radius: 3px; overflow: hidden;
+  }
+  .domain-bar-fill {
+    height: 100%; background: var(--lava);
+    border-radius: 3px;
+    transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .domain-bar-fill.pass { background: var(--tone-moss); }
+  .domain-bar-fill.warn { background: #A37B1F; }
+  .domain-bar-fill.fail { background: var(--lava-deep); }
+
+  .missed-section {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 6px;
+    padding: 1.4rem 1.5rem;
+    margin-bottom: 1.6rem;
+  }
+  .missed-section h3 {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink); margin-bottom: 1rem; font-weight: 500;
+  }
+  details.missed-q {
+    border-bottom: 1px solid var(--rule-faint);
+    padding: 0.8rem 0;
+  }
+  details.missed-q:last-child { border-bottom: 0; }
+  details.missed-q > summary {
+    cursor: pointer; list-style: none;
+    display: flex; gap: 12px; align-items: flex-start;
+    font-size: 0.92rem; line-height: 1.5;
+  }
+  details.missed-q > summary::-webkit-details-marker { display: none; }
+  details.missed-q .miss-num {
+    font-family: var(--font-mono); color: var(--lava-deep);
+    flex-shrink: 0; font-weight: 600; width: 26px;
+  }
+  details.missed-q .miss-text { color: var(--ink); flex: 1; }
+  details.missed-q .miss-tag {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 2px 6px; border: 1px solid var(--rule-faint);
+    border-radius: 3px; color: var(--ink-mute);
+    flex-shrink: 0;
+  }
+  details.missed-q[open] > summary { margin-bottom: 0.7rem; }
+  details.missed-q .miss-body {
+    padding-left: 38px; font-size: 0.88rem;
+    color: var(--ink-soft); line-height: 1.55;
+  }
+  details.missed-q .miss-body p { margin-bottom: 0.5rem; }
+  details.missed-q .miss-body .picked {
+    color: var(--lava-deep); font-weight: 500;
+  }
+  details.missed-q .miss-body .answer {
+    color: var(--tone-moss); font-weight: 500;
+  }
+
+  /* attempt history strip */
+  .attempt-history {
+    margin-bottom: 1.6rem;
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 6px;
+    padding: 1.2rem 1.4rem;
+  }
+  .attempt-history h3 {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink); margin-bottom: 0.8rem; font-weight: 500;
+  }
+  .attempt-row {
+    display: grid; grid-template-columns: 80px 1fr 80px 70px;
+    gap: 0.8rem; align-items: center;
+    padding: 0.55rem 0;
+    border-top: 1px solid var(--rule-faint);
+    font-family: var(--font-mono); font-size: 0.78rem;
+  }
+  .attempt-row:first-of-type { border-top: 0; }
+  .attempt-row .date { color: var(--ink-mute); }
+  .attempt-row .label { color: var(--ink); }
+  .attempt-row .label .mode-tag {
+    font-size: 0.62rem; letter-spacing: 0.1em;
+    padding: 1px 5px; border: 1px solid var(--rule-faint);
+    border-radius: 3px; margin-left: 6px; color: var(--ink-mute);
+    text-transform: uppercase;
+  }
+  .attempt-row .pct { text-align: right; color: var(--ink); font-weight: 500; }
+  .attempt-row .pct.pass { color: var(--tone-moss); }
+  .attempt-row .pct.fail { color: var(--lava-deep); }
+  .attempt-row .dur { text-align: right; color: var(--ink-mute); }
+
+  /* missed-filter chip badge */
+  .filter-chip.has-missed::after {
+    content: attr(data-missed);
+    margin-left: 4px;
+    background: var(--lava-deep); color: white;
+    font-family: var(--font-mono); font-size: 0.62rem;
+    padding: 1px 5px; border-radius: 8px;
+  }
+</style>
 <body>
 
 <div class="masthead-rule">
@@ -669,5 +1054,673 @@ document.addEventListener("DOMContentLoaded", () => {
   updateSelectedCount();
 });
 </script>
+
+<script id="examModeEngine">
+/* ── Phase 2 · Mock exam: Exam mode, timer, flag, review, score report ── */
+(function () {
+  'use strict';
+
+  const STORAGE_ATTEMPTS = 'enh:attempts:mock';
+  const STORAGE_QHIST    = 'enh:qhistory:mock';
+  const DOMAIN_NAMES = window.DOMAIN_NAMES || {1:'Domain 1',2:'Domain 2',3:'Domain 3',4:'Domain 4',5:'Domain 5'};
+  const DOMAIN_LINKS = {
+    1:'domain1_study_guide.html', 2:'domain2_study_guide.html',
+    3:'domain3_study_guide.html', 4:'domain4_study_guide.html',
+    5:'domain5_study_guide.html'
+  };
+  const TIME_PRESETS = [
+    { label: '45 min', minutes: 45 },
+    { label: '60 min', minutes: 60 },
+    { label: '75 min', minutes: 75 },
+    { label: '90 min', minutes: 90 }
+  ];
+
+  let MODE        = 'study';      // 'study' | 'exam'
+  let timeLimitMs = 75 * 60 * 1000;
+  let startedAt   = 0;
+  let deadline    = 0;
+  let timerInt    = null;
+  let flags       = new Set();    // question indices flagged for review
+  let answersExam = [];           // parallel to activeQuestions, only used in exam mode
+  let reviewedOnce = false;       // set once after first submit attempt
+
+  /* ── helpers ─────────────────────────────────────────────── */
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $$(sel, root) { return Array.from((root || document).querySelectorAll(sel)); }
+  function fmtClock(ms) {
+    if (ms < 0) ms = 0;
+    const total = Math.ceil(ms / 1000);
+    const m = Math.floor(total / 60), s = total % 60;
+    return m + ':' + String(s).padStart(2, '0');
+  }
+  function fmtDuration(ms) {
+    const total = Math.floor(ms / 1000);
+    const m = Math.floor(total / 60), s = total % 60;
+    return m + 'm ' + s + 's';
+  }
+  function fmtRelDate(ts) {
+    const d = new Date(ts);
+    const today = new Date(); today.setHours(0,0,0,0);
+    const day = new Date(d); day.setHours(0,0,0,0);
+    const diff = Math.round((today - day) / 86400000);
+    if (diff === 0) return 'Today';
+    if (diff === 1) return 'Yesterday';
+    if (diff < 7) return diff + 'd ago';
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
+  function load(key, fallback) {
+    try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
+  }
+  function save(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+  }
+
+  /* ── UI: inject mode toggle + exam config ────────────────── */
+  function injectIntroUI() {
+    const intro = $('#introSection');
+    if (!intro) return;
+
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `
+      <div class="filter-bar-label">Mode</div>
+      <div class="mode-toggle" role="tablist" aria-label="Quiz mode">
+        <button class="mode-opt active" data-mode="study" role="tab" aria-selected="true">
+          <span class="mode-opt-title">Study mode</span>
+          <span class="mode-opt-sub">Reveal answer after each question</span>
+        </button>
+        <button class="mode-opt" data-mode="exam" role="tab" aria-selected="false">
+          <span class="mode-opt-title">Exam mode</span>
+          <span class="mode-opt-sub">Timed · no reveal · flag &amp; review</span>
+        </button>
+      </div>
+      <div class="exam-config" id="examConfig">
+        <div class="config-field">
+          <div class="config-field-label">Time limit</div>
+          <div class="config-field-value">
+            <select id="timeLimitSel">
+              ${TIME_PRESETS.map(p => `<option value="${p.minutes}" ${p.minutes === 75 ? 'selected' : ''}>${p.label}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="config-field">
+          <div class="config-field-label">Pass mark</div>
+          <div class="config-field-value">72%</div>
+        </div>
+      </div>
+    `;
+    // insert these before the existing "Filter by Domain" label
+    const firstLabel = intro.querySelector('.filter-bar-label');
+    if (firstLabel) intro.insertBefore(wrap, firstLabel);
+    else intro.prepend(wrap);
+
+    // events
+    $$('.mode-opt').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+    $('#timeLimitSel').addEventListener('change', e => {
+      timeLimitMs = parseInt(e.target.value, 10) * 60 * 1000;
+    });
+
+    addMissedChip();
+    renderAttemptHistory();
+  }
+
+  function setMode(m) {
+    MODE = m;
+    $$('.mode-opt').forEach(b => {
+      const active = b.dataset.mode === m;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-selected', String(active));
+    });
+    $('#examConfig').classList.toggle('show', m === 'exam');
+    const startBtn = $('#startBtn');
+    if (startBtn) startBtn.textContent = m === 'exam' ? 'Begin Exam' : 'Start Quiz';
+  }
+
+  /* ── Missed-only filter chip ─────────────────────────────── */
+  function addMissedChip() {
+    const hist = load(STORAGE_QHIST, {});
+    const missedIdx = Object.keys(hist).filter(k => hist[k] && hist[k].lastWasCorrect === false);
+    if (!missedIdx.length) return;
+    const chipsRow = $('#filterChips');
+    if (!chipsRow || $('#filterChipMissed')) return;
+    const btn = document.createElement('button');
+    btn.id = 'filterChipMissed';
+    btn.className = 'filter-chip has-missed';
+    btn.dataset.domain = 'missed';
+    btn.dataset.missed = String(missedIdx.length);
+    btn.innerHTML = `<span>Missed only</span>`;
+    btn.addEventListener('click', () => {
+      // Toggle: activate exclusively
+      const wasActive = btn.classList.contains('active');
+      $$('.filter-chip').forEach(c => c.classList.remove('active'));
+      window.activeFilters = new Set(wasActive ? ['all'] : ['missed']);
+      if (!wasActive) btn.classList.add('active');
+      else $('.filter-chip[data-domain="all"]').classList.add('active');
+      window.updateSelectedCount();
+    });
+    chipsRow.appendChild(btn);
+  }
+
+  // Override selectedQuestionSet to support 'missed' filter
+  const origSelected = window.selectedQuestionSet;
+  window.selectedQuestionSet = function () {
+    if (window.activeFilters && window.activeFilters.has('missed')) {
+      const hist = load(STORAGE_QHIST, {});
+      const idxs = new Set(Object.keys(hist).filter(k => hist[k] && hist[k].lastWasCorrect === false).map(Number));
+      return window.ALL_QUESTIONS.filter((_, i) => idxs.has(i));
+    }
+    return origSelected();
+  };
+
+  /* ── UI: inject flag button & qnav bar ───────────────────── */
+  function injectQuizUI() {
+    const qcard = $('.qcard');
+    if (!qcard) return;
+    // Flag button row at top of question card
+    const top = document.createElement('div');
+    top.className = 'qcard-actions-top';
+    top.innerHTML = `<button class="flag-btn" id="flagBtn" type="button">Flag for review</button>`;
+    qcard.prepend(top);
+    $('#flagBtn').addEventListener('click', toggleFlag);
+
+    // Question navigation bar after #quizCard
+    const qcardSection = $('#quizCard');
+    const nav = document.createElement('section');
+    nav.className = 'qnav-bar';
+    nav.id = 'qnavBar';
+    nav.innerHTML = `
+      <div class="qnav-actions">
+        <button class="qnav-btn" id="qnavPrev" type="button">← Prev</button>
+        <button class="qnav-btn" id="qnavSkip" type="button">Skip</button>
+        <button class="qnav-btn" id="qnavNext" type="button">Next →</button>
+      </div>
+      <div class="qnav-actions">
+        <button class="qnav-btn primary" id="qnavSubmit" type="button">Submit Exam</button>
+      </div>
+    `;
+    qcardSection.parentNode.insertBefore(nav, qcardSection.nextSibling);
+    $('#qnavPrev').addEventListener('click', () => gotoQuestion(window.currentIdx - 1));
+    $('#qnavSkip').addEventListener('click', () => gotoQuestion(window.currentIdx + 1));
+    $('#qnavNext').addEventListener('click', () => gotoQuestion(window.currentIdx + 1));
+    $('#qnavSubmit').addEventListener('click', showReview);
+
+    // Timer chip + flag counter in progress row
+    const row = $('.progress-row');
+    if (row) {
+      const right = document.createElement('div');
+      right.style.cssText = 'display:flex;gap:1rem;align-items:center;';
+      right.innerHTML = `
+        <span class="flag-count-chip" id="flagCountChip" style="display:none;">⚑ <strong id="flagCountNum">0</strong></span>
+        <span class="timer-chip" id="timerChip" style="display:none;">
+          <span class="dot"></span>
+          <span class="time-val" id="timerVal">75:00</span>
+        </span>
+      `;
+      // replace existing score chip with our richer right cluster (keep score chip)
+      const score = row.querySelector('.scorelive');
+      if (score) {
+        right.appendChild(score);
+        row.appendChild(right);
+      } else {
+        row.appendChild(right);
+      }
+    }
+
+    // Review screen
+    const reviewSection = document.createElement('section');
+    reviewSection.className = 'review-state';
+    reviewSection.id = 'reviewScreen';
+    reviewSection.innerHTML = `
+      <div class="review-card">
+        <div class="review-eyebrow">Pre-submit review</div>
+        <h2 class="review-title">Review your <em>answers.</em></h2>
+        <p class="review-summary" id="reviewSummary">—</p>
+        <div class="review-legend">
+          <span><span class="swatch sw-answered"></span>Answered</span>
+          <span><span class="swatch sw-unanswered"></span>Unanswered</span>
+          <span><span class="swatch sw-flagged"></span>Flagged</span>
+        </div>
+        <div class="qgrid" id="reviewGrid"></div>
+        <div class="qnav-actions">
+          <button class="qnav-btn" id="reviewBackBtn" type="button">← Keep editing</button>
+          <button class="qnav-btn primary" id="reviewSubmitBtn" type="button">Submit final answers</button>
+        </div>
+      </div>
+    `;
+    nav.parentNode.insertBefore(reviewSection, nav.nextSibling);
+    $('#reviewBackBtn').addEventListener('click', hideReview);
+    $('#reviewSubmitBtn').addEventListener('click', submitExam);
+  }
+
+  function toggleFlag() {
+    const idx = window.currentIdx;
+    if (flags.has(idx)) flags.delete(idx); else flags.add(idx);
+    syncFlagBtn();
+    updateFlagCount();
+  }
+  function syncFlagBtn() {
+    const b = $('#flagBtn');
+    if (!b) return;
+    const on = flags.has(window.currentIdx);
+    b.classList.toggle('flagged', on);
+    b.setAttribute('aria-pressed', String(on));
+    // The ::before pseudo-element renders the flag glyph; text only here.
+    b.textContent = on ? 'Flagged' : 'Flag for review';
+  }
+  function updateFlagCount() {
+    const chip = $('#flagCountChip');
+    if (!chip) return;
+    if (flags.size) {
+      chip.style.display = '';
+      $('#flagCountNum').textContent = flags.size;
+    } else {
+      chip.style.display = 'none';
+    }
+  }
+
+  function gotoQuestion(i) {
+    const total = window.activeQuestions.length;
+    if (i < 0 || i >= total) return;
+    window.currentIdx = i;
+    window.renderQuestion();
+    if (MODE === 'exam') restoreExamAnswerState();
+  }
+
+  /* ── Exam mode question rendering & answer capture ───────── */
+  function restoreExamAnswerState() {
+    // In exam mode, we don't reveal correct/incorrect. Just highlight the picked option.
+    const picked = answersExam[window.currentIdx];
+    $$('#qOptions .option-item').forEach(li => {
+      li.classList.remove('correct', 'incorrect', 'disabled');
+      li.classList.toggle('option-picked', picked && li.dataset.letter === picked);
+      if (picked && li.dataset.letter === picked) {
+        li.style.borderColor = 'var(--lava)';
+        li.style.background = 'var(--lava-soft)';
+      } else {
+        li.style.borderColor = '';
+        li.style.background = '';
+      }
+    });
+    // hide reveal & next-btn area (we use qnav instead)
+    $('#qExplanation').classList.remove('show');
+    $('#quizActions').classList.remove('show');
+    updateProgressTrackExam();
+    syncFlagBtn();
+    syncNavButtons();
+  }
+  function syncNavButtons() {
+    $('#qnavPrev').disabled = window.currentIdx === 0;
+    const isLast = window.currentIdx === window.activeQuestions.length - 1;
+    $('#qnavNext').disabled = isLast;
+    $('#qnavSkip').disabled = isLast;
+  }
+  function updateProgressTrackExam() {
+    const cells = $$('#progressTrack .progress-cell');
+    cells.forEach((c, i) => {
+      c.classList.remove('active', 'done', 'wrong');
+      if (i === window.currentIdx) c.classList.add('active');
+      else if (answersExam[i]) c.classList.add('done');
+    });
+  }
+
+  /* ── Timer ───────────────────────────────────────────────── */
+  function startTimer() {
+    deadline = Date.now() + timeLimitMs;
+    startedAt = Date.now();
+    const chip = $('#timerChip');
+    chip.style.display = '';
+    tickTimer();
+    timerInt = setInterval(tickTimer, 1000);
+  }
+  function stopTimer() {
+    if (timerInt) { clearInterval(timerInt); timerInt = null; }
+  }
+  function tickTimer() {
+    const ms = deadline - Date.now();
+    const chip = $('#timerChip');
+    if (!chip) return;
+    chip.classList.toggle('warn',   ms < 5 * 60 * 1000 && ms >= 60 * 1000);
+    chip.classList.toggle('danger', ms < 60 * 1000);
+    $('#timerVal').textContent = fmtClock(ms);
+    if (ms <= 0) {
+      stopTimer();
+      $('#timerVal').textContent = '0:00';
+      submitExam(/* auto */ true);
+    }
+  }
+
+  /* ── Start / answer / submit overrides ───────────────────── */
+  function resetExamModeUI() {
+    // Clear any exam-mode visibility state so study mode can take over cleanly.
+    const qa = $('#quizActions');
+    if (qa) qa.style.display = '';
+    const nav = $('#qnavBar');
+    if (nav) nav.classList.remove('show');
+    const review = $('#reviewScreen');
+    if (review) review.classList.remove('show');
+    const chip = $('#timerChip');
+    if (chip) { chip.style.display = 'none'; chip.classList.remove('warn', 'danger'); }
+    const flagChip = $('#flagCountChip');
+    if (flagChip) flagChip.style.display = 'none';
+    stopTimer();
+    flags = new Set();
+    answersExam = [];
+  }
+
+  const origStart = window.startQuiz;
+  window.startQuiz = function () {
+    resetExamModeUI();
+    if (MODE !== 'exam') return origStart();
+    // Custom exam-mode start (don't rely on origStart's renderQuestion path leaking study-mode behavior)
+    window.activeQuestions = window.selectedQuestionSet();
+    if (!window.activeQuestions.length) return;
+    window.currentIdx = 0;
+    window.correctCount = 0;
+    window.answers = new Array(window.activeQuestions.length).fill(null);
+    answersExam = new Array(window.activeQuestions.length).fill(null);
+    flags = new Set();
+    reviewedOnce = false;
+
+    $('#introSection').style.display = 'none';
+    $('#quizProgress').classList.add('show');
+    $('#quizCard').classList.add('show');
+    $('#qnavBar').classList.add('show');
+
+    // Hide the original next-btn area (we use qnav)
+    $('#quizActions').style.display = 'none';
+
+    window.renderProgressTrack();
+    window.renderQuestion();
+    restoreExamAnswerState();
+    startTimer();
+  };
+
+  const origAnswer = window.answerCurrent;
+  window.answerCurrent = function (letter) {
+    if (MODE !== 'exam') return origAnswer(letter);
+    // Exam mode: just record, no reveal
+    answersExam[window.currentIdx] = letter;
+    $$('#qOptions .option-item').forEach(li => {
+      const on = li.dataset.letter === letter;
+      li.style.borderColor = on ? 'var(--lava)' : '';
+      li.style.background = on ? 'var(--lava-soft)' : '';
+    });
+    updateProgressTrackExam();
+    // Auto-advance after a brief pause
+    if (window.currentIdx < window.activeQuestions.length - 1) {
+      setTimeout(() => {
+        if (window.currentIdx < window.activeQuestions.length - 1) {
+          gotoQuestion(window.currentIdx + 1);
+        }
+      }, 250);
+    }
+  };
+
+  const origRender = window.renderQuestion;
+  window.renderQuestion = function () {
+    origRender();
+    if (MODE === 'exam') restoreExamAnswerState();
+  };
+
+  // Override course's nextQuestion to also work in exam mode (treat as Next)
+  const origNext = window.nextQuestion;
+  window.nextQuestion = function () {
+    if (MODE !== 'exam') return origNext();
+    if (window.currentIdx < window.activeQuestions.length - 1) gotoQuestion(window.currentIdx + 1);
+    else showReview();
+  };
+
+  /* ── Review screen ───────────────────────────────────────── */
+  function showReview() {
+    const total = window.activeQuestions.length;
+    const answered = answersExam.filter(a => a !== null).length;
+    const unanswered = total - answered;
+    $('#reviewSummary').innerHTML =
+      `<strong>${answered}</strong> of <strong>${total}</strong> answered` +
+      (unanswered ? ` · <strong>${unanswered}</strong> remaining` : '') +
+      (flags.size ? ` · <strong>${flags.size}</strong> flagged` : '');
+
+    const grid = $('#reviewGrid');
+    grid.innerHTML = '';
+    for (let i = 0; i < total; i++) {
+      const cell = document.createElement('button');
+      cell.className = 'qgrid-cell';
+      if (answersExam[i] !== null) cell.classList.add('answered');
+      if (flags.has(i)) cell.classList.add('flagged');
+      cell.textContent = String(i + 1);
+      cell.title = (answersExam[i] !== null ? 'Answered ' + answersExam[i] : 'Unanswered') + (flags.has(i) ? ' · flagged' : '');
+      cell.addEventListener('click', () => { hideReview(); gotoQuestion(i); });
+      grid.appendChild(cell);
+    }
+
+    $('#quizCard').classList.remove('show');
+    $('#qnavBar').classList.remove('show');
+    $('#reviewScreen').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    reviewedOnce = true;
+  }
+  function hideReview() {
+    $('#reviewScreen').classList.remove('show');
+    $('#quizCard').classList.add('show');
+    $('#qnavBar').classList.add('show');
+  }
+
+  /* ── Submit & rich score report ─────────────────────────── */
+  function submitExam(auto) {
+    stopTimer();
+    const total = window.activeQuestions.length;
+    let correct = 0;
+    const perDomain = {};
+    const missed = [];
+    const qhist = load(STORAGE_QHIST, {});
+
+    window.activeQuestions.forEach((q, i) => {
+      const picked = answersExam[i];
+      const wasCorrect = picked === q.correct;
+      if (wasCorrect) correct++;
+      const d = q.domain;
+      perDomain[d] = perDomain[d] || { correct: 0, total: 0 };
+      perDomain[d].total++;
+      if (wasCorrect) perDomain[d].correct++;
+      else missed.push({ qIdx: i, domain: d, picked, correct: q.correct });
+
+      // global q-history (key by index into ALL_QUESTIONS)
+      const globalIdx = window.ALL_QUESTIONS.indexOf(q);
+      if (globalIdx >= 0) {
+        const prev = qhist[globalIdx] || { attempts: 0, correct: 0 };
+        qhist[globalIdx] = {
+          attempts: prev.attempts + 1,
+          correct: prev.correct + (wasCorrect ? 1 : 0),
+          lastTs: Date.now(),
+          lastWasCorrect: wasCorrect,
+          lastPicked: picked || null
+        };
+      }
+    });
+    save(STORAGE_QHIST, qhist);
+
+    const durationMs = Date.now() - startedAt;
+    const attempt = {
+      id: 'a-' + Date.now(),
+      ts: Date.now(),
+      mode: 'exam',
+      total, correct,
+      pct: Math.round((correct / total) * 100),
+      durationMs,
+      timeLimitMs,
+      autoSubmit: !!auto,
+      perDomain,
+      missed,
+      flagged: Array.from(flags)
+    };
+    const all = load(STORAGE_ATTEMPTS, []);
+    all.unshift(attempt);
+    save(STORAGE_ATTEMPTS, all.slice(0, 20));
+
+    renderScoreReport(attempt);
+  }
+
+  function renderScoreReport(attempt) {
+    $('#reviewScreen').classList.remove('show');
+    $('#quizCard').classList.remove('show');
+    $('#qnavBar').classList.remove('show');
+    $('#quizProgress').classList.remove('show');
+
+    // Replace existing complete-state content with rich report
+    const complete = $('#completeState');
+    complete.classList.add('show');
+
+    const passMark = 72;
+    const pass = attempt.pct >= passMark;
+    const circ = 2 * Math.PI * 70;
+    const offset = circ * (1 - attempt.pct / 100);
+
+    const domainKeys = Object.keys(attempt.perDomain).sort();
+    const domainRows = domainKeys.map(d => {
+      const p = attempt.perDomain[d];
+      const pct = Math.round((p.correct / p.total) * 100);
+      const cls = pct >= 80 ? 'pass' : pct >= 60 ? 'warn' : 'fail';
+      return `
+        <div class="domain-row">
+          <div class="domain-row-head">
+            <div class="domain-row-name"><a href="${DOMAIN_LINKS[d] || '#'}">Domain ${d} · ${DOMAIN_NAMES[d]}</a></div>
+            <div class="domain-row-score"><span class="pct">${pct}%</span> · ${p.correct}/${p.total}</div>
+          </div>
+          <div class="domain-bar"><div class="domain-bar-fill ${cls}" style="width:${pct}%"></div></div>
+        </div>
+      `;
+    }).join('');
+
+    const missedHtml = attempt.missed.length ? `
+      <div class="missed-section">
+        <h3>Missed questions · ${attempt.missed.length}</h3>
+        ${attempt.missed.map((m, i) => {
+          const q = window.ALL_QUESTIONS[window.ALL_QUESTIONS.indexOf(window.activeQuestions[m.qIdx])] || window.activeQuestions[m.qIdx];
+          return `
+            <details class="missed-q">
+              <summary>
+                <span class="miss-num">${String(i + 1).padStart(2, '0')}</span>
+                <span class="miss-text">${q.text}</span>
+                <span class="miss-tag">D${m.domain}</span>
+              </summary>
+              <div class="miss-body">
+                <p><span class="picked">Your answer: ${m.picked || '—'}</span> · <span class="answer">Correct: ${m.correct}</span></p>
+                ${q.rationale || ''}
+              </div>
+            </details>
+          `;
+        }).join('')}
+      </div>
+    ` : '';
+
+    complete.innerHTML = `
+      <div class="score-report">
+        <div class="score-grid">
+          <div class="score-headline-card">
+            <div class="score-dial">
+              <svg viewBox="0 0 160 160">
+                <circle class="track" cx="80" cy="80" r="70"/>
+                <circle class="fill ${pass ? 'pass' : ''}" cx="80" cy="80" r="70"
+                        stroke-dasharray="${circ.toFixed(2)}"
+                        stroke-dashoffset="${circ.toFixed(2)}"
+                        data-offset="${offset.toFixed(2)}"/>
+              </svg>
+              <div class="score-dial-text">
+                <div>
+                  <div class="score-dial-pct">${attempt.pct}<span style="font-size:0.5em;">%</span></div>
+                  <div class="score-dial-lbl">${attempt.correct} / ${attempt.total}</div>
+                </div>
+              </div>
+            </div>
+            <div class="score-verdict ${pass ? 'pass' : 'fail'}">${pass ? 'Pass' : 'Below pass mark'}</div>
+            <div class="complete-detail">${pass
+              ? 'Solid run. Review missed questions to lock in the weak spots.'
+              : 'Below the ' + passMark + '% target. Focus on the weakest domain below before retaking.'}</div>
+            <div class="score-meta">
+              <span>Time: <strong>${fmtDuration(attempt.durationMs)}</strong></span>
+              <span>Mode: <strong>${attempt.autoSubmit ? 'Timeout' : 'Exam'}</strong></span>
+            </div>
+          </div>
+          <div class="score-domains">
+            <h3>Per-domain breakdown</h3>
+            ${domainRows}
+          </div>
+        </div>
+        ${missedHtml}
+        <div class="complete-actions" style="margin-bottom: 1rem;">
+          <button class="btn primary" type="button" id="retakeBtn">Retake exam</button>
+          <button class="btn secondary" type="button" id="retakeMissedBtn" ${attempt.missed.length ? '' : 'disabled'}>Drill missed only</button>
+          <a class="btn secondary" href="index.html">Back to syllabus</a>
+        </div>
+      </div>
+    `;
+
+    // Animate the dial
+    requestAnimationFrame(() => {
+      const fill = complete.querySelector('.score-dial .fill');
+      if (fill) fill.style.strokeDashoffset = fill.dataset.offset;
+    });
+
+    $('#retakeBtn').addEventListener('click', () => {
+      complete.innerHTML = '';
+      complete.classList.remove('show');
+      $('#introSection').style.display = '';
+      renderAttemptHistory();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    $('#retakeMissedBtn').addEventListener('click', () => {
+      // Activate missed filter and reopen intro
+      complete.innerHTML = '';
+      complete.classList.remove('show');
+      $('#introSection').style.display = '';
+      addMissedChip();
+      const mc = $('#filterChipMissed');
+      if (mc) mc.click();
+      renderAttemptHistory();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ── Attempt history strip on intro ──────────────────────── */
+  function renderAttemptHistory() {
+    const intro = $('#introSection');
+    if (!intro) return;
+    $('#attemptHistory')?.remove();
+    const all = load(STORAGE_ATTEMPTS, []);
+    if (!all.length) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'attempt-history';
+    wrap.id = 'attemptHistory';
+    wrap.innerHTML = `
+      <h3>Recent attempts</h3>
+      ${all.slice(0, 5).map(a => {
+        const cls = a.pct >= 72 ? 'pass' : 'fail';
+        return `
+          <div class="attempt-row">
+            <span class="date">${fmtRelDate(a.ts)}</span>
+            <span class="label">${a.correct}/${a.total} · ${Object.keys(a.perDomain).length} domain${Object.keys(a.perDomain).length>1?'s':''}<span class="mode-tag">${a.mode}${a.autoSubmit?' · auto':''}</span></span>
+            <span class="pct ${cls}">${a.pct}%</span>
+            <span class="dur">${fmtDuration(a.durationMs)}</span>
+          </div>
+        `;
+      }).join('')}
+    `;
+    intro.appendChild(wrap);
+  }
+
+  /* ── Boot ────────────────────────────────────────────────── */
+  function boot() {
+    injectIntroUI();
+    injectQuizUI();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+})();
+</script>
+
 </body>
 </html>

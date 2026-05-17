@@ -165,6 +165,173 @@
     // Pre-warm search index in the background so first ⌘K is instant.
     const idle = window.requestIdleCallback || (cb => setTimeout(cb, 1200));
     idle(() => { ensureIndex().catch(() => {}); });
+
+    // Dashboard on the home page only.
+    if (currentPath === 'index.html' || currentPath === '') {
+      buildDashboard();
+    }
+  }
+
+  /* ─────────── dashboard ─────────── */
+  const DOMAINS = [
+    { d: 1, name: 'Architecture & Orchestration', study: 'domain1_study_guide.html' },
+    { d: 2, name: 'Workflow & Orchestration',     study: 'domain2_study_guide.html' },
+    { d: 3, name: 'Tools & Permissions',          study: 'domain3_study_guide.html' },
+    { d: 4, name: 'Automation',                   study: 'domain4_study_guide.html' },
+    { d: 5, name: 'Reliability & Production',     study: 'domain5_study_guide.html' }
+  ];
+  function pagesForDomain(d) {
+    return PAGES.filter(p => p.section === 'Domain ' + d);
+  }
+
+  function computeReadiness(attempts, visited) {
+    // Weighted: 60% recent mock attempts (last 3), 40% page coverage
+    let mockScore = null;
+    if (attempts.length) {
+      const recent = attempts.slice(0, 3);
+      mockScore = recent.reduce((a, b) => a + b.pct, 0) / recent.length;
+    }
+    const total = PAGES.length;
+    const seen = Object.keys(visited).filter(u => PAGES.some(p => p.url === u)).length;
+    const coverage = (seen / total) * 100;
+    if (mockScore === null) return Math.round(coverage * 0.6); // discount until they take an exam
+    return Math.round(mockScore * 0.6 + coverage * 0.4);
+  }
+
+  function fmtRel(ts) {
+    const diff = Date.now() - ts;
+    const day = 86400000;
+    if (diff < day)         return 'Today';
+    if (diff < 2 * day)     return 'Yesterday';
+    if (diff < 7 * day)     return Math.floor(diff / day) + 'd ago';
+    return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
+
+  function buildDashboard() {
+    const visited = getVisited();
+    let attempts = [];
+    try { attempts = JSON.parse(localStorage.getItem('enh:attempts:mock') || '[]'); } catch {}
+
+    // Find continue-target: last visited page that isn't index.html itself
+    let continueTarget = null, continueTs = 0;
+    Object.entries(visited).forEach(([url, ts]) => {
+      if (url === 'index.html' || url === '') return;
+      if (ts > continueTs) { continueTs = ts; continueTarget = url; }
+    });
+    const cPage = continueTarget && PAGES.find(p => p.url === continueTarget);
+
+    const readiness = computeReadiness(attempts, visited);
+    const passRead = readiness >= 72;
+    const circ = 2 * Math.PI * 28;
+    const offset = circ * (1 - readiness / 100);
+
+    // Per-domain rows
+    const domainHtml = DOMAINS.map(D => {
+      const pages = pagesForDomain(D.d);
+      const seen = pages.filter(p => visited[p.url]).length;
+      const coverPct = pages.length ? (seen / pages.length) * 100 : 0;
+
+      // Most-recent mock score for this domain (if any)
+      let mockPct = null;
+      for (const a of attempts) {
+        if (a.perDomain && a.perDomain[D.d]) {
+          const pd = a.perDomain[D.d];
+          mockPct = Math.round((pd.correct / pd.total) * 100);
+          break;
+        }
+      }
+      const shownPct = mockPct !== null ? mockPct : Math.round(coverPct);
+      const cls = shownPct >= 80 ? 'pass' : shownPct >= 50 ? 'warn' : '';
+      const sub = mockPct !== null ? `${mockPct}% mock` : `${seen}/${pages.length} read`;
+      return `
+        <div class="enh-dash-domain">
+          <span><a href="${D.study}">Domain ${D.d}</a></span>
+          <div class="dom-bar"><div class="dom-bar-fill ${cls}" style="width:${shownPct}%"></div></div>
+          <span class="dom-pct"><strong>${shownPct}%</strong> · ${sub}</span>
+        </div>
+      `;
+    }).join('');
+
+    const continueHtml = cPage ? `
+      <a class="enh-dash-continue" href="${cPage.url}">
+        <div class="label">Continue where you left off</div>
+        <div class="title">${escapeHtml(cPage.title)}</div>
+        <div class="meta">${cPage.section} · ${cPage.tag} · last opened ${fmtRel(continueTs)}</div>
+      </a>
+    ` : '';
+
+    const attemptsHtml = attempts.length ? `
+      <div class="enh-dash-attempts-label">Recent mock attempts</div>
+      ${attempts.slice(0, 3).map(a => `
+        <div class="enh-dash-attempt">
+          <span class="d">${fmtRel(a.ts)}</span>
+          <span class="s">${a.correct}/${a.total} · ${(a.mode||'study')}</span>
+          <span class="p ${a.pct >= 72 ? 'pass' : 'fail'}">${a.pct}%</span>
+        </div>
+      `).join('')}
+    ` : `
+      <div class="enh-dash-attempts-label">Recent mock attempts</div>
+      <div class="enh-dash-empty">No exam attempts yet — try the timed mock exam.</div>
+    `;
+
+    const readinessLabel = attempts.length ? 'based on recent mocks + coverage' : 'based on page coverage';
+
+    const section = document.createElement('section');
+    section.className = 'enh-dash';
+    section.innerHTML = `
+      <div class="enh-dash-card">
+        <div class="enh-dash-head">
+          <div>
+            <div class="enh-dash-eyebrow">Your progress · Edition 2026</div>
+            <div class="enh-dash-title">Readiness <em>at a glance.</em></div>
+          </div>
+          <div class="enh-dash-readiness">
+            <div class="enh-dash-readiness-dial ${passRead ? 'pass' : ''}">
+              <svg viewBox="0 0 64 64">
+                <circle class="track" cx="32" cy="32" r="28"/>
+                <circle class="fill" cx="32" cy="32" r="28"
+                        stroke-dasharray="${circ.toFixed(2)}"
+                        stroke-dashoffset="${circ.toFixed(2)}"
+                        data-offset="${offset.toFixed(2)}"/>
+              </svg>
+              <div class="enh-dash-readiness-num">${readiness}</div>
+            </div>
+            <div class="enh-dash-readiness-meta">
+              <span class="label">Readiness</span>
+              <span class="val">${readinessLabel}</span>
+            </div>
+          </div>
+        </div>
+        <div class="enh-dash-body">
+          <div>
+            <div class="enh-dash-domains-label">Per-domain progress</div>
+            ${domainHtml}
+          </div>
+          <div>
+            ${continueHtml || ''}
+            ${attemptsHtml}
+            <div class="enh-dash-actions">
+              <a class="primary" href="mock_exam.html">Take mock exam</a>
+              <a href="anti_patterns.html">Anti-patterns</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Insert after the hero, before the existing stats strip — fall back to body prepend.
+    const hero = document.querySelector('.hero');
+    if (hero && hero.parentNode) {
+      hero.parentNode.insertBefore(section, hero.nextSibling);
+    } else {
+      document.body.insertBefore(section, document.body.firstChild.nextSibling);
+    }
+
+    // animate dial
+    requestAnimationFrame(() => {
+      const fill = section.querySelector('.enh-dash-readiness-dial .fill');
+      if (fill) fill.style.strokeDashoffset = fill.dataset.offset;
+    });
   }
 
   /* ─────────── theme icon ─────────── */
