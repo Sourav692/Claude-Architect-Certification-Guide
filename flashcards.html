@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcards — Claude Certified Architect Foundations</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/course.css">
+<link rel="stylesheet" href="assets/css/enhance.css">
+<script src="assets/js/enhance.js" defer></script>
+<style>
+  .fc-shell { max-width: 760px; margin: 0 auto; padding: 0 32px; }
+  .fc-meta {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin: 1.4rem 0 1rem; flex-wrap: wrap; gap: 0.8rem;
+  }
+  .fc-meta .fc-stats {
+    display: flex; gap: 1.2rem; font-family: var(--font-mono);
+    font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .fc-meta .fc-stats strong { color: var(--ink); font-weight: 500; font-size: 0.9rem; }
+  .fc-domain-filter { display: flex; gap: 6px; flex-wrap: wrap; }
+  .fc-domain-filter button {
+    border: 1px solid var(--rule-faint);
+    background: var(--paper-card);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-family: var(--font-mono); font-size: 0.7rem;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink); cursor: pointer;
+  }
+  .fc-domain-filter button.active {
+    background: var(--ink); color: var(--paper); border-color: var(--ink);
+  }
+  .fc-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 10px;
+    padding: 2.4rem 2rem;
+    min-height: 320px;
+    display: flex; flex-direction: column; justify-content: center;
+    cursor: pointer; position: relative;
+    transition: transform 0.18s, border-color 0.18s;
+  }
+  .fc-card:hover { border-color: var(--ink-mute); }
+  .fc-card .fc-domain {
+    position: absolute; top: 18px; right: 22px;
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--lava); font-weight: 500;
+  }
+  .fc-card .fc-side-label {
+    font-family: var(--font-mono); font-size: 0.66rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute); margin-bottom: 0.8rem;
+  }
+  .fc-card .fc-front-text {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 56, "SOFT" 40, "wght" 460;
+    font-size: 1.5rem; line-height: 1.35; color: var(--ink);
+    letter-spacing: -0.015em;
+  }
+  .fc-card .fc-back-text {
+    font-size: 1.02rem; line-height: 1.6; color: var(--ink);
+  }
+  .fc-card .fc-back-text code {
+    background: var(--paper-deep); padding: 0.1em 0.35em; border-radius: 3px;
+  }
+  .fc-card .fc-hint {
+    margin-top: 1.2rem;
+    font-family: var(--font-mono); font-size: 0.7rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .fc-controls {
+    margin-top: 1.4rem; display: grid;
+    grid-template-columns: repeat(4, 1fr); gap: 10px;
+  }
+  .fc-controls button {
+    padding: 0.95rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--rule-faint);
+    background: var(--paper-card);
+    cursor: pointer;
+    font-family: var(--font-body);
+    color: var(--ink);
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .fc-controls button:hover { border-color: var(--ink-mute); }
+  .fc-controls button.again { color: var(--lava-deep); }
+  .fc-controls button.hard  { color: #A37B1F; }
+  .fc-controls button.good  { color: var(--ink); }
+  .fc-controls button.easy  { color: var(--tone-moss); }
+  .fc-controls button .lbl {
+    display: block; font-family: var(--font-mono); font-size: 0.74rem;
+    letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500;
+  }
+  .fc-controls button .sub {
+    display: block; font-family: var(--font-mono); font-size: 0.62rem;
+    color: var(--ink-mute); margin-top: 3px; letter-spacing: 0.06em;
+  }
+  .fc-empty {
+    text-align: center; padding: 3rem 2rem;
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 10px;
+  }
+  .fc-empty h2 {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 56, "SOFT" 40, "wght" 460;
+    font-size: 1.6rem; color: var(--ink); margin-bottom: 0.4rem;
+  }
+  .fc-empty em { font-style: italic; color: var(--lava); }
+  .fc-empty p { color: var(--ink-soft); margin-bottom: 1.2rem; }
+  .fc-empty .btn {
+    display: inline-block; padding: 0.7rem 1.2rem;
+    font-family: var(--font-mono); font-size: 0.74rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    border-radius: 4px; cursor: pointer;
+    background: var(--lava); color: white; border: 1px solid var(--lava);
+    text-decoration: none;
+  }
+  @media (max-width: 640px) {
+    .fc-controls { grid-template-columns: repeat(2, 1fr); }
+    .fc-card .fc-front-text { font-size: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead-rule" style="max-width: 760px; margin: 0 auto; padding: 1.6rem 32px 0; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);">
+  <span><a href="index.html" style="color: var(--ink-soft); text-decoration: none;">Home</a> <span style="margin: 0 0.4rem;">›</span> <span style="color: var(--ink);">Flashcards</span></span>
+  <a href="index.html" style="color: var(--lava); text-decoration: none; border: 1px solid var(--lava); padding: 0.4rem 0.75rem; border-radius: 3px;">Home</a>
+</div>
+
+<div class="hero" style="max-width: 760px; margin: 0 auto; padding: 1.6rem 32px 1rem;">
+  <div class="hero-tag" style="font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--lava); margin-bottom: 0.6rem;">Spaced repetition · ~50 cards</div>
+  <h1 style="font-family: var(--font-display); font-variation-settings: 'opsz' 144, 'SOFT' 60, 'wght' 380; font-size: clamp(2rem, 4vw, 2.8rem); color: var(--ink); letter-spacing: -0.03em; margin-bottom: 0.6rem;">
+    Flashcards <em style="font-style: italic; color: var(--lava);">drill.</em>
+  </h1>
+  <p style="color: var(--ink-soft);">Concept cards distilled from the five domains. Rate each one — the queue resurfaces what you don't know yet.</p>
+</div>
+
+<main class="fc-shell">
+  <div class="fc-meta">
+    <div class="fc-stats">
+      <span>Due: <strong id="fcDue">—</strong></span>
+      <span>New: <strong id="fcNew">—</strong></span>
+      <span>Learned: <strong id="fcLearned">—</strong></span>
+    </div>
+    <div class="fc-domain-filter" id="fcDomainFilter">
+      <button data-d="all" class="active">All</button>
+      <button data-d="1">D1</button>
+      <button data-d="2">D2</button>
+      <button data-d="3">D3</button>
+      <button data-d="4">D4</button>
+      <button data-d="5">D5</button>
+    </div>
+  </div>
+
+  <div id="fcStage"></div>
+</main>
+
+<nav class="module-nav" aria-label="Module navigation" style="border-top: 1px solid var(--rule-soft, rgba(14,31,38,0.18)); background: var(--paper-card); margin-top: 4rem;">
+  <div class="module-nav-grid" style="max-width: 760px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: 1fr 1fr;">
+    <a class="module-nav-item module-nav-prev" href="anti_patterns.html" style="display: flex; flex-direction: column; gap: 0.4rem; padding: 2rem 1.4rem; text-decoration: none; color: var(--ink); border-right: 1px solid var(--rule-faint);">
+      <span style="font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--lava);">← Anti-patterns</span>
+      <span style="font-family: var(--font-display); font-variation-settings: 'opsz' 24, 'SOFT' 30, 'wght' 480; font-size: 1.15rem; color: var(--ink);">Pattern checklist</span>
+    </a>
+    <a class="module-nav-item module-nav-next" href="mock_exam.html" style="display: flex; flex-direction: column; gap: 0.4rem; padding: 2rem 1.4rem; text-decoration: none; color: var(--ink); text-align: right; align-items: flex-end;">
+      <span style="font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--lava);">Mock exam →</span>
+      <span style="font-family: var(--font-display); font-variation-settings: 'opsz' 24, 'SOFT' 30, 'wght' 480; font-size: 1.15rem; color: var(--ink);">Take the timed exam</span>
+    </a>
+  </div>
+</nav>
+
+<div class="colophon" style="text-align: center; padding: 3rem 0 2rem; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.18em; color: var(--ink-mute); text-transform: uppercase;">
+  Anthropic <span style="color: var(--lava);">·</span> Foundations <span style="color: var(--lava);">·</span> Edition 2026 <span style="color: var(--lava);">·</span> Flashcards
+</div>
+
+<script>
+/* ── Flashcards · SM-2-ish spaced repetition ───────────────── */
+(function () {
+  'use strict';
+  const STORE = 'enh:cards';
+  const DAY = 86400000;
+  const DOMAIN_NAMES = {1:'Agentic Architecture',2:'Tool Design & MCP',3:'Claude Code Config',4:'Prompt Engineering',5:'Context & Reliability'};
+
+  let cards = [];
+  let domainFilter = 'all';
+  let queue = [];
+  let current = null;
+  let flipped = false;
+
+  function loadState() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; } }
+  function saveState(s) { localStorage.setItem(STORE, JSON.stringify(s)); }
+
+  function init() {
+    fetch('assets/data/flashcards.json').then(r => r.json()).then(data => {
+      cards = data;
+      document.querySelectorAll('#fcDomainFilter button').forEach(b => {
+        b.addEventListener('click', () => {
+          domainFilter = b.dataset.d;
+          document.querySelectorAll('#fcDomainFilter button').forEach(x => x.classList.toggle('active', x === b));
+          buildQueue();
+          renderNext();
+        });
+      });
+      buildQueue();
+      renderNext();
+      // Keyboard: space to flip, 1-4 to rate
+      document.addEventListener('keydown', onKey);
+    }).catch(err => {
+      document.getElementById('fcStage').innerHTML = '<div class="fc-empty"><h2>Couldn\'t load cards</h2><p>' + (err.message || err) + '</p></div>';
+    });
+  }
+
+  function buildQueue() {
+    const state = loadState();
+    const now = Date.now();
+    const filtered = cards.filter(c => domainFilter === 'all' || String(c.domain) === domainFilter);
+    const due = [], fresh = [];
+    filtered.forEach(c => {
+      const s = state[c.id];
+      if (!s) fresh.push(c);
+      else if (s.due <= now) due.push(c);
+    });
+    // due first, then new
+    queue = due.concat(fresh);
+    updateStats(filtered, state);
+  }
+
+  function updateStats(filtered, state) {
+    const now = Date.now();
+    let due = 0, fresh = 0, learned = 0;
+    filtered.forEach(c => {
+      const s = state[c.id];
+      if (!s) fresh++;
+      else if (s.due <= now) due++;
+      else learned++;
+    });
+    document.getElementById('fcDue').textContent     = due;
+    document.getElementById('fcNew').textContent     = fresh;
+    document.getElementById('fcLearned').textContent = learned;
+  }
+
+  function renderNext() {
+    const stage = document.getElementById('fcStage');
+    if (!queue.length) {
+      stage.innerHTML = `
+        <div class="fc-empty">
+          <h2>All caught up — <em>nice.</em></h2>
+          <p>No cards due in this filter. Come back later or pick a different domain.</p>
+          <a class="btn" href="mock_exam.html">Take the mock exam</a>
+        </div>`;
+      return;
+    }
+    current = queue[0];
+    flipped = false;
+    const dn = DOMAIN_NAMES[current.domain] || ('Domain ' + current.domain);
+    stage.innerHTML = `
+      <div class="fc-card" id="fcCard">
+        <div class="fc-domain">D${current.domain} · ${dn}</div>
+        <div class="fc-side-label">Prompt</div>
+        <div class="fc-front-text">${current.front}</div>
+        <div class="fc-hint">Click card or press Space to reveal</div>
+      </div>
+    `;
+    document.getElementById('fcCard').addEventListener('click', flip);
+  }
+
+  function flip() {
+    if (flipped || !current) return;
+    flipped = true;
+    const stage = document.getElementById('fcStage');
+    const dn = DOMAIN_NAMES[current.domain] || ('Domain ' + current.domain);
+    stage.innerHTML = `
+      <div class="fc-card revealed">
+        <div class="fc-domain">D${current.domain} · ${dn}</div>
+        <div class="fc-side-label">Answer</div>
+        <div class="fc-back-text">${current.back}</div>
+      </div>
+      <div class="fc-controls">
+        <button class="again" data-grade="1"><span class="lbl">Again</span><span class="sub" id="grade1">&lt;1m</span></button>
+        <button class="hard"  data-grade="2"><span class="lbl">Hard</span><span class="sub"  id="grade2">~1d</span></button>
+        <button class="good"  data-grade="3"><span class="lbl">Good</span><span class="sub"  id="grade3">~3d</span></button>
+        <button class="easy"  data-grade="4"><span class="lbl">Easy</span><span class="sub"  id="grade4">~7d</span></button>
+      </div>
+    `;
+    document.querySelectorAll('.fc-controls button').forEach(b => {
+      b.addEventListener('click', () => grade(parseInt(b.dataset.grade, 10)));
+    });
+    previewIntervals();
+  }
+
+  /* SM-2 lite */
+  function scheduleCard(prev, g) {
+    let ease     = prev?.ease     ?? 2.5;
+    let interval = prev?.interval ?? 0;
+    let reps     = prev?.reps     ?? 0;
+    let lapses   = prev?.lapses   ?? 0;
+
+    if (g === 1) {
+      lapses++; reps = 0; interval = 0;     // Again — show within session
+      ease = Math.max(1.3, ease - 0.2);
+    } else {
+      reps++;
+      if (reps === 1)      interval = g === 4 ? 3 : 1;
+      else if (reps === 2) interval = g === 4 ? 6 : g === 2 ? 2 : 4;
+      else                 interval = Math.round(interval * ease * (g === 2 ? 0.6 : g === 4 ? 1.3 : 1));
+      // ease adjustment
+      if (g === 2)      ease = Math.max(1.3, ease - 0.15);
+      else if (g === 4) ease += 0.10;
+    }
+    const due = g === 1 ? Date.now() + 60 * 1000 : Date.now() + interval * DAY;
+    return { ease, interval, reps, lapses, due, lastTs: Date.now(), lastGrade: g };
+  }
+
+  function previewIntervals() {
+    const state = loadState();
+    const prev = state[current.id];
+    [1,2,3,4].forEach(g => {
+      const next = scheduleCard(prev, g);
+      const el = document.getElementById('grade' + g);
+      if (!el) return;
+      const ms = next.due - Date.now();
+      el.textContent = ms < DAY ? '<1d' : '~' + next.interval + 'd';
+    });
+  }
+
+  function grade(g) {
+    const state = loadState();
+    state[current.id] = scheduleCard(state[current.id], g);
+    saveState(state);
+    // remove this card from queue; if Again, push to end
+    queue.shift();
+    if (g === 1) queue.push(current);
+    buildQueue(); // refresh stats
+    queue = queue.filter(q => {
+      const s = state[q.id];
+      // Only keep cards that are due or new
+      return !s || s.due <= Date.now();
+    });
+    renderNext();
+  }
+
+  function onKey(e) {
+    if (e.target.matches('input, textarea, select')) return;
+    if (!current) return;
+    if (!flipped) {
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); }
+    } else {
+      if (e.key === '1') grade(1);
+      else if (e.key === '2') grade(2);
+      else if (e.key === '3') grade(3);
+      else if (e.key === '4') grade(4);
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+</body>
+</html>

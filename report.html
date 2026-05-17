@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Readiness Report — Claude Certified Architect Foundations</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/course.css">
+<link rel="stylesheet" href="assets/css/enhance.css">
+<script src="assets/js/enhance.js" defer></script>
+<style>
+  .rpt { max-width: 900px; margin: 0 auto; padding: 0 32px; }
+  .rpt-hd {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin: 1.6rem 0 1.2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .rpt-hd h1 {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 144, "SOFT" 60, "wght" 380;
+    font-size: 2rem; color: var(--ink); letter-spacing: -0.03em;
+  }
+  .rpt-hd h1 em { color: var(--lava); font-style: italic; }
+  .rpt-hd .when {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    color: var(--ink-mute); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .rpt-grid {
+    display: grid; grid-template-columns: 1fr 1.4fr; gap: 1.4rem;
+    margin-bottom: 1.6rem;
+  }
+  .rpt-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 6px;
+    padding: 1.4rem 1.5rem;
+  }
+  .rpt-card h2 {
+    font-family: var(--font-mono); font-size: 0.74rem;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink); margin-bottom: 1rem; font-weight: 500;
+  }
+  .rpt-big-num {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 144, "SOFT" 60, "wght" 380;
+    font-size: 3.4rem; color: var(--ink); line-height: 1;
+    letter-spacing: -0.04em; margin-bottom: 0.4rem;
+  }
+  .rpt-big-num .denom { color: var(--ink-mute); font-size: 0.5em; }
+  .rpt-big-num.pass { color: var(--tone-moss); }
+  .rpt-big-num.fail { color: var(--lava-deep); }
+  .rpt-domain-row {
+    display: grid; grid-template-columns: 130px 1fr 60px;
+    gap: 12px; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid var(--rule-faint);
+    font-size: 0.92rem;
+  }
+  .rpt-domain-row:last-child { border-bottom: 0; }
+  .rpt-domain-row .bar {
+    height: 7px; background: var(--rule-faint); border-radius: 3px; overflow: hidden;
+  }
+  .rpt-domain-row .bar-fill {
+    height: 100%; background: var(--lava); border-radius: 3px;
+  }
+  .rpt-domain-row .bar-fill.pass { background: var(--tone-moss); }
+  .rpt-domain-row .bar-fill.warn { background: #A37B1F; }
+  .rpt-domain-row .bar-fill.fail { background: var(--lava-deep); }
+  .rpt-domain-row .pct { text-align: right; font-family: var(--font-mono); color: var(--ink); font-weight: 500; }
+  .rpt-attempts {
+    width: 100%; border-collapse: collapse; font-family: var(--font-mono);
+    font-size: 0.84rem;
+  }
+  .rpt-attempts th, .rpt-attempts td {
+    padding: 8px 4px; text-align: left;
+    border-bottom: 1px solid var(--rule-faint);
+  }
+  .rpt-attempts th {
+    font-size: 0.66rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-mute); font-weight: 500;
+  }
+  .rpt-attempts td.pct.pass { color: var(--tone-moss); font-weight: 500; }
+  .rpt-attempts td.pct.fail { color: var(--lava-deep); font-weight: 500; }
+  .rpt-actions { margin: 1.2rem 0 2rem; display: flex; gap: 10px; flex-wrap: wrap; }
+  .rpt-actions button, .rpt-actions a {
+    border: 1px solid var(--rule-faint); background: var(--paper-card);
+    padding: 0.7rem 1.3rem; border-radius: 5px; cursor: pointer;
+    font-family: var(--font-mono); font-size: 0.74rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink); text-decoration: none;
+  }
+  .rpt-actions button.primary {
+    background: var(--ink); color: var(--paper); border-color: var(--ink);
+  }
+  .rpt-actions button:hover, .rpt-actions a:hover { border-color: var(--lava); color: var(--lava); }
+  .rpt-actions button.primary:hover { background: var(--lava); border-color: var(--lava); color: white; }
+
+  .rpt-missed {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-faint);
+    border-radius: 6px;
+    padding: 1.4rem 1.5rem;
+    margin-bottom: 1.6rem;
+  }
+  .rpt-missed h2 {
+    font-family: var(--font-mono); font-size: 0.74rem;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink); margin-bottom: 1rem; font-weight: 500;
+  }
+  .rpt-missed-q {
+    padding: 10px 0; border-bottom: 1px solid var(--rule-faint);
+    font-size: 0.92rem; line-height: 1.5;
+  }
+  .rpt-missed-q:last-child { border-bottom: 0; }
+  .rpt-missed-q .tag {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 2px 6px; border: 1px solid var(--rule-faint);
+    border-radius: 3px; color: var(--ink-mute); margin-right: 8px;
+  }
+  .rpt-empty {
+    font-family: var(--font-display); font-style: italic;
+    color: var(--ink-mute); padding: 0.5rem 0;
+  }
+
+  @media print {
+    body { background: white; color: black; font-size: 11pt; }
+    .masthead, .enh-topbar, .enh-toc-side, .enh-progress, .module-nav,
+    .rpt-actions, .enh-search-trigger, .enh-fab { display: none !important; }
+    .rpt { max-width: 100%; padding: 0; }
+    .rpt-card, .rpt-missed { break-inside: avoid; border: 1px solid #999; box-shadow: none; }
+    .rpt-grid { grid-template-columns: 1fr 1fr; }
+    a { color: black; text-decoration: underline; }
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead-rule" style="max-width: 900px; margin: 0 auto; padding: 1.6rem 32px 0; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);">
+  <span><a href="index.html" style="color: var(--ink-soft); text-decoration: none;">Home</a> <span style="margin: 0 0.4rem;">›</span> <span style="color: var(--ink);">Readiness report</span></span>
+  <a href="index.html" style="color: var(--lava); text-decoration: none; border: 1px solid var(--lava); padding: 0.4rem 0.75rem; border-radius: 3px;">Home</a>
+</div>
+
+<main class="rpt">
+  <div class="rpt-hd">
+    <div>
+      <h1>Readiness <em>report.</em></h1>
+      <div style="font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--lava); margin-top: 6px;">Claude Architect · Foundations · Edition 2026</div>
+    </div>
+    <div class="when" id="rptWhen">—</div>
+  </div>
+
+  <div class="rpt-actions">
+    <button class="primary" onclick="window.print()">Print / Save PDF</button>
+    <a href="mock_exam.html">Take another mock</a>
+    <a href="flashcards.html">Drill flashcards</a>
+    <a href="index.html">Back to syllabus</a>
+  </div>
+
+  <div class="rpt-grid">
+    <div class="rpt-card">
+      <h2>Readiness score</h2>
+      <div class="rpt-big-num" id="rptReadiness">—<span class="denom">%</span></div>
+      <div style="font-family: var(--font-display); font-style: italic; color: var(--ink-soft);" id="rptReadinessLabel">—</div>
+      <div style="margin-top: 12px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-mute); letter-spacing: 0.08em;" id="rptReadinessMeta">—</div>
+    </div>
+    <div class="rpt-card">
+      <h2>Per-domain mastery</h2>
+      <div id="rptDomains">—</div>
+    </div>
+  </div>
+
+  <div class="rpt-card" style="margin-bottom: 1.6rem;">
+    <h2>Mock exam attempts</h2>
+    <div id="rptAttempts">—</div>
+  </div>
+
+  <div class="rpt-missed">
+    <h2>Persistently missed questions</h2>
+    <div id="rptMissed">—</div>
+  </div>
+
+  <div class="rpt-card" style="margin-bottom: 2rem;">
+    <h2>Recommendation</h2>
+    <div id="rptRec" style="font-family: var(--font-display); font-style: italic; font-size: 1.1rem; line-height: 1.55; color: var(--ink-soft);">—</div>
+  </div>
+</main>
+
+<div class="colophon" style="text-align: center; padding: 3rem 0 2rem; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.18em; color: var(--ink-mute); text-transform: uppercase;">
+  Anthropic <span style="color: var(--lava);">·</span> Foundations <span style="color: var(--lava);">·</span> Edition 2026 <span style="color: var(--lava);">·</span> Readiness Report
+</div>
+
+<script>
+(function () {
+  const DOMAIN_NAMES = {1:'Agentic Architecture',2:'Tool Design & MCP',3:'Claude Code Config',4:'Prompt Engineering',5:'Context & Reliability'};
+  const DOMAIN_LINKS = {1:'domain1_study_guide.html',2:'domain2_study_guide.html',3:'domain3_study_guide.html',4:'domain4_study_guide.html',5:'domain5_study_guide.html'};
+  const PAGES_PER_DOMAIN = 3; // study + practice + build
+  const PASS = 72;
+
+  function load(key, fb) { try { return JSON.parse(localStorage.getItem(key)) ?? fb; } catch { return fb; } }
+
+  function fmtDate(ts) {
+    return new Date(ts).toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+  function fmtDur(ms) {
+    const t = Math.floor(ms/1000); return Math.floor(t/60) + 'm ' + (t%60) + 's';
+  }
+
+  function init() {
+    const attempts = load('enh:attempts:mock', []);
+    const visited  = load('enh:visited', {});
+    const qhist    = load('enh:qhistory:mock', {});
+
+    document.getElementById('rptWhen').textContent = 'Generated ' + fmtDate(Date.now());
+
+    // Readiness
+    const recent = attempts.slice(0, 3);
+    const mockAvg = recent.length ? recent.reduce((a,b)=>a+b.pct,0)/recent.length : null;
+    const totalPages = 5 * PAGES_PER_DOMAIN;
+    const seen = Object.keys(visited).filter(u => /^domain[1-5]_/.test(u)).length;
+    const cov  = (seen / totalPages) * 100;
+    const readiness = mockAvg == null ? Math.round(cov * 0.6) : Math.round(mockAvg * 0.6 + cov * 0.4);
+    const big = document.getElementById('rptReadiness');
+    big.innerHTML = readiness + '<span class="denom">%</span>';
+    big.classList.toggle('pass', readiness >= PASS);
+    big.classList.toggle('fail', readiness < PASS && attempts.length > 0);
+    document.getElementById('rptReadinessLabel').textContent =
+      readiness >= PASS ? 'Above the 72% pass target.' :
+      attempts.length ? 'Below the 72% pass target. Focus on weak domains below.' :
+      'Take a mock exam to lock in a score.';
+    document.getElementById('rptReadinessMeta').textContent =
+      `${seen}/${totalPages} pages read · ${attempts.length} attempt${attempts.length===1?'':'s'} · ${recent.length} recent`;
+
+    // Per-domain
+    const domainStats = {};
+    for (let d=1; d<=5; d++) domainStats[d] = { correct: 0, total: 0, pct: 0 };
+    attempts.slice(0, 5).forEach(a => {
+      Object.entries(a.perDomain || {}).forEach(([d, p]) => {
+        domainStats[d].correct += p.correct;
+        domainStats[d].total += p.total;
+      });
+    });
+    const domainHtml = Object.keys(domainStats).map(d => {
+      const s = domainStats[d];
+      const pct = s.total ? Math.round(s.correct/s.total*100) : 0;
+      const cls = pct >= 80 ? 'pass' : pct >= 60 ? 'warn' : pct > 0 ? 'fail' : '';
+      return `
+        <div class="rpt-domain-row">
+          <a href="${DOMAIN_LINKS[d]}" style="color: var(--ink); text-decoration: none;">D${d} · ${DOMAIN_NAMES[d]}</a>
+          <div class="bar"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div>
+          <div class="pct">${s.total ? pct + '%' : '—'}</div>
+        </div>
+      `;
+    }).join('');
+    document.getElementById('rptDomains').innerHTML = domainHtml;
+
+    // Attempts table
+    if (!attempts.length) {
+      document.getElementById('rptAttempts').innerHTML = '<div class="rpt-empty">No mock attempts recorded yet.</div>';
+    } else {
+      document.getElementById('rptAttempts').innerHTML = `
+        <table class="rpt-attempts">
+          <thead><tr><th>When</th><th>Mode</th><th>Score</th><th>Duration</th><th>%</th></tr></thead>
+          <tbody>
+            ${attempts.slice(0, 10).map(a => `
+              <tr>
+                <td>${fmtDate(a.ts)}</td>
+                <td>${a.mode}${a.autoSubmit ? ' · timeout' : ''}</td>
+                <td>${a.correct}/${a.total}</td>
+                <td>${fmtDur(a.durationMs)}</td>
+                <td class="pct ${a.pct >= PASS ? 'pass' : 'fail'}">${a.pct}%</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>`;
+    }
+
+    // Persistently missed questions: q-history where total attempts >= 2 and last was wrong
+    const missed = Object.entries(qhist)
+      .filter(([_, v]) => v && v.lastWasCorrect === false && v.attempts >= 1)
+      .sort((a,b) => (b[1].attempts - b[1].correct) - (a[1].attempts - a[1].correct))
+      .slice(0, 12);
+    if (!missed.length) {
+      document.getElementById('rptMissed').innerHTML = '<div class="rpt-empty">No persistently-missed questions yet.</div>';
+    } else {
+      // Try to find question text from mock_exam.html data — we don't have it here.
+      // Render the indices + miss counts as a compact list.
+      document.getElementById('rptMissed').innerHTML = missed.map(([id, v]) => `
+        <div class="rpt-missed-q">
+          <span class="tag">Q${(parseInt(id, 10) + 1).toString().padStart(2, '0')}</span>
+          ${v.attempts - v.correct} miss${v.attempts - v.correct === 1 ? '' : 'es'} of ${v.attempts} attempt${v.attempts === 1 ? '' : 's'}
+          · last seen ${fmtDate(v.lastTs)}
+        </div>
+      `).join('');
+    }
+
+    // Recommendation
+    const weakest = Object.entries(domainStats).filter(([_,s]) => s.total).sort((a,b) => (a[1].correct/a[1].total) - (b[1].correct/b[1].total))[0];
+    const recEl = document.getElementById('rptRec');
+    if (!attempts.length) {
+      recEl.textContent = 'Take a full mock exam first — the report is much more useful once it has scores to chart.';
+    } else if (readiness >= 85) {
+      recEl.textContent = 'Solid coverage. One more timed mock under exam conditions, then you\'re ready.';
+    } else if (weakest) {
+      const [d, s] = weakest;
+      recEl.textContent = `Strongest leverage: re-read Domain ${d} (${DOMAIN_NAMES[d]}) where you're at ${Math.round(s.correct/s.total*100)}%. Then drill missed questions in flashcards before retaking the mock.`;
+    } else {
+      recEl.textContent = 'Keep cycling through study guides + mock exams until each domain crosses 80%.';
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+</body>
+</html>

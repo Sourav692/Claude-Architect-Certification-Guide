@@ -22,7 +22,9 @@
     { url: 'domain5_practice.html',     title: 'Practice Questions',         section: 'Domain 5',  tag: 'PRACTICE' },
     { url: 'domain5_build_exercise.html', title: 'Build Exercise',           section: 'Domain 5',  tag: 'BUILD' },
     { url: 'anti_patterns.html',        title: 'Anti-Patterns Catalog',      section: 'Reference', tag: 'REF' },
-    { url: 'mock_exam.html',            title: 'Mock Exam',                  section: 'Reference', tag: 'EXAM' }
+    { url: 'mock_exam.html',            title: 'Mock Exam',                  section: 'Reference', tag: 'EXAM' },
+    { url: 'flashcards.html',           title: 'Flashcards',                 section: 'Reference', tag: 'CARDS' },
+    { url: 'report.html',               title: 'Readiness Report',           section: 'Reference', tag: 'REPORT' }
   ];
 
   const STORAGE = {
@@ -670,10 +672,466 @@
     update();
   }
 
+  /* ═══════════ Phase 3 ═══════════ */
+
+  /* ─── PWA: manifest link + service worker ─── */
+  function installPwa() {
+    if (!document.querySelector('link[rel="manifest"]')) {
+      const l = document.createElement('link');
+      l.rel = 'manifest';
+      l.href = 'assets/manifest.webmanifest';
+      document.head.appendChild(l);
+    }
+    if (!document.querySelector('meta[name="theme-color"]')) {
+      const m = document.createElement('meta');
+      m.name = 'theme-color';
+      m.content = '#C72D1A';
+      document.head.appendChild(m);
+    }
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      window.addEventListener('load', () => {
+        // Registered at site root so the SW's default scope covers every page.
+        navigator.serviceWorker.register('sw.js', { scope: './' }).catch(() => {});
+      });
+    }
+  }
+
+  /* ─── Keyboard shortcuts + help overlay ─── */
+  const SHORTCUTS = [
+    { keys: '?',     desc: 'Show this help' },
+    { keys: '/',     desc: 'Focus search' },
+    { keys: 'g h',   desc: 'Go to home' },
+    { keys: 'g 1\u20135', desc: 'Go to a domain study guide' },
+    { keys: 'g m',   desc: 'Go to mock exam' },
+    { keys: 'g f',   desc: 'Go to flashcards' },
+    { keys: 'g r',   desc: 'Go to readiness report' },
+    { keys: 'g a',   desc: 'Go to anti-patterns' },
+    { keys: 't',     desc: 'Toggle light / dark theme' },
+    { keys: 'N',     desc: 'Save current selection as a note (study pages)' },
+    { keys: 'b',     desc: 'Open the notes panel (study pages)' },
+    { keys: 'Esc',   desc: 'Close any open overlay' }
+  ];
+  const SHORTCUTS_EXAM = [
+    { keys: '1\u20134', desc: 'Pick answer A\u2013D' },
+    { keys: 'F',     desc: 'Flag question for review' },
+    { keys: 'N / J', desc: 'Next question' },
+    { keys: 'P / K', desc: 'Previous question' },
+    { keys: 'S',     desc: 'Submit / review' }
+  ];
+
+  let lastKeyTs = 0, lastKey = '';
+  function wireKeyboard() {
+    document.addEventListener('keydown', e => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const tag = (e.target && e.target.tagName || '').toLowerCase();
+      const isEditing = tag === 'input' || tag === 'textarea' || tag === 'select' ||
+                        (e.target && e.target.isContentEditable);
+      if (isEditing) return;
+
+      // Help overlay toggle
+      if (e.key === '?' || (e.shiftKey && e.key === '/')) {
+        e.preventDefault(); toggleHelpOverlay(); return;
+      }
+      if (e.key === 'Escape') {
+        if (document.getElementById('enhHelpOverlay')) { closeHelpOverlay(); return; }
+        if (document.getElementById('enhNotesPanel'))  { closeNotesPanel();  return; }
+      }
+      if (e.key === '/') {
+        e.preventDefault();
+        const btn = document.querySelector('.enh-btn[data-action="search"]');
+        if (btn) btn.click();
+        return;
+      }
+      if (e.key === 't' || e.key === 'T') {
+        const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        localStorage.setItem(STORAGE.theme, next);
+        return;
+      }
+
+      // Notes shortcuts (study guide pages only)
+      if (/_study_guide\.html$/.test(currentPath)) {
+        if (e.key === 'N') {
+          const sel = window.getSelection();
+          const text = sel && sel.toString().trim();
+          if (text && text.length >= 6 && text.length <= 400) {
+            e.preventDefault();
+            const anchor = findAnchor(sel.anchorNode);
+            const notes = getNotes();
+            notes.unshift({ id: 'n-' + Date.now(), page: currentPath, anchor, body: text, ts: Date.now() });
+            saveNotes(notes);
+            refreshNotesCount();
+            renderNotesPanel();
+            flashToast('Note saved');
+            return;
+          }
+        }
+        if (e.key === 'b' || e.key === 'B') {
+          e.preventDefault(); toggleNotesPanel(); return;
+        }
+      }
+
+      // Mock-exam quiz takes priority over global nav sequences
+      const onMockQuiz = currentPath === 'mock_exam.html' &&
+        document.getElementById('quizCard')?.classList.contains('show');
+
+      // Two-key sequences starting with "g" (suppressed while taking the quiz
+      // so answer keys 1-4 can't be preempted by a "g 1" navigation race).
+      const now = Date.now();
+      if (!onMockQuiz) {
+        if (lastKey === 'g' && (now - lastKeyTs) < 1200) {
+          lastKey = ''; lastKeyTs = 0;
+          const dest = ({
+            h: 'index.html',
+            m: 'mock_exam.html',
+            f: 'flashcards.html',
+            r: 'report.html',
+            a: 'anti_patterns.html',
+            '1': 'domain1_study_guide.html',
+            '2': 'domain2_study_guide.html',
+            '3': 'domain3_study_guide.html',
+            '4': 'domain4_study_guide.html',
+            '5': 'domain5_study_guide.html'
+          })[e.key];
+          if (dest) { e.preventDefault(); location.href = dest; }
+          return;
+        }
+        if (e.key === 'g') { lastKey = 'g'; lastKeyTs = now; return; }
+      }
+
+      // Mock-exam-specific shortcuts
+      if (currentPath === 'mock_exam.html') {
+        const inQuiz = onMockQuiz;
+        if (!inQuiz) return;
+        if (/^[1-4]$/.test(e.key)) {
+          const letter = 'ABCD'[parseInt(e.key, 10) - 1];
+          const li = document.querySelector(`#qOptions .option-item[data-letter="${letter}"]`);
+          if (li && !li.classList.contains('disabled')) { e.preventDefault(); li.click(); }
+        } else if (e.key === 'f' || e.key === 'F') {
+          document.getElementById('flagBtn')?.click();
+        } else if (e.key === 'n' || e.key === 'N' || e.key === 'j' || e.key === 'J') {
+          (document.getElementById('qnavNext') || document.getElementById('nextBtn'))?.click();
+        } else if (e.key === 'p' || e.key === 'P' || e.key === 'k' || e.key === 'K') {
+          document.getElementById('qnavPrev')?.click();
+        } else if (e.key === 's' || e.key === 'S') {
+          document.getElementById('qnavSubmit')?.click();
+        }
+      }
+    });
+  }
+
+  let helpReturnFocus = null;
+  function openHelpOverlay() {
+    if (document.getElementById('enhHelpOverlay')) return;
+    helpReturnFocus = document.activeElement;
+    const overlay = document.createElement('div');
+    overlay.id = 'enhHelpOverlay';
+    overlay.className = 'enh-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-labelledby', 'enhHelpTitle');
+    const onMock = currentPath === 'mock_exam.html';
+    const rows = (list) => list.map(s => `
+      <div class="enh-help-row">
+        <kbd>${s.keys.split(' ').map(k => `<span>${k}</span>`).join(' ')}</kbd>
+        <span class="enh-help-desc">${s.desc}</span>
+      </div>
+    `).join('');
+    overlay.innerHTML = `
+      <div class="enh-overlay-card">
+        <button class="enh-overlay-close" aria-label="Close" type="button">×</button>
+        <div class="enh-overlay-eyebrow">Keyboard shortcuts</div>
+        <h2 id="enhHelpTitle">Move <em>faster.</em></h2>
+        <div class="enh-help-grid">
+          <div>
+            <h3>Global</h3>
+            ${rows(SHORTCUTS)}
+          </div>
+          <div>
+            <h3>${onMock ? 'Mock exam' : 'Mock exam (while taking)'}</h3>
+            ${rows(SHORTCUTS_EXAM)}
+          </div>
+        </div>
+      </div>
+    `;
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeHelpOverlay(); });
+    overlay.querySelector('.enh-overlay-close').addEventListener('click', closeHelpOverlay);
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => {
+      overlay.classList.add('show');
+      overlay.querySelector('.enh-overlay-close').focus();
+    });
+  }
+  function closeHelpOverlay() {
+    const o = document.getElementById('enhHelpOverlay');
+    if (!o) return;
+    o.classList.remove('show');
+    setTimeout(() => {
+      o.remove();
+      if (helpReturnFocus && helpReturnFocus.focus) {
+        try { helpReturnFocus.focus(); } catch {}
+      }
+      helpReturnFocus = null;
+    }, 180);
+  }
+  function toggleHelpOverlay() {
+    if (document.getElementById('enhHelpOverlay')) closeHelpOverlay();
+    else openHelpOverlay();
+  }
+
+  /* ─── Practice-page self-mark tracking ─── */
+  const PRACTICE_KEY_PREFIX = 'enh:practice:';
+  function getPracticeMarks(page) {
+    try { return JSON.parse(localStorage.getItem(PRACTICE_KEY_PREFIX + page) || '{}'); } catch { return {}; }
+  }
+  function setPracticeMark(page, qid, mark) {
+    const m = getPracticeMarks(page);
+    if (mark === null) delete m[qid];
+    else m[qid] = { mark, ts: Date.now() };
+    localStorage.setItem(PRACTICE_KEY_PREFIX + page, JSON.stringify(m));
+  }
+  function wirePracticeTracking() {
+    if (!/_practice\.html$/.test(currentPath)) return;
+    const marks = getPracticeMarks(currentPath);
+
+    function injectSelfMark(card) {
+      if (card.querySelector('.enh-selfmark')) return;
+      const qid = card.id || ('q' + Array.from(document.querySelectorAll('.qcard')).indexOf(card));
+      const existing = marks[qid]?.mark;
+      const row = document.createElement('div');
+      row.className = 'enh-selfmark';
+      row.innerHTML = `
+        <span class="enh-selfmark-lbl">How did you do?</span>
+        <button data-m="got"  class="${existing === 'got'  ? 'on' : ''}" type="button">✓ Got it</button>
+        <button data-m="miss" class="${existing === 'miss' ? 'on' : ''}" type="button">✗ Missed it</button>
+      `;
+      card.appendChild(row);
+      row.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+        const m = b.dataset.m;
+        const cur = getPracticeMarks(currentPath)[qid]?.mark;
+        const next = cur === m ? null : m;
+        setPracticeMark(currentPath, qid, next);
+        row.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b && next !== null));
+      }));
+    }
+
+    function scan() {
+      document.querySelectorAll('.qcard.revealed').forEach(injectSelfMark);
+    }
+    scan();
+    // Watch for reveal-state changes
+    const mo = new MutationObserver(scan);
+    document.querySelectorAll('.qcard').forEach(c => mo.observe(c, { attributes: true, attributeFilter: ['class'] }));
+  }
+
+  /* ─── Notes & highlights (study guide pages only) ─── */
+  const NOTES_KEY = 'enh:notes';
+  function getNotes() { try { return JSON.parse(localStorage.getItem(NOTES_KEY) || '[]'); } catch { return []; } }
+  function saveNotes(n) { localStorage.setItem(NOTES_KEY, JSON.stringify(n)); }
+
+  function wireNotes() {
+    if (!/_study_guide\.html$/.test(currentPath)) return;
+
+    // Selection popover
+    let popover = null;
+    function hidePopover() { popover && popover.remove(); popover = null; }
+
+    document.addEventListener('mouseup', () => {
+      const sel = window.getSelection();
+      const text = sel && sel.toString().trim();
+      hidePopover();
+      if (!text || text.length < 6 || text.length > 400) return;
+      const r = sel.getRangeAt(0).getBoundingClientRect();
+      if (!r.width) return;
+      popover = document.createElement('div');
+      popover.className = 'enh-sel-popover';
+      popover.innerHTML = `<button type="button">＋ Save note</button>`;
+      popover.style.top  = (window.scrollY + r.top - 42) + 'px';
+      popover.style.left = (window.scrollX + r.left + r.width / 2 - 60) + 'px';
+      document.body.appendChild(popover);
+      popover.querySelector('button').addEventListener('mousedown', e => {
+        e.preventDefault();
+        const anchor = findAnchor(sel.anchorNode);
+        const notes = getNotes();
+        notes.unshift({
+          id: 'n-' + Date.now(),
+          page: currentPath,
+          anchor,
+          body: text,
+          ts: Date.now()
+        });
+        saveNotes(notes);
+        hidePopover();
+        renderNotesPanel();
+        flashToast('Note saved');
+      });
+    });
+    document.addEventListener('mousedown', e => {
+      if (popover && !popover.contains(e.target)) hidePopover();
+    });
+
+    // Notes panel toggle button (top-right floating)
+    const fab = document.createElement('button');
+    fab.className = 'enh-fab enh-notes-fab';
+    fab.type = 'button';
+    fab.setAttribute('aria-label', 'Open notes');
+    fab.innerHTML = '<span>Notes</span><span class="enh-fab-count" id="enhNotesCount">0</span>';
+    fab.addEventListener('click', toggleNotesPanel);
+    document.body.appendChild(fab);
+    refreshNotesCount();
+  }
+
+  function findAnchor(node) {
+    // Walk up to find a heading or section id we can link back to
+    let el = node && node.nodeType === 3 ? node.parentElement : node;
+    while (el && el !== document.body) {
+      if (el.id) return el.id;
+      const sib = el.previousElementSibling;
+      if (sib && /^H[1-6]$/.test(sib.tagName) && sib.id) return sib.id;
+      el = el.parentElement;
+    }
+    return null;
+  }
+
+  function refreshNotesCount() {
+    const all = getNotes();
+    const onPage = all.filter(n => n.page === currentPath).length;
+    const el = document.getElementById('enhNotesCount');
+    if (el) {
+      el.textContent = onPage;
+      el.classList.toggle('zero', onPage === 0);
+    }
+  }
+
+  function toggleNotesPanel() {
+    if (document.getElementById('enhNotesPanel')) closeNotesPanel();
+    else openNotesPanel();
+  }
+  function openNotesPanel() {
+    const panel = document.createElement('aside');
+    panel.id = 'enhNotesPanel';
+    panel.className = 'enh-notes-panel';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-label', 'Notes');
+    renderNotesPanelInner(panel);
+    document.body.appendChild(panel);
+    requestAnimationFrame(() => panel.classList.add('show'));
+  }
+  function closeNotesPanel() {
+    const p = document.getElementById('enhNotesPanel');
+    if (!p) return;
+    p.classList.remove('show');
+    setTimeout(() => p.remove(), 180);
+  }
+  function renderNotesPanel() {
+    const p = document.getElementById('enhNotesPanel');
+    if (p) renderNotesPanelInner(p);
+    refreshNotesCount();
+  }
+  function renderNotesPanelInner(panel) {
+    const all = getNotes();
+    const onPage = all.filter(n => n.page === currentPath);
+    const other  = all.filter(n => n.page !== currentPath);
+    panel.innerHTML = `
+      <div class="enh-notes-head">
+        <div>
+          <div class="enh-notes-eyebrow">Notes</div>
+          <h3>Highlights &amp; <em>thoughts.</em></h3>
+        </div>
+        <button class="enh-notes-close" aria-label="Close" type="button">×</button>
+      </div>
+      <div class="enh-notes-actions">
+        <button class="enh-notes-export" type="button">Export as Markdown</button>
+        ${all.length ? '<button class="enh-notes-clear" type="button">Clear all</button>' : ''}
+      </div>
+      ${all.length === 0 ? `
+        <div class="enh-notes-empty">
+          <p>Highlight any passage on this page and click <strong>Save note</strong>.</p>
+        </div>` : ''}
+      ${onPage.length ? `
+        <div class="enh-notes-section-label">On this page · ${onPage.length}</div>
+        ${onPage.map(renderNote).join('')}` : ''}
+      ${other.length ? `
+        <div class="enh-notes-section-label">Other pages · ${other.length}</div>
+        ${other.map(renderNote).join('')}` : ''}
+    `;
+    panel.querySelector('.enh-notes-close').addEventListener('click', closeNotesPanel);
+    panel.querySelector('.enh-notes-export')?.addEventListener('click', exportNotesMd);
+    panel.querySelector('.enh-notes-clear')?.addEventListener('click', () => {
+      if (!confirm('Delete all notes? This can\'t be undone.')) return;
+      saveNotes([]); renderNotesPanel();
+    });
+    panel.querySelectorAll('.enh-note .del').forEach(b => b.addEventListener('click', () => {
+      const id = b.dataset.id;
+      saveNotes(getNotes().filter(n => n.id !== id));
+      renderNotesPanel();
+    }));
+  }
+  function renderNote(n) {
+    const pageTitle = (PAGES.find(p => p.url === n.page) || {}).title || n.page;
+    const date = new Date(n.ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    const link = n.anchor ? n.page + '#' + n.anchor : n.page;
+    return `
+      <div class="enh-note">
+        <div class="enh-note-meta">
+          <a href="${link}">${escapeHtml(pageTitle)}</a>
+          <span>${date}</span>
+          <button class="del" data-id="${n.id}" type="button" aria-label="Delete">×</button>
+        </div>
+        <blockquote>${escapeHtml(n.body)}</blockquote>
+      </div>
+    `;
+  }
+  function exportNotesMd() {
+    const all = getNotes();
+    if (!all.length) return;
+    const byPage = {};
+    all.forEach(n => { (byPage[n.page] = byPage[n.page] || []).push(n); });
+    let md = '# Notes — Claude Architect Foundations\n\n';
+    md += `Exported ${new Date().toLocaleString()}\n\n`;
+    Object.keys(byPage).sort().forEach(page => {
+      const title = (PAGES.find(p => p.url === page) || {}).title || page;
+      md += `## ${title}\n\n`;
+      byPage[page].forEach(n => {
+        const d = new Date(n.ts).toLocaleDateString();
+        md += `- *(${d})* "${n.body.replace(/\n/g, ' ')}"\n`;
+      });
+      md += '\n';
+    });
+    const blob = new Blob([md], { type: 'text/markdown' });
+    const url  = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'cca-foundations-notes.md';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function flashToast(msg) {
+    let t = document.getElementById('enhToast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'enhToast'; t.className = 'enh-toast';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(flashToast._t);
+    flashToast._t = setTimeout(() => t.classList.remove('show'), 1600);
+  }
+
+  /* ─── Phase 3 boot hook ─── */
+  function bootPhase3() {
+    installPwa();
+    wireKeyboard();
+    wirePracticeTracking();
+    wireNotes();
+  }
+
   /* ─────────── boot ─────────── */
+  function bootAll() { build(); bootPhase3(); }
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', build);
+    document.addEventListener('DOMContentLoaded', bootAll);
   } else {
-    build();
+    bootAll();
   }
 })();

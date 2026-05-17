@@ -1,0 +1,15 @@
+{
+  "name": "Claude Architect — Foundations",
+  "short_name": "CCA Foundations",
+  "description": "Study companion for the Claude Certified Architect Foundations exam.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F4EFE6",
+  "theme_color": "#C72D1A",
+  "orientation": "any",
+  "icons": [
+    { "src": "assets/favicon.svg", "sizes": "any",   "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/favicon.svg", "sizes": "any",   "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
